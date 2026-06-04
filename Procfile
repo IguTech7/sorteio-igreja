@@ -1,1 +1,1 @@
-web: gunicorn rifa_igreja.wsgi
+web: python manage.py migrate && gunicorn rifa_igreja.wsgi
