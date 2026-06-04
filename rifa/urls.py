@@ -1,0 +1,16 @@
+from django.urls import path
+from django.contrib.auth import views as auth_views
+from . import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('api/status/', views.api_status, name='api_status'),
+    path('api/participar/', views.api_participar, name='api_participar'),
+    path('api/vendidos/', views.api_vendidos, name='api_vendidos'),
+    path('api/sortear/', views.api_sortear, name='api_sortear'),
+    path('api/resetar/', views.api_resetar, name='api_resetar'),
+    path('api/qrcode/', views.qrcode_pix, name='qrcode_pix'),
+    path('login/', auth_views.LoginView.as_view(template_name='rifa/login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
+    path('api/excluir/', views.api_excluir, name='api_excluir'),
+]

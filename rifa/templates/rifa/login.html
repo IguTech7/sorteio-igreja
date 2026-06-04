@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Lato', sans-serif; background: #0E1A30; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+  .login-box { background: #FFFDF7; border-radius: 14px; padding: 2.5rem 2rem; width: 100%; max-width: 380px; border: 2px solid #C9942A; box-shadow: 0 8px 40px rgba(0,0,0,0.4); text-align: center; }
+  .login-cross { font-size: 2rem; margin-bottom: 0.5rem; }
+  .login-title { font-family: 'Cinzel', serif; font-size: 1.3rem; color: #1A2B4A; font-weight: 700; margin-bottom: 0.25rem; }
+  .login-sub { font-size: 0.82rem; color: #6B6B8A; margin-bottom: 1.75rem; }
+  .form-group { margin-bottom: 1rem; text-align: left; }
+  .form-label { display: block; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #3D3D5C; margin-bottom: 0.4rem; }
+  .form-input { width: 100%; padding: 0.7rem 0.9rem; border: 1.5px solid rgba(26,43,74,0.2); border-radius: 7px; font-family: 'Lato', sans-serif; font-size: 1rem; color: #1A1A2E; background: white; transition: border-color 0.2s; }
+  .form-input:focus { outline: none; border-color: #C9942A; }
+  .btn-login { width: 100%; padding: 0.9rem; background: linear-gradient(135deg, #C9942A 0%, #E8A820 100%); color: #1A2B4A; font-family: 'Cinzel', serif; font-size: 0.95rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border: none; border-radius: 8px; cursor: pointer; margin-top: 0.5rem; box-shadow: 0 3px 16px rgba(201,148,42,0.35); transition: transform 0.15s; }
+  .btn-login:hover { transform: translateY(-1px); }
+  .error { background: #F9E8E8; border: 1px solid rgba(139,26,26,0.3); border-radius: 7px; padding: 0.6rem 0.9rem; font-size: 0.85rem; color: #8B1A1A; margin-bottom: 1rem; }
+</style>
+</head>
+<body>
+<div class="login-box">
+  <div class="login-cross">✝</div>
+  <div class="login-title">Área Administrativa</div>
+  <div class="login-sub">Acesso restrito ao responsável pelo sorteio</div>
+  {% if form.errors %}
+    <div class="error">Usuário ou senha incorretos.</div>
+  {% endif %}
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label class="form-label">Usuário</label>
+      <input type="text" name="username" class="form-input" autofocus>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Senha</label>
+      <input type="password" name="password" class="form-input">
+    </div>
+    <button type="submit" class="btn-login">Entrar</button>
+  </form>
+</div>
+</body>
+</html>

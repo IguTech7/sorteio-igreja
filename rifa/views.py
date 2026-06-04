@@ -1,0 +1,115 @@
+import random
+import io
+import qrcode
+from django.shortcuts import render
+from django.http import JsonResponse, HttpResponse
+from django.views.decorators.http import require_POST, require_GET
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+from .models import Participante, Configuracao, Sorteio
+
+
+def index(request):
+    config = Configuracao.get()
+    return render(request, 'rifa/index.html', {'config': config})
+
+
+@require_GET
+def api_status(request):
+    config = Configuracao.get()
+    participantes = Participante.objects.all()
+    ocupados = {p.numero: p.nome for p in participantes}
+    vendidos = participantes.count()
+    return JsonResponse({
+        'ocupados': ocupados,
+        'vendidos': vendidos,
+        'disponiveis': config.total_numeros - vendidos,
+        'arrecadado': float(config.valor * vendidos),
+        'valor': float(config.valor),
+        'total_numeros': config.total_numeros,
+    })
+
+
+@csrf_exempt
+@require_POST
+def api_participar(request):
+    try:
+        data = json.loads(request.body)
+        numero = int(data.get('numero', 0))
+        nome = data.get('nome', '').strip()
+        telefone = data.get('telefone', '').strip()
+    except (ValueError, KeyError):
+        return JsonResponse({'ok': False, 'erro': 'Dados inválidos.'}, status=400)
+
+    config = Configuracao.get()
+
+    if not nome:
+        return JsonResponse({'ok': False, 'erro': 'Nome é obrigatório.'}, status=400)
+    if numero < 1 or numero > config.total_numeros:
+        return JsonResponse({'ok': False, 'erro': 'Número inválido.'}, status=400)
+    if Participante.objects.filter(numero=numero).exists():
+        return JsonResponse({'ok': False, 'erro': 'Número já está ocupado. Escolha outro.'}, status=409)
+
+    Participante.objects.create(numero=numero, nome=nome, telefone=telefone)
+    return JsonResponse({'ok': True, 'mensagem': f'Número {numero} confirmado para {nome}!'})
+
+
+@require_GET
+def api_vendidos(request):
+    participantes = Participante.objects.all()
+    data = [{'numero': p.numero, 'nome': p.nome} for p in participantes]
+    return JsonResponse({'vendidos': data})
+
+
+@csrf_exempt
+@require_POST
+def api_sortear(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'ok': False, 'erro': 'Não autorizado.'}, status=401)
+    participantes = list(Participante.objects.all())
+    if not participantes:
+        return JsonResponse({'ok': False, 'erro': 'Nenhum número vendido para sortear.'}, status=400)
+    vencedor = random.choice(participantes)
+    Sorteio.objects.create(numero_vencedor=vencedor.numero, nome_vencedor=vencedor.nome)
+    return JsonResponse({'ok': True, 'numero': vencedor.numero, 'nome': vencedor.nome})
+
+
+@csrf_exempt
+@require_POST
+def api_resetar(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'ok': False, 'erro': 'Não autorizado.'}, status=401)
+    Participante.objects.all().delete()
+    Sorteio.objects.all().delete()
+    return JsonResponse({'ok': True, 'mensagem': 'Rifa resetada com sucesso.'})
+
+
+@require_GET
+def qrcode_pix(request):
+    config = Configuracao.get()
+    dado = config.pix_emv.strip() if config.pix_emv.strip() else config.pix_chave
+    img = qrcode.make(dado)
+    buf = io.BytesIO()
+    img.save(buf, format='PNG')
+    buf.seek(0)
+    return HttpResponse(buf, content_type='image/png')
+
+@csrf_exempt
+@require_POST
+def api_excluir(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'ok': False, 'erro': 'Não autorizado.'}, status=401)
+    try:
+        data = json.loads(request.body)
+        numero = int(data.get('numero', 0))
+    except (ValueError, KeyError):
+        return JsonResponse({'ok': False, 'erro': 'Dados inválidos.'}, status=400)
+
+    try:
+        p = Participante.objects.get(numero=numero)
+        nome = p.nome
+        p.delete()
+        return JsonResponse({'ok': True, 'mensagem': f'Número {numero} de {nome} removido.'})
+    except Participante.DoesNotExist:
+        return JsonResponse({'ok': False, 'erro': 'Número não encontrado.'}, status=404)

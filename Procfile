@@ -1,0 +1,1 @@
+web: gunicorn rifa_igreja.wsgi
