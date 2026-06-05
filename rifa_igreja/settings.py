@@ -52,11 +52,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'rifa_igreja.wsgi.application'
 
+DATABASE_URL = os.environ.get("DATABASE_URL", f"sqlite:///{BASE_DIR / 'db.sqlite3'}")
 DATABASES = {
-    'default': dj_database_url.parse(
-        os.environ.get("DATABASE_URL"),
-        default='sqlite:///db.sqlite3'
-    )
+    'default': dj_database_url.parse(DATABASE_URL)
 }
 
 AUTH_PASSWORD_VALIDATORS = [
