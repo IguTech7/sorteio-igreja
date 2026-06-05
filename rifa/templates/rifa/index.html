@@ -490,7 +490,21 @@ async function confirmarParticipacao() {
 
 function mostrarComprovante(nome, numero) {
   const data = new Date().toLocaleDateString('pt-BR');
-  const hora = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+  const hora = new Date().toLocaleTimeString('pt-BR', {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+
+  const mensagem = encodeURIComponent(
+`Olá!
+
+Acabei de realizar o PIX da rifa.
+
+Nome: ${nome}
+Número: ${String(numero).padStart(2,'0')}
+
+Segue o comprovante do pagamento.`
+  );
 
   const overlay = document.createElement('div');
   overlay.id = 'comprovante-overlay';
@@ -498,32 +512,103 @@ function mostrarComprovante(nome, numero) {
 
   overlay.innerHTML = `
     <div id="comprovante-card" style="background:#1A1A1A;border:2px solid #C9942A;border-radius:16px;padding:2rem;max-width:380px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(201,148,42,0.3);">
+      
       <div style="font-size:2rem;margin-bottom:0.5rem;">✝</div>
-      <div style="font-family:'Cinzel',serif;font-size:0.7rem;color:#C9942A;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.25rem;">Comprovante de Participação</div>
-      <div style="font-family:'Cinzel',serif;font-size:1rem;color:white;font-weight:600;margin-bottom:1.5rem;">Igreja Batista Missionária</div>
+
+      <div style="font-family:'Cinzel',serif;font-size:0.7rem;color:#C9942A;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.25rem;">
+        Comprovante de Participação
+      </div>
+
+      <div style="font-family:'Cinzel',serif;font-size:1rem;color:white;font-weight:600;margin-bottom:1.5rem;">
+        Igreja Batista Missionária
+      </div>
 
       <div style="background:rgba(201,148,42,0.1);border:1px solid rgba(201,148,42,0.3);border-radius:10px;padding:1.25rem;margin-bottom:1.25rem;">
-        <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.25rem;">Número</div>
-        <div style="font-family:'Cinzel',serif;font-size:3.5rem;font-weight:700;color:#C9942A;line-height:1;">${String(numero).padStart(2,'0')}</div>
+        <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.25rem;">
+          Número
+        </div>
+
+        <div style="font-family:'Cinzel',serif;font-size:3.5rem;font-weight:700;color:#C9942A;line-height:1;">
+          ${String(numero).padStart(2,'0')}
+        </div>
       </div>
 
       <div style="margin-bottom:1.25rem;">
-        <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.25rem;">Participante</div>
-        <div style="font-family:'Cinzel',serif;font-size:1.2rem;color:white;font-weight:600;">${nome}</div>
+        <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.25rem;">
+          Participante
+        </div>
+
+        <div style="font-family:'Cinzel',serif;font-size:1.2rem;color:white;font-weight:600;">
+          ${nome}
+        </div>
       </div>
 
       <div style="display:flex;justify-content:center;gap:2rem;margin-bottom:1.5rem;">
         <div>
-          <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;">Data</div>
-          <div style="font-size:0.85rem;color:rgba(255,255,255,0.7);margin-top:0.1rem;">${data}</div>
+          <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;">
+            Data
+          </div>
+
+          <div style="font-size:0.85rem;color:rgba(255,255,255,0.7);margin-top:0.1rem;">
+            ${data}
+          </div>
         </div>
+
         <div>
-          <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;">Hora</div>
-          <div style="font-size:0.85rem;color:rgba(255,255,255,0.7);margin-top:0.1rem;">${hora}</div>
+          <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;">
+            Hora
+          </div>
+
+          <div style="font-size:0.85rem;color:rgba(255,255,255,0.7);margin-top:0.1rem;">
+            ${hora}
+          </div>
         </div>
       </div>
 
-      <button onclick="fecharComprovante()" style="width:100%;padding:0.75rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.6);font-family:'Cinzel',serif;font-size:0.8rem;font-weight:700;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;">Fechar</button>
+      <div style="display:flex;flex-direction:column;gap:0.75rem;">
+
+        <a
+          href="https://wa.me/5587981033286?text=${mensagem}"
+          target="_blank"
+          style="
+            display:block;
+            width:100%;
+            padding:0.85rem;
+            background:#25D366;
+            border-radius:8px;
+            color:white;
+            text-decoration:none;
+            font-weight:700;
+            text-transform:uppercase;
+            letter-spacing:0.05em;
+            box-sizing:border-box;
+          "
+        >
+          📱 Enviar Comprovante pelo WhatsApp
+        </a>
+
+        <button
+          onclick="fecharComprovante()"
+          style="
+            width:100%;
+            padding:0.75rem;
+            background:transparent;
+            border:1px solid rgba(255,255,255,0.2);
+            border-radius:8px;
+            color:rgba(255,255,255,0.6);
+            font-family:'Cinzel',serif;
+            font-size:0.8rem;
+            font-weight:700;
+            cursor:pointer;
+            letter-spacing:0.06em;
+            text-transform:uppercase;
+          "
+        >
+          Fechar
+        </button>
+
+      </div>
+
     </div>
   `;
 
