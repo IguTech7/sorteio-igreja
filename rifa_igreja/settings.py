@@ -9,7 +9,7 @@ SECRET_KEY = 'django-insecure-nhf6qg4s2_^+c%hgpi2h9=cy876vu3+mdvfanf4^#dtr_kgjno
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "sorteio-igreja-production.up.railway.app",
+    "ibm-jardim-guararapes.up.railway.app",
 ]
 
 INSTALLED_APPS = [
