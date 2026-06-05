@@ -2,7 +2,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<script src="{% static 'rifa/html2canvas.min.js' %}"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{ config.nome_campanha }}</title>
@@ -498,7 +497,7 @@ function mostrarComprovante(nome, numero) {
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;';
 
   overlay.innerHTML = `
-    <div "id=""comprovante-card" style="background:#1A1A1A;border:2px solid #C9942A;border-radius:16px;padding:2rem;max-width:380px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(201,148,42,0.3);">
+    <div id="comprovante-card" style="background:#1A1A1A;border:2px solid #C9942A;border-radius:16px;padding:2rem;max-width:380px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(201,148,42,0.3);">
       <div style="font-size:2rem;margin-bottom:0.5rem;">✝</div>
       <div style="font-family:'Cinzel',serif;font-size:0.7rem;color:#C9942A;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.25rem;">Comprovante de Participação</div>
       <div style="font-family:'Cinzel',serif;font-size:1rem;color:white;font-weight:600;margin-bottom:1.5rem;">Igreja Batista Missionária</div>
@@ -524,10 +523,7 @@ function mostrarComprovante(nome, numero) {
         </div>
       </div>
 
-      <div style="display:flex;gap:0.75rem;">
-        <button onclick="salvarComprovante()" style="flex:1;padding:0.75rem;background:linear-gradient(135deg,#C9942A,#E8A820);border:none;border-radius:8px;color:#111;font-family:'Cinzel',serif;font-size:0.8rem;font-weight:700;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;">📥 Salvar</button>
-        <button onclick="fecharComprovante()" style="flex:1;padding:0.75rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.6);font-family:'Cinzel',serif;font-size:0.8rem;font-weight:700;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;">Fechar</button>
-      </div>
+      <button onclick="fecharComprovante()" style="width:100%;padding:0.75rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.6);font-family:'Cinzel',serif;font-size:0.8rem;font-weight:700;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;">Fechar</button>
     </div>
   `;
 
