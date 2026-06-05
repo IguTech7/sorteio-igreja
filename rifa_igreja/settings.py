@@ -54,7 +54,8 @@ WSGI_APPLICATION = 'rifa_igreja.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.parse(
-        os.environ.get("DATABASE_URL")
+        os.environ.get("DATABASE_URL"),
+        default='sqlite:///db.sqlite3'
     )
 }
 
