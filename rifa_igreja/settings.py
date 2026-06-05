@@ -8,7 +8,9 @@ SECRET_KEY = 'django-insecure-nhf6qg4s2_^+c%hgpi2h9=cy876vu3+mdvfanf4^#dtr_kgjno
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "sorteio-igreja-production.up.railway.app",
+]
 
 INSTALLED_APPS = [
     'rifa',
@@ -82,3 +84,7 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = ['*']
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://sorteio-igreja-production.up.railway.app",
+]
