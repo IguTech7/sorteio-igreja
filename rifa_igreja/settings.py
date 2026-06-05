@@ -86,5 +86,5 @@ ALLOWED_HOSTS = ['*']
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://sorteio-igreja-production.up.railway.app",
+    "https://ibm-jardim-guararapes.up.railway.app/",
 ]
