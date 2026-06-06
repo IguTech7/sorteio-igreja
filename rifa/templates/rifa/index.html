@@ -260,10 +260,10 @@
         <div style="font-size:0.9rem;color:rgba(255,255,255,0.6);line-height:1.6;">Cada número adquirido contribui diretamente para a obra de Deus em nossa comunidade. Juntos, construímos um lugar de adoração e esperança.</div>
       </div>
     </div>
-    <div class="stats-bar">
-      <div class="stat-item"><div class="stat-number" id="stat-vendidos">—</div><div class="stat-label">Vendidos</div></div>
-      <div class="stat-item"><div class="stat-number" id="stat-disponiveis">—</div><div class="stat-label">Disponíveis</div></div>
-    </div>
+    <div class="stats-bar" style="grid-template-columns: repeat(2, 1fr);">
+  <div class="stat-item"><div class="stat-number" id="stat-vendidos">—</div><div class="stat-label">Vendidos</div></div>
+  <div class="stat-item"><div class="stat-number" id="stat-disponiveis">—</div><div class="stat-label">Disponíveis</div></div>
+</div>
     <div class="info-grid">
       <div class="info-item"><div class="info-item-icon">🎟️</div><div class="info-item-label">Total de Números</div><div class="info-item-value">{{ config.total_numeros }}</div></div>
       <div class="info-item"><div class="info-item-icon">📅</div><div class="info-item-label">Data do Sorteio</div><div class="info-item-value">{% if config.data_sorteio %}{{ config.data_sorteio|date:"d/m/Y" }}{% else %}A definir{% endif %}</div></div>
