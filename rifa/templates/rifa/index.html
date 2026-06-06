@@ -263,20 +263,6 @@
     <div class="stats-bar">
       <div class="stat-item"><div class="stat-number" id="stat-vendidos">—</div><div class="stat-label">Vendidos</div></div>
       <div class="stat-item"><div class="stat-number" id="stat-disponiveis">—</div><div class="stat-label">Disponíveis</div></div>
-      <div class="stat-item"><div class="stat-number" id="stat-arrecadado">—</div><div class="stat-label">Arrecadado</div></div>
-    </div>
-    <div style="background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.25rem;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
-        <span style="font-size:0.72rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;">Progresso da Rifa</span>
-        <span id="stat-percentual" style="font-family:'Cinzel',serif;font-size:0.85rem;color:var(--gold);font-weight:700;">0%</span>
-      </div>
-      <div style="background:rgba(255,255,255,0.08);border-radius:999px;height:10px;overflow:hidden;">
-        <div id="barra-progresso" style="height:100%;width:0%;background:linear-gradient(90deg,#C9942A,#E8A820);border-radius:999px;transition:width 0.8s ease;"></div>
-      </div>
-      <div style="display:flex;justify-content:space-between;margin-top:0.4rem;">
-        <span id="stat-progresso-texto" style="font-size:0.72rem;color:rgba(255,255,255,0.3);">0 vendidos</span>
-        <span id="stat-total-texto" style="font-size:0.72rem;color:rgba(255,255,255,0.3);">de — números</span>
-      </div>
     </div>
     <div class="info-grid">
       <div class="info-item"><div class="info-item-icon">🎟️</div><div class="info-item-label">Total de Números</div><div class="info-item-value">{{ config.total_numeros }}</div></div>
@@ -303,7 +289,7 @@
     </div>
     <div style="border-radius:14px;overflow:hidden;margin:0 auto 1.25rem;box-shadow:0 8px 40px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.08);max-width:340px;">
   <div style="background:#111;padding:1rem 1.25rem;text-align:center;border-bottom:1px solid rgba(255,255,255,0.06);">
-    <div style="font-family:'Cinzel',serif;font-size:0.75rem;color:var(--gold);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.25rem;">🏆 Prêmio da Rifa</div>
+    <div style="font-family:'Cinzel',serif;font-size:0.75rem;color:var(--gold);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.25rem;">🏆 Prêmio</div>
     <div style="font-family:'Cinzel',serif;font-size:1.1rem;color:white;font-weight:600;">Terreno — Lagoa dos Vinhedos</div>
   </div>
   <img src="{% static 'rifa/terreno.jpg' %}" alt="Terreno Lagoa dos Vinhedos" style="width:100%;height:auto;display:block;">
