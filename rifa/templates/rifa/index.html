@@ -239,7 +239,9 @@
     <div class="nav-tabs">
       <button class="nav-tab active" onclick="showPage('home')">Início</button>
       <button class="nav-tab" onclick="showPage('rifa')">Números</button>
-      <button class="nav-tab" onclick="showPage('sorteio')">Sorteio</button>
+      {% if request.user.is_authenticated %}
+<button class="nav-tab" onclick="showPage('sorteio')">Sorteio</button>
+{% endif %}
     </div>
   </div>
 </nav>
@@ -260,9 +262,12 @@
         <div style="font-size:0.9rem;color:rgba(255,255,255,0.6);line-height:1.6;">Cada número adquirido contribui diretamente para a obra de Deus em nossa comunidade. Juntos, construímos um lugar de adoração e esperança.</div>
       </div>
     </div>
-    <div class="stats-bar" style="grid-template-columns: repeat(2, 1fr);">
+    <div class="stats-bar" style="grid-template-columns: repeat({% if request.user.is_authenticated %}3{% else %}2{% endif %}, 1fr);">
   <div class="stat-item"><div class="stat-number" id="stat-vendidos">—</div><div class="stat-label">Vendidos</div></div>
   <div class="stat-item"><div class="stat-number" id="stat-disponiveis">—</div><div class="stat-label">Disponíveis</div></div>
+  {% if request.user.is_authenticated %}
+<div class="stat-item"><div class="stat-number" id="stat-arrecadado">—</div><div class="stat-label">Arrecadado</div></div>
+{% endif %}
 </div>
     <div class="info-grid">
       <div class="info-item"><div class="info-item-icon">🎟️</div><div class="info-item-label">Total de Números</div><div class="info-item-value">{{ config.total_numeros }}</div></div>
