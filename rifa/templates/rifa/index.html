@@ -436,13 +436,7 @@ async function carregarStatus() {
   }
 }
 
-  const pct = Math.round((d.vendidos / d.total_numeros) * 100);
-  document.getElementById('stat-percentual').textContent = pct + '%';
-  document.getElementById('barra-progresso').style.width = pct + '%';
-  document.getElementById('stat-progresso-texto').textContent = d.vendidos + ' vendidos';
-  document.getElementById('stat-total-texto').textContent = 'de ' + d.total_numeros + ' números';
-}
-
+  
 async function carregarRifa() {
   const d = await api('/api/status/');
   ocupados = d.ocupados;
@@ -896,12 +890,11 @@ function abrirComprovante() {
   arquivo.click();
 }
 </script>
+
 <div id="loading" class="loading-overlay">
   Carregando...
 </div>
 
 <div id="toast" class="toast"></div>
-
-
 </body>
 </html>
