@@ -426,14 +426,12 @@ function showPage(id) {
 async function carregarStatus() {
   const d = await api('/api/status/');
   ocupados = d.ocupados;
-
   document.getElementById('stat-vendidos').textContent = d.vendidos;
   document.getElementById('stat-disponiveis').textContent = d.disponiveis;
+const arrecadado = document.getElementById('stat-arrecadado');
 
-  const arrecadado = document.getElementById('stat-arrecadado');
-  if (arrecadado) {
-    arrecadado.textContent = 'R$' + d.arrecadado.toFixed(0);
-  }
+if (arrecadado) {
+  arrecadado.textContent = 'R$' + d.arrecadado.toFixed(0);
 }
 
   const pct = Math.round((d.vendidos / d.total_numeros) * 100);
