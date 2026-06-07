@@ -338,6 +338,18 @@
       <div class="legend-item"><div class="legend-dot selected"></div> Selecionado</div>
       <div class="legend-item"><div class="legend-dot taken"></div> Ocupado</div>
     </div>
+    <div class="comprovante-box">
+  <button
+    class="btn-primary"
+    onclick="abrirComprovante()"
+  >
+    📄 Enviar Comprovante PIX
+  </button>
+
+  <div id="status-comprovante">
+    ❌ Comprovante não enviado
+  </div>
+</div>
     <div class="numbers-grid" id="numbers-grid"></div>
     <div class="form-card">
       <div class="card-title">✦ Confirmar Participação</div>
@@ -416,11 +428,6 @@ function showLoading(v) {
 
 function showPage(id) {
 
-  if (id === 'rifa' && !comprovanteEnviado) {
-    abrirComprovante();
-    return;
-  }
-
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
 
@@ -477,10 +484,30 @@ function renderGrid() {
 }
 
 function selectNum(n) {
+
+  if (!comprovanteEnviado) {
+
+    showToast(
+      'Envie o comprovante PIX antes de escolher um número.',
+      'error'
+    );
+
+    return;
+  }
+
   if (ocupados[n]) return;
+
   selectedNum = (selectedNum === n) ? null : n;
+
   renderGrid();
-  document.getElementById('selected-num-display').textContent = selectedNum ? String(selectedNum).padStart(2,'0') : '—';
+
+  document.getElementById(
+    'selected-num-display'
+  ).textContent =
+    selectedNum
+      ? String(selectedNum).padStart(2,'0')
+      : '—';
+
   updateConfirmBtn();
 }
 
@@ -916,6 +943,45 @@ async function validarComprovanteOCR() {
       .toLowerCase()
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '');
+      const meses = {
+  jan: 0,
+  fev: 1,
+  mar: 2,
+  abr: 3,
+  mai: 4,
+  jun: 5,
+  jul: 6,
+  ago: 7,
+  set: 8,
+  out: 9,
+  nov: 10,
+  dez: 11
+};
+
+let dataValida = false;
+
+const matchData = texto.match(
+  /(\d{1,2})\s+(jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)\s+(\d{4})/
+);
+
+if (matchData) {
+
+  const dia = parseInt(matchData[1]);
+  const mes = meses[matchData[2]];
+  const ano = parseInt(matchData[3]);
+
+  const dataComprovante = new Date(ano, mes, dia);
+  const hoje = new Date();
+
+  const diffDias = Math.floor(
+    (hoje - dataComprovante) / (1000 * 60 * 60 * 24)
+  );
+
+  dataValida = diffDias >= 0 && diffDias <= 3;
+
+}
+
+console.log('dataValida:', dataValida);
 
     console.log('Texto OCR:');
     console.log(texto);
@@ -934,27 +1000,21 @@ const temCNPJ =
     const temCora =
       texto.includes('cora');
 
-    const valores =
-      texto.match(/\d+[.,]\d{2}/g);
-
     let valorEncontrado = 0;
 
-    if (valores) {
+const matchValor = texto.match(
+  /valor\s*r?\$?\s*(\d+[.,]\d{2})/
+);
 
-      valores.forEach(v => {
+if (matchValor) {
 
-        const num = parseFloat(
-          v.replace('.', '')
-           .replace(',', '.')
-        );
+  valorEncontrado = parseFloat(
+    matchValor[1]
+      .replace('.', '')
+      .replace(',', '.')
+  );
 
-        if (!isNaN(num) && num > valorEncontrado) {
-          valorEncontrado = num;
-        }
-
-      });
-
-    }
+}
 
 console.log('temPix:', temPix);
 console.log('temIgreja:', temIgreja);
@@ -966,23 +1026,20 @@ console.log('valorEncontrado:', valorEncontrado);
   temPix &&
   temCora &&
   temCNPJ &&
-  valorEncontrado >= 50
+  valorEncontrado >= 50 &&
+  DataValida
 ) {
       comprovanteEnviado = true;
 
-      showToast(
-        'Comprovante validado com sucesso!',
-        'success'
-      );
+document.getElementById(
+  'status-comprovante'
+).innerHTML =
+  '✅ Comprovante validado';
 
-      showPage('rifa');
-
-    } else {
-
-      showToast(
-        'Comprovante não reconhecido. Verifique se é um PIX para a Igreja.',
-        'error'
-      );
+showToast(
+  'Comprovante validado com sucesso!',
+  'success'
+);
 
     }
 
@@ -991,7 +1048,7 @@ console.log('valorEncontrado:', valorEncontrado);
     console.error(erro);
 
     showToast(
-      'Erro ao analisar comprovante.',
+      'Comprovante inválido ou fora do prazo permitido.',
       'error'
     );
 
