@@ -787,7 +787,7 @@ function showToast(msg, type) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.className = 'toast ' + (type||'');
   void t.offsetWidth; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3500);
+  setTimeout(() => t.classList.remove('show'), 10000);
 }
 
 document.getElementById('nome-input').addEventListener('input', updateConfirmBtn);
