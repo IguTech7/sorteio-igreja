@@ -944,112 +944,157 @@ async function validarComprovanteOCR() {
       .toLowerCase()
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '');
-      const meses = {
-  jan: 0,
-  fev: 1,
-  mar: 2,
-  abr: 3,
-  mai: 4,
-  jun: 5,
-  jul: 6,
-  ago: 7,
-  set: 8,
-  out: 9,
-  nov: 10,
-  dez: 11
-};
-
-let dataValida = false;
-
-const matchData = texto.match(
-  /(\d{1,2})\s+(jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)\s+(\d{4})/
-);
-
-if (matchData) {
-
-  const dia = parseInt(matchData[1]);
-  const mes = meses[matchData[2]];
-  const ano = parseInt(matchData[3]);
-
-  const dataComprovante = new Date(ano, mes, dia);
-  const hoje = new Date();
-
-  const diffDias = Math.floor(
-    (hoje - dataComprovante) / (1000 * 60 * 60 * 24)
-  );
-
-  dataValida = diffDias >= 0 && diffDias <= 3;
-
-}
-
-console.log('dataValida:', dataValida);
 
     console.log('Texto OCR:');
     console.log(texto);
 
+    // ----------------------
+    // VALIDAR DATA
+    // ----------------------
+
+    const meses = {
+      jan: 0,
+      fev: 1,
+      mar: 2,
+      abr: 3,
+      mai: 4,
+      jun: 5,
+      jul: 6,
+      ago: 7,
+      set: 8,
+      out: 9,
+      nov: 10,
+      dez: 11
+    };
+
+    let dataValida = false;
+
+    const matchData = texto.match(
+      /(\d{1,2})\s+(jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)\s+(\d{4})/
+    );
+
+    if (matchData) {
+
+      const dia = parseInt(matchData[1]);
+      const mes = meses[matchData[2]];
+      const ano = parseInt(matchData[3]);
+
+      const dataComprovante =
+        new Date(ano, mes, dia);
+
+      const hoje =
+        new Date();
+
+      const diffDias =
+        Math.floor(
+          (hoje - dataComprovante) /
+          (1000 * 60 * 60 * 24)
+        );
+
+      dataValida =
+        diffDias >= 0 &&
+        diffDias <= 3;
+
+    }
+
+    // ----------------------
+    // VALIDAR PIX
+    // ----------------------
+
     const temPix =
       texto.includes('pix');
-
-    const temIgreja =
-  texto.includes('igreja batista') ||
-  texto.includes('igreja bastista') ||
-  texto.includes('missionaria');
-
-const temCNPJ =
-  texto.includes('05199886000168');
 
     const temCora =
       texto.includes('cora');
 
+    const temIgreja =
+      texto.includes('igreja batista') ||
+      texto.includes('igreja bastista') ||
+      texto.includes('missionaria');
+
+    const temCNPJ =
+      texto.includes('05199886000168');
+
+    // ----------------------
+    // VALIDAR VALOR
+    // ----------------------
+
     let valorEncontrado = 0;
 
-const matchValor = texto.match(
-  /valor\s*r?\$?\s*(\d+[.,]\d{2})/
-);
+    const matchValor = texto.match(
+      /valor\s*r?\$?\s*(\d+[.,]\d{2})/
+    );
 
-if (matchValor) {
+    if (matchValor) {
 
-  valorEncontrado = parseFloat(
-    matchValor[1]
-      .replace('.', '')
-      .replace(',', '.')
-  );
+      valorEncontrado =
+        parseFloat(
+          matchValor[1]
+            .replace('.', '')
+            .replace(',', '.')
+        );
 
-}
+    }
 
-console.log('temPix:', temPix);
-console.log('temCora:', temCora);
-console.log('temCNPJ:', temCNPJ);
-console.log('valorEncontrado:', valorEncontrado);
-console.log('dataValida:', dataValida);
+    console.log('temPix:', temPix);
+    console.log('temIgreja:', temIgreja);
+    console.log('temCora:', temCora);
+    console.log('temCNPJ:', temCNPJ);
+    console.log('valorEncontrado:', valorEncontrado);
+    console.log('dataValida:', dataValida);
+
+    // ----------------------
+    // APROVAÇÃO
+    // ----------------------
 
     if (
-  temPix &&
-  temCora &&
-  temCNPJ &&
-  valorEncontrado >= 50 &&
-  dataValida
-) {
+      temPix &&
+      temIgreja &&
+      temCora &&
+      temCNPJ &&
+      valorEncontrado >= 50 &&
+      dataValida
+    ) {
 
-  console.log('APROVADO');
+      console.log('APROVADO');
 
-  comprovanteEnviado = true;
+      comprovanteEnviado = true;
 
-  showToast(
-    'Comprovante validado com sucesso!',
-    'success'
-  );
+      const status =
+        document.getElementById(
+          'status-comprovante'
+        );
 
-} else {
+      if (status) {
+        status.innerHTML =
+          '✅ Comprovante validado';
+      }
 
-  console.log('REPROVADO');
+      showToast(
+        'Comprovante validado com sucesso!',
+        'success'
+      );
 
-  showToast(
-    'Comprovante inválido ou fora do prazo.',
-    'error'
-  );
+    } else {
 
-}
+      console.log('REPROVADO');
+
+      showToast(
+        'Comprovante inválido ou fora do prazo.',
+        'error'
+      );
+
+    }
+
+  } catch (erro) {
+
+    console.error(erro);
+
+    showToast(
+      'Erro ao analisar comprovante.',
+      'error'
+    );
+
   }
 
 }
