@@ -244,6 +244,7 @@
 }
 </style>
 </head>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <body>
 <div class="app-wrapper">
 
@@ -318,7 +319,7 @@
   </div>
   <img src="{% static 'rifa/terreno.jpg' %}" alt="Terreno Lagoa dos Vinhedos" style="width:100%;height:auto;display:block;">
 </div>
-   <button class="btn-primary" onclick="abrirComprovante()">
+   <button class="btn-primary" onclick="showPage('rifa')">
   ✦ Participar do Sorteio ✦
 </button>
     <p style="text-align:center;margin-top:1rem;font-size:0.8rem;color:rgba(240,200,90,0.4);font-style:italic;">"Cada oferta é uma semente de fé plantada para a glória de Deus."</p>
@@ -400,6 +401,7 @@ let ocupados = {};
 let selectedNum = null;
 let spinning = false;
 let comprovanteEnviado = false;
+let comprovanteArquivo = null;
 
 async function api(url, method='GET', body=null) {
   const opts = { method, headers: {'Content-Type': 'application/json'} };
@@ -413,11 +415,20 @@ function showLoading(v) {
 }
 
 function showPage(id) {
+
+  if (id === 'rifa' && !comprovanteEnviado) {
+    abrirComprovante();
+    return;
+  }
+
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+
   document.getElementById('page-' + id).classList.add('active');
+
   const names = ['home','rifa','sorteio'];
   document.querySelectorAll('.nav-tab')[names.indexOf(id)].classList.add('active');
+
   if (id === 'home') carregarStatus();
   if (id === 'rifa') carregarRifa();
   if (id === 'sorteio') carregarSorteio();
@@ -868,26 +879,117 @@ function fecharApresentacao() {
   if (overlay) overlay.remove();
 }
 
-function abrirComprovante() {
+async function abrirComprovante() {
+
   const arquivo = document.createElement('input');
 
   arquivo.type = 'file';
-  arquivo.accept = 'image/*,.pdf';
+  arquivo.accept = 'image/*';
 
-  arquivo.onchange = () => {
-    if (arquivo.files.length > 0) {
+  arquivo.onchange = async () => {
+
+    if (!arquivo.files.length) return;
+
+    comprovanteArquivo = arquivo.files[0];
+
+    showToast(
+      'Analisando comprovante...',
+      'success'
+    );
+
+    await validarComprovanteOCR();
+  };
+
+  arquivo.click();
+}
+
+async function validarComprovanteOCR() {
+
+  try {
+
+    const resultado = await Tesseract.recognize(
+      comprovanteArquivo,
+      'por'
+    );
+
+    const texto = resultado.data.text
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+
+    console.log('Texto OCR:');
+    console.log(texto);
+
+    const temPix =
+      texto.includes('pix');
+
+    const temIgreja =
+      texto.includes('igreja batista missionaria') ||
+      texto.includes('igreja batista');
+
+    const temCora =
+      texto.includes('cora');
+
+    const valores =
+      texto.match(/\d+[.,]\d{2}/g);
+
+    let valorEncontrado = 0;
+
+    if (valores) {
+
+      valores.forEach(v => {
+
+        const num = parseFloat(
+          v.replace('.', '')
+           .replace(',', '.')
+        );
+
+        if (!isNaN(num) && num > valorEncontrado) {
+          valorEncontrado = num;
+        }
+
+      });
+
+    }
+
+    console.log('Valor encontrado:', valorEncontrado);
+
+    if (
+      temPix &&
+      temIgreja &&
+      temCora &&
+      valorEncontrado >= 50
+    ) {
+
       comprovanteEnviado = true;
 
       showToast(
-        'Comprovante enviado com sucesso!',
+        'Comprovante validado com sucesso!',
         'success'
       );
 
       showPage('rifa');
-    }
-  };
 
-  arquivo.click();
+    } else {
+
+      showToast(
+        'Comprovante não reconhecido. Verifique se é um PIX para a Igreja.',
+        'error'
+      );
+
+    }
+
+  } catch (erro) {
+
+    console.error(erro);
+
+    showToast(
+      'Erro ao analisar comprovante.',
+      'error'
+    );
+
+  }
+
 }
 </script>
 
