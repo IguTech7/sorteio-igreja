@@ -154,7 +154,13 @@
 .num-btn { aspect-ratio: 1; border-radius: 6px; border: 1.5px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.6); font-family: 'Lato', sans-serif; font-size: clamp(0.65rem, 1.8vw, 0.88rem); font-weight: 700; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; padding: 0; }
 .num-btn:hover:not(.taken) { background: rgba(201,148,42,0.2); border-color: var(--gold); color: white; transform: scale(1.08); }
 .num-btn.selected { background: var(--gold); border-color: var(--gold); color: #111; transform: scale(1.1); box-shadow: 0 2px 12px rgba(201,148,42,0.5); }
-.num-btn.taken { background: rgba(139,26,26,0.2); border-color: rgba(139,26,26,0.3); color: rgba(248,180,180,0.4); cursor: not-allowed; }
+.num-btn.taken {
+    background: #B22222;
+    color: white;
+    border: 2px solid #ff8a8a;
+    cursor: not-allowed;
+    opacity: 1;
+}
 
   .form-card { background: var(--cream); border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(201,148,42,0.2); box-shadow: var(--shadow); }
   .selected-badge { background: var(--navy); border: 1px solid rgba(201,148,42,0.3); border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 1.2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
@@ -226,6 +232,16 @@
     height: auto;
     margin-bottom: 20px;
 }
+
+.nome-igreja {
+    font-family: 'Cinzel', serif;
+    color: #C9942A;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    font-size: 1.4rem;
+    letter-spacing: 1px;
+}
 </style>
 </head>
 <body>
@@ -251,6 +267,9 @@
   <div class="page-inner">
     <div class="hero">
       <img src="{% static 'rifa/logo.png' %}" alt="Logo Igreja" style="max-width:260px;width:80%;height:auto;margin-bottom:1rem;">
+      <h2 class="nome-igreja">
+    Igreja Batista Missionária
+</h2>
       <h1 class="hero-title">{{ config.nome_campanha }}</h1>
       <p class="hero-subtitle">{{ config.subtitulo }}</p>
     </div>
