@@ -369,6 +369,10 @@
   📄 ENVIAR COMPROVANTE PIX
 </button>
 
+<div id="creditos-comprovante" class="creditos-comprovante">
+  🎟 Créditos disponíveis: 0
+</div>
+
 </div>
     <div class="numbers-grid" id="numbers-grid"></div>
     <div class="form-card">
@@ -430,7 +434,7 @@
 <script>
 const TOTAL = {{ config.total_numeros }};
 let ocupados = {};
-let selectedNum = null;
+let selectedNums = [];
 let spinning = false;
 let comprovanteEnviado = false;
 let comprovanteArquivo = null;
@@ -537,153 +541,317 @@ function updateConfirmBtn() {
 }
 
 async function confirmarParticipacao() {
-  const nome = document.getElementById('nome-input').value.trim();
-  const telefone = document.getElementById('tel-input').value.trim();
-  if (!selectedNum || !nome) return;
+
+  const nome =
+    document.getElementById('nome-input').value.trim();
+
+  const telefone =
+    document.getElementById('tel-input').value.trim();
+
+  if (!selectedNum || !nome)
+    return;
+
+  if (quantidadePermitida <= 0) {
+
+    showToast(
+      'Você já utilizou todos os números deste comprovante.',
+      'error'
+    );
+
+    return;
+
+  }
+
   showLoading(true);
+
   try {
-    const d = await api('/api/participar/', 'POST', { numero: selectedNum, nome, telefone });
+
+    const d = await api(
+      '/api/participar/',
+      'POST',
+      {
+        numero: selectedNum,
+        nome,
+        telefone
+      }
+    );
+
     if (d.ok) {
+
+      quantidadePermitida--;
+
+      document.getElementById(
+  'creditos-comprovante'
+).innerHTML =
+  `🎟 Créditos disponíveis: ${quantidadePermitida}`;
+
       document.getElementById('nome-input').value = '';
       document.getElementById('tel-input').value = '';
       document.getElementById('selected-num-display').textContent = '—';
+
       const num = selectedNum;
+
       selectedNum = null;
+
       await carregarRifa();
+
       mostrarComprovante(nome, num);
+
+      if (quantidadePermitida > 0) {
+
+        showToast(
+          `Você ainda pode escolher mais ${quantidadePermitida} número(s).`,
+          'success'
+        );
+
+        document.getElementById(
+          'status-comprovante'
+        ).innerHTML =
+          `✅ Comprovante validado • ${quantidadePermitida} número(s) restante(s)`;
+
+      } else {
+
+        comprovanteEnviado = false;
+
+        document.getElementById(
+          'status-comprovante'
+        ).innerHTML =
+          '❌ Envie um novo comprovante';
+
+           document.getElementById(
+    'creditos-comprovante'
+  ).innerHTML =
+    '🎟 Créditos disponíveis: 0';
+
+}
+      }
+
     } else {
-      showToast(d.erro, 'error');
+
+      showToast(
+        d.erro,
+        'error'
+      );
+
       selectedNum = null;
+
       await carregarRifa();
+
     }
-  } finally { showLoading(false); }
+
+  } finally {
+
+    showLoading(false);
+
+  }
+
 }
 
 function mostrarComprovante(nome, numero) {
+
   const data = new Date().toLocaleDateString('pt-BR');
+
   const hora = new Date().toLocaleTimeString('pt-BR', {
     hour: '2-digit',
     minute: '2-digit'
   });
 
-  const mensagem = encodeURIComponent(
-`Olá!
-
-Acabei de realizar o PIX da rifa.
-
-Nome: ${nome}
-Número: ${String(numero).padStart(2,'0')}
-
-Segue o comprovante do pagamento.`
-  );
-
   const overlay = document.createElement('div');
+
   overlay.id = 'comprovante-overlay';
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;';
+
+  overlay.style.cssText =
+    'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;';
 
   overlay.innerHTML = `
-    <div id="comprovante-card" style="background:#1A1A1A;border:2px solid #C9942A;border-radius:16px;padding:2rem;max-width:380px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(201,148,42,0.3);">
-      
+    <div
+      id="comprovante-card"
+      style="
+        background:#1A1A1A;
+        border:2px solid #C9942A;
+        border-radius:16px;
+        padding:2rem;
+        max-width:380px;
+        width:100%;
+        text-align:center;
+        box-shadow:0 8px 40px rgba(201,148,42,0.3);
+      "
+    >
+
       <div style="font-size:2rem;margin-bottom:0.5rem;">✝</div>
 
-      <div style="font-family:'Cinzel',serif;font-size:0.7rem;color:#C9942A;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.25rem;">
+      <div
+        style="
+          font-family:'Cinzel',serif;
+          font-size:0.7rem;
+          color:#C9942A;
+          letter-spacing:0.2em;
+          text-transform:uppercase;
+          margin-bottom:0.25rem;
+        "
+      >
         Comprovante de Participação
       </div>
 
-      <div style="font-family:'Cinzel',serif;font-size:1rem;color:white;font-weight:600;margin-bottom:1.5rem;">
+      <div
+        style="
+          font-family:'Cinzel',serif;
+          font-size:1rem;
+          color:white;
+          font-weight:600;
+          margin-bottom:1.5rem;
+        "
+      >
         Igreja Batista Missionária
       </div>
 
-      <div style="background:rgba(201,148,42,0.1);border:1px solid rgba(201,148,42,0.3);border-radius:10px;padding:1.25rem;margin-bottom:1.25rem;">
-        <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.25rem;">
+      <div
+        style="
+          background:rgba(201,148,42,0.1);
+          border:1px solid rgba(201,148,42,0.3);
+          border-radius:10px;
+          padding:1.25rem;
+          margin-bottom:1.25rem;
+        "
+      >
+
+        <div
+          style="
+            font-size:0.72rem;
+            color:rgba(255,255,255,0.4);
+            font-weight:700;
+            letter-spacing:0.1em;
+            text-transform:uppercase;
+            margin-bottom:0.25rem;
+          "
+        >
           Número
         </div>
 
-        <div style="font-family:'Cinzel',serif;font-size:3.5rem;font-weight:700;color:#C9942A;line-height:1;">
+        <div
+          style="
+            font-family:'Cinzel',serif;
+            font-size:3.5rem;
+            font-weight:700;
+            color:#C9942A;
+            line-height:1;
+          "
+        >
           ${String(numero).padStart(2,'0')}
         </div>
+
       </div>
 
       <div style="margin-bottom:1.25rem;">
-        <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.25rem;">
+
+        <div
+          style="
+            font-size:0.72rem;
+            color:rgba(255,255,255,0.4);
+            font-weight:700;
+            letter-spacing:0.1em;
+            text-transform:uppercase;
+            margin-bottom:0.25rem;
+          "
+        >
           Participante
         </div>
 
-        <div style="font-family:'Cinzel',serif;font-size:1.2rem;color:white;font-weight:600;">
+        <div
+          style="
+            font-family:'Cinzel',serif;
+            font-size:1.2rem;
+            color:white;
+            font-weight:600;
+          "
+        >
           ${nome}
         </div>
+
       </div>
 
-      <div style="display:flex;justify-content:center;gap:2rem;margin-bottom:1.5rem;">
+      <div
+        style="
+          display:flex;
+          justify-content:center;
+          gap:2rem;
+          margin-bottom:1.5rem;
+        "
+      >
+
         <div>
-          <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;">
+          <div
+            style="
+              font-size:0.65rem;
+              color:rgba(255,255,255,0.3);
+              text-transform:uppercase;
+              letter-spacing:0.1em;
+            "
+          >
             Data
           </div>
 
-          <div style="font-size:0.85rem;color:rgba(255,255,255,0.7);margin-top:0.1rem;">
+          <div
+            style="
+              font-size:0.85rem;
+              color:rgba(255,255,255,0.7);
+              margin-top:0.1rem;
+            "
+          >
             ${data}
           </div>
         </div>
 
         <div>
-          <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;">
+          <div
+            style="
+              font-size:0.65rem;
+              color:rgba(255,255,255,0.3);
+              text-transform:uppercase;
+              letter-spacing:0.1em;
+            "
+          >
             Hora
           </div>
 
-          <div style="font-size:0.85rem;color:rgba(255,255,255,0.7);margin-top:0.1rem;">
+          <div
+            style="
+              font-size:0.85rem;
+              color:rgba(255,255,255,0.7);
+              margin-top:0.1rem;
+            "
+          >
             ${hora}
           </div>
         </div>
-      </div>
-
-      <div style="display:flex;flex-direction:column;gap:0.75rem;">
-
-        <a
-          href="https://wa.me/5587981033286?text=${mensagem}"
-          target="_blank"
-          style="
-            display:block;
-            width:100%;
-            padding:0.85rem;
-            background:#25D366;
-            border-radius:8px;
-            color:white;
-            text-decoration:none;
-            font-weight:700;
-            text-transform:uppercase;
-            letter-spacing:0.05em;
-            box-sizing:border-box;
-          "
-        >
-          📱 Enviar Comprovante pelo WhatsApp
-        </a>
-
-        <button
-          onclick="fecharComprovante()"
-          style="
-            width:100%;
-            padding:0.75rem;
-            background:transparent;
-            border:1px solid rgba(255,255,255,0.2);
-            border-radius:8px;
-            color:rgba(255,255,255,0.6);
-            font-family:'Cinzel',serif;
-            font-size:0.8rem;
-            font-weight:700;
-            cursor:pointer;
-            letter-spacing:0.06em;
-            text-transform:uppercase;
-          "
-        >
-          Fechar
-        </button>
 
       </div>
+
+      <button
+        onclick="fecharComprovante()"
+        style="
+          width:100%;
+          padding:0.9rem;
+          background:#C9942A;
+          border:none;
+          border-radius:8px;
+          color:#111;
+          font-family:'Cinzel',serif;
+          font-size:0.9rem;
+          font-weight:700;
+          cursor:pointer;
+          letter-spacing:0.06em;
+          text-transform:uppercase;
+        "
+      >
+        ✓ Concluir
+      </button>
 
     </div>
   `;
 
   document.body.appendChild(overlay);
+
 }
 
 function fecharComprovante() {
@@ -1078,6 +1246,12 @@ async function validarComprovanteOCR() {
       console.log('APROVADO');
 
       comprovanteEnviado = true;
+
+quantidadePermitida =
+  Math.floor(valorEncontrado / 50);
+
+document.getElementById('status-comprovante').innerHTML =
+  `✅ Comprovante validado • ${quantidadePermitida} número(s) disponível(is)`;
 
       const status =
         document.getElementById(
