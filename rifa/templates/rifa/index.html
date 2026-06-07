@@ -1018,7 +1018,6 @@ if (matchValor) {
 }
 
 console.log('temPix:', temPix);
-console.log('temIgreja:', temIgreja);
 console.log('temCora:', temCora);
 console.log('temCNPJ:', temCNPJ);
 console.log('valorEncontrado:', valorEncontrado);
@@ -1031,29 +1030,26 @@ console.log('dataValida:', dataValida);
   valorEncontrado >= 50 &&
   dataValida
 ) {
-      comprovanteEnviado = true;
 
-document.getElementById(
-  'status-comprovante'
-).innerHTML =
-  '✅ Comprovante validado';
+  console.log('APROVADO');
 
-showToast(
-  'Comprovante validado com sucesso!',
-  'success'
-);
+  comprovanteEnviado = true;
 
-    }
+  showToast(
+    'Comprovante validado com sucesso!',
+    'success'
+  );
 
-  } catch (erro) {
+} else {
 
-    console.error(erro);
+  console.log('REPROVADO');
 
-    showToast(
-      'Comprovante inválido ou fora do prazo permitido.',
-      'error'
-    );
+  showToast(
+    'Comprovante inválido ou fora do prazo.',
+    'error'
+  );
 
+}
   }
 
 }
