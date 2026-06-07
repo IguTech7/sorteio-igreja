@@ -318,7 +318,9 @@
   </div>
   <img src="{% static 'rifa/terreno.jpg' %}" alt="Terreno Lagoa dos Vinhedos" style="width:100%;height:auto;display:block;">
 </div>
-    <button class="btn-primary" onclick="showPage('rifa')">✦ Participar do Sorteio ✦</button>
+   <button class="btn-primary" onclick="abrirComprovante()">
+  ✦ Participar do Sorteio ✦
+</button>
     <p style="text-align:center;margin-top:1rem;font-size:0.8rem;color:rgba(240,200,90,0.4);font-style:italic;">"Cada oferta é uma semente de fé plantada para a glória de Deus."</p>
   </div>
 </div>
@@ -397,6 +399,7 @@ const TOTAL = {{ config.total_numeros }};
 let ocupados = {};
 let selectedNum = null;
 let spinning = false;
+let comprovanteEnviado = false;
 
 async function api(url, method='GET', body=null) {
   const opts = { method, headers: {'Content-Type': 'application/json'} };
@@ -864,11 +867,35 @@ function fecharApresentacao() {
   const overlay = document.getElementById('apresentacao-overlay');
   if (overlay) overlay.remove();
 }
+
+function abrirComprovante() {
+  const arquivo = document.createElement('input');
+
+  arquivo.type = 'file';
+  arquivo.accept = 'image/*,.pdf';
+
+  arquivo.onchange = () => {
+    if (arquivo.files.length > 0) {
+      comprovanteEnviado = true;
+
+      showToast(
+        'Comprovante enviado com sucesso!',
+        'success'
+      );
+
+      showPage('rifa');
+    }
+  };
+
+  arquivo.click();
+}
 </script>
 <div id="loading" class="loading-overlay">
   Carregando...
 </div>
 
 <div id="toast" class="toast"></div>
+
+
 </body>
 </html>
