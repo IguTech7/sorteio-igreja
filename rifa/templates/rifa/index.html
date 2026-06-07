@@ -924,8 +924,12 @@ async function validarComprovanteOCR() {
       texto.includes('pix');
 
     const temIgreja =
-      texto.includes('igreja batista missionaria') ||
-      texto.includes('igreja batista');
+  texto.includes('igreja batista') ||
+  texto.includes('igreja bastista') ||
+  texto.includes('missionaria');
+
+const temCNPJ =
+  texto.includes('05199886000168');
 
     const temCora =
       texto.includes('cora');
@@ -952,15 +956,18 @@ async function validarComprovanteOCR() {
 
     }
 
-    console.log('Valor encontrado:', valorEncontrado);
+console.log('temPix:', temPix);
+console.log('temIgreja:', temIgreja);
+console.log('temCora:', temCora);
+console.log('temCNPJ:', temCNPJ);
+console.log('valorEncontrado:', valorEncontrado);
 
     if (
-      temPix &&
-      temIgreja &&
-      temCora &&
-      valorEncontrado >= 50
-    ) {
-
+  temPix &&
+  temCora &&
+  temCNPJ &&
+  valorEncontrado >= 50
+) {
       comprovanteEnviado = true;
 
       showToast(
