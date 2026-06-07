@@ -581,9 +581,9 @@ async function confirmarParticipacao() {
       quantidadePermitida--;
 
       document.getElementById(
-  'creditos-comprovante'
-).innerHTML =
-  `🎟 Créditos disponíveis: ${quantidadePermitida}`;
+        'creditos-comprovante'
+      ).innerHTML =
+        `🎟 Créditos disponíveis: ${quantidadePermitida}`;
 
       document.getElementById('nome-input').value = '';
       document.getElementById('tel-input').value = '';
@@ -618,12 +618,11 @@ async function confirmarParticipacao() {
         ).innerHTML =
           '❌ Envie um novo comprovante';
 
-           document.getElementById(
-    'creditos-comprovante'
-  ).innerHTML =
-    '🎟 Créditos disponíveis: 0';
+        document.getElementById(
+          'creditos-comprovante'
+        ).innerHTML =
+          '🎟 Créditos disponíveis: 0';
 
-}
       }
 
     } else {
@@ -644,7 +643,9 @@ async function confirmarParticipacao() {
     showLoading(false);
 
   }
-  
+
+}
+
 
 function mostrarComprovante(nome, numero) {
 
