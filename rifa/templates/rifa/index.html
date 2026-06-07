@@ -363,14 +363,31 @@
       <div class="legend-item"><div class="legend-dot taken"></div> Ocupado</div>
     </div>
     <div class="comprovante-box">
-  <button
-  class="btn-primary btn-comprovante"
-  onclick="abrirComprovante()">
-  📄 ENVIAR COMPROVANTE PIX
-</button>
 
-<div id="creditos-comprovante" class="creditos-comprovante">
-  🎟 Créditos disponíveis: 0
+  <button
+    class="btn-primary btn-comprovante"
+    onclick="abrirComprovante()">
+    📄 ENVIAR COMPROVANTE PIX
+  </button>
+
+  <div id="status-comprovante" style="
+    text-align:center;
+    margin-top:8px;
+    color:#fff;
+    font-weight:600;
+  ">
+    ❌ Comprovante não enviado
+  </div>
+
+  <div id="creditos-comprovante" style="
+    text-align:center;
+    margin-top:4px;
+    color:#C9942A;
+    font-weight:700;
+  ">
+    🎟 Créditos disponíveis: 0
+  </div>
+
 </div>
 
 </div>
@@ -570,7 +587,7 @@ async function confirmarParticipacao() {
       '/api/participar/',
       'POST',
       {
-        numero: selectedNums,
+        numeros: selectedNums,
         nome,
         telefone
       }
