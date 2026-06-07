@@ -496,18 +496,18 @@ function renderGrid() {
       btn.classList.add('taken');
       btn.title = 'Ocupado: ' + ocupados[i];
       btn.disabled = true;
-    } else if (selectedNum === i) {
+    } else if (selectedNums === i) {
       btn.classList.add('selected');
-      btn.onclick = () => selectNum(i);
+      btn.onclick = () => selectNums(i);
     } else {
-      btn.onclick = () => selectNum(i);
+      btn.onclick = () => selectNums(i);
     }
     grid.appendChild(btn);
   }
   updateConfirmBtn();
 }
 
-function selectNum(n) {
+function selectNums(n) {
 
   if (!comprovanteEnviado) {
 
@@ -521,15 +521,15 @@ function selectNum(n) {
 
   if (ocupados[n]) return;
 
-  selectedNum = (selectedNum === n) ? null : n;
+  selectedNums = (selectedNums === n) ? null : n;
 
   renderGrid();
 
   document.getElementById(
     'selected-num-display'
   ).textContent =
-    selectedNum
-      ? String(selectedNum).padStart(2,'0')
+    selectedNums
+      ? String(selectedNums).padStart(2,'0')
       : '—';
 
   updateConfirmBtn();
@@ -537,7 +537,7 @@ function selectNum(n) {
 
 function updateConfirmBtn() {
   const nome = document.getElementById('nome-input').value.trim();
-  document.getElementById('btn-confirm').disabled = !selectedNum || !nome;
+  document.getElementById('btn-confirm').disabled = !selectedNums || !nome;
 }
 
 async function confirmarParticipacao() {
@@ -548,7 +548,7 @@ async function confirmarParticipacao() {
   const telefone =
     document.getElementById('tel-input').value.trim();
 
-  if (!selectedNum || !nome)
+  if (!selectedNums || !nome)
     return;
 
   if (quantidadePermitida <= 0) {
@@ -570,7 +570,7 @@ async function confirmarParticipacao() {
       '/api/participar/',
       'POST',
       {
-        numero: selectedNum,
+        numero: selectedNums,
         nome,
         telefone
       }
@@ -589,9 +589,9 @@ async function confirmarParticipacao() {
       document.getElementById('tel-input').value = '';
       document.getElementById('selected-num-display').textContent = '—';
 
-      const num = selectedNum;
+      const num = selectedNums;
 
-      selectedNum = null;
+      selectedNums = null;
 
       await carregarRifa();
 
@@ -632,7 +632,7 @@ async function confirmarParticipacao() {
         'error'
       );
 
-      selectedNum = null;
+      selectedNums = null;
 
       await carregarRifa();
 
