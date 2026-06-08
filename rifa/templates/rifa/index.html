@@ -892,41 +892,28 @@ async function salvarComprovante() {
 }
 
 async function carregarSorteio() {
-
   const d = await api('/api/vendidos/');
-
-  console.log('API:', d);
-
   const grid = document.getElementById('sold-grid');
   const btn = document.getElementById('btn-sorteio');
 
   if (!d.vendidos || !d.vendidos.length) {
-
-    console.log('Nenhum vendido encontrado');
-
-    grid.innerHTML =
-      '<div class="empty-msg">Nenhum número vendido ainda.</div>';
-
+    grid.innerHTML = '<div class="empty-msg">Nenhum número vendido ainda.</div>';
     btn.disabled = true;
-
     return;
   }
 
-  console.log('Quantidade:', d.vendidos.length);
-
   btn.disabled = false;
-  grid.innerHTML = 'TESTE';
+  grid.innerHTML = '';
 
-  grid.innerHTML = `
-  <div style="
-    color:white;
-    background:red;
-    padding:20px;
-    font-size:20px;
-  ">
-    TESTE SORTEIO
-  </div>
-`;
+  d.vendidos.forEach(p => {
+    const chip = document.createElement('div');
+    chip.className = 'sold-chip';
+    chip.innerHTML = `
+      <span class="sold-chip-num">${String(p.numero).padStart(2,'0')}</span>
+      <span class="sold-chip-name">${p.nome}</span>
+    `;
+    grid.appendChild(chip);
+  });
 }
 
 async function realizarSorteio() {
