@@ -1160,13 +1160,16 @@ async function validarComprovanteOCR() {
 
     let idTransacao = null;
 
-    const matchTransacao =
+   const matchTransacao =
       texto.match(/id da transacao[:\s]*([a-z0-9]{10,})/i) ||
       texto.match(/id de transacao pix[:\s]*([a-z0-9]{10,})/i) ||
       texto.match(/id de transacao[:\s]*([a-z0-9]{10,})/i) ||
       texto.match(/identificador[:\s]*([a-z0-9]{10,})/i) ||
       texto.match(/numero de controle[:\s]*([a-z0-9]{10,})/i) ||
-      texto.match(/codigo de transacao[:\s]*([a-z0-9]{10,})/i);
+      texto.match(/codigo de transacao[:\s]*([a-z0-9]{10,})/i) ||
+      texto.match(/\b1d[:\s]+([a-z0-9]{10,})/i) ||
+      texto.match(/\bid[:\s]+([a-z0-9]{10,})/i) ||
+      texto.match(/documento[:\s]*([0-9]{10,})/i);
 
     if (matchTransacao) {
       idTransacao = matchTransacao[1].replace(/\s/g, '').trim();
