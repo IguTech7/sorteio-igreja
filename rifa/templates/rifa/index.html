@@ -1152,6 +1152,18 @@ async function validarComprovanteOCR() {
     console.log('Texto OCR:');
     console.log(texto);
 
+    const matchTransacao = texto.match(
+  /id da transacao[:\s]*([a-z0-9]+)/i
+);
+
+let idTransacao = null;
+
+if (matchTransacao) {
+  idTransacao = matchTransacao[1];
+}
+
+console.log('ID Transação:', idTransacao);
+
     // ----------------------
     // VALIDAR DATA
     // ----------------------
@@ -1201,23 +1213,24 @@ async function validarComprovanteOCR() {
 
     }
 
-    // ----------------------
-    // VALIDAR PIX
-    // ----------------------
+   // ----------------------
+// VALIDAR PIX
+// ----------------------
 
-    const temPix =
-      texto.includes('pix');
+const temPix =
+  texto.includes('pix');
 
-    const temCora =
-      texto.includes('cora');
+const temIgreja =
+  texto.includes('igreja batista') ||
+  texto.includes('igreja bastista') ||
+  texto.includes('missionaria');
 
-    const temIgreja =
-      texto.includes('igreja batista') ||
-      texto.includes('igreja bastista') ||
-      texto.includes('missionaria');
+const temCNPJ =
+  texto.includes('05199886000168') ||
+  texto.includes('5199886000168');
 
-    const temCNPJ =
-      texto.includes('05199886000168');
+const temChavePix =
+  texto.includes('ibmjardimguararapes');
 
     // ----------------------
     // VALIDAR VALOR
@@ -1242,10 +1255,28 @@ async function validarComprovanteOCR() {
 
     console.log('temPix:', temPix);
     console.log('temIgreja:', temIgreja);
-    console.log('temCora:', temCora);
     console.log('temCNPJ:', temCNPJ);
     console.log('valorEncontrado:', valorEncontrado);
     console.log('dataValida:', dataValida);
+
+    const transacoesUsadas =
+  JSON.parse(
+    localStorage.getItem('transacoesUsadas') || '[]'
+  );
+
+if (
+  idTransacao &&
+  transacoesUsadas.includes(idTransacao)
+) {
+
+  showToast(
+    'Este comprovante já foi utilizado.',
+    'error'
+  );
+
+  return;
+
+}
 
     // ----------------------
     // APROVAÇÃO
@@ -1253,16 +1284,29 @@ async function validarComprovanteOCR() {
 
     if (
       temPix &&
-      temIgreja &&
-      temCora &&
-      temCNPJ &&
-      valorEncontrado >= 50 &&
-      dataValida
+valorEncontrado >= 50 &&
+dataValida &&
+(
+  temIgreja ||
+  temCNPJ ||
+  temChavePix
+)
     ) {
 
       console.log('APROVADO');
 
       comprovanteEnviado = true;
+
+      if (idTransacao) {
+
+  transacoesUsadas.push(idTransacao);
+
+  localStorage.setItem(
+    'transacoesUsadas',
+    JSON.stringify(transacoesUsadas)
+  );
+
+}
 
 quantidadePermitida =
   Math.floor(valorEncontrado / 50);
@@ -1287,26 +1331,36 @@ document.getElementById('status-comprovante').innerHTML =
 
     } else {
 
-      console.log('REPROVADO');
+  console.log('REPROVADO');
 
-      showToast(
-        'Comprovante inválido ou fora do prazo.',
-        'error'
-      );
+  let erros = [];
 
-    }
+  if (!temPix)
+    erros.push('PIX não identificado');
 
-  } catch (erro) {
+  if (valorEncontrado < 50)
+    erros.push('Valor menor que R$ 50');
 
-    console.error(erro);
+  if (!dataValida)
+    erros.push('Data inválida');
 
-    showToast(
-      'Erro ao analisar comprovante.',
-      'error'
-    );
+  if (
+    !temIgreja &&
+    !temCNPJ &&
+    !temChavePix
+  )
+    erros.push('Destinatário não identificado');
 
-  }
+  console.log('Erros encontrados:', erros);
 
+  showToast(
+  erros.length
+    ? erros.join(' | ')
+    : 'Comprovante inválido.',
+  'error'
+);
+
+}
 }
 </script>
 
