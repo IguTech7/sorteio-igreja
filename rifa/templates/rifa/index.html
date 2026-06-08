@@ -1171,6 +1171,9 @@ async function validarComprovanteOCR() {
       texto.match(/\bid[:\s]+([a-z0-9]{10,})/i) ||
       texto.match(/documento[:\s]*([0-9]{10,})/i);
 
+      console.log('match1:', texto.match(/\b1d[:\s]+([a-z0-9]{10,})/i));
+      console.log('match2:', texto.match(/documento[:\s]*([0-9]{10,})/i));
+
     if (matchTransacao) {
       idTransacao = matchTransacao[1].replace(/\s/g, '').trim();
     }
