@@ -1173,6 +1173,15 @@ if (matchTransacao) {
     .trim();
 }
 
+if (idTransacao) {
+
+  idTransacao = idTransacao
+    .replace(/o/g, '0')
+    .replace(/i/g, '1')
+    .replace(/l/g, '1');
+
+}
+
 console.log('ID Transação:', idTransacao);
 
     // ----------------------
@@ -1234,7 +1243,11 @@ if (matchData) {
 // ----------------------
 
 const temPix =
-  texto.includes('pix');
+  texto.includes('pix') ||
+  texto.includes('pix enviado') ||
+  texto.includes('comprovante pix') ||
+  texto.includes('transferencia pix') ||
+  texto.includes('pagamento pix');
 
 const temIgreja =
   texto.includes('igreja batista') ||
@@ -1318,16 +1331,29 @@ if (idTransacao) {
     // APROVAÇÃO
     // ----------------------
 
-    if (
-      temPix &&
-valorEncontrado >= 50 &&
-dataValida &&
-(
-  temIgreja ||
-  temCNPJ ||
-  temChavePix
-)
-    ) {
+let score = 0;
+
+if (temPix)
+  score += 30;
+
+if (temIgreja)
+  score += 20;
+
+if (temCNPJ)
+  score += 40;
+
+if (temChavePix)
+  score += 20;
+
+if (valorEncontrado >= 50)
+  score += 20;
+
+if (dataValida)
+  score += 20;
+
+console.log('Score OCR:', score);
+
+if (score >= 70) {
 
       console.log('APROVADO');
 
@@ -1335,7 +1361,7 @@ dataValida &&
 
       if (idTransacao) {
 
-        
+
 
 }
 
