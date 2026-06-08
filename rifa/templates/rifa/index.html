@@ -505,6 +505,8 @@ async function carregarRifa() {
 function renderGrid() {
   const grid = document.getElementById('numbers-grid');
   grid.innerHTML = '';
+  grid.style.border = '3px solid red';
+grid.style.minHeight = '100px';
   for (let i = 1; i <= TOTAL; i++) {
     const btn = document.createElement('button');
     btn.className = 'num-btn';
@@ -915,25 +917,16 @@ async function carregarSorteio() {
   btn.disabled = false;
   grid.innerHTML = '';
 
-  d.vendidos.forEach((p, i) => {
-
-    console.log('Item', i, p);
-
-    const chip = document.createElement('div');
-
-    chip.className = 'sold-chip';
-
-    chip.innerHTML = `
-      <span class="sold-chip-num">
-        ${JSON.stringify(p)}
-      </span>
-    `;
-
-    grid.appendChild(chip);
-
-  });
-
-}
+  grid.innerHTML = `
+  <div style="
+    color:white;
+    background:red;
+    padding:20px;
+    font-size:20px;
+  ">
+    TESTE SORTEIO
+  </div>
+`;
 
 async function realizarSorteio() {
   if (spinning) return;
