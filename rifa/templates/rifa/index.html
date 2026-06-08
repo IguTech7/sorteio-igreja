@@ -1160,13 +1160,12 @@ async function validarComprovanteOCR() {
     let idTransacao = null;
 
 const matchTransacao =
+  texto.match(/[i1]d[:\s]*([a-z0-9]+)/i) ||
   texto.match(/id da transacao[:\s]*([a-z0-9]+)/i) ||
   texto.match(/id de transacao pix[:\s]*([a-z0-9]+)/i) ||
-  texto.match(/id de transacao[:\s]*([a-z0-9]+)/i) ||
   texto.match(/identificador[:\s]*([a-z0-9]+)/i) ||
   texto.match(/numero de controle[:\s]*([a-z0-9]+)/i) ||
-  texto.match(/codigo de transacao[:\s]*([a-z0-9]+)/i) ||
-  texto.match(/transacao[:\s]*([a-z0-9]{15,})/i);
+  texto.match(/codigo de transacao[:\s]*([a-z0-9]+)/i);
 
 if (matchTransacao) {
   idTransacao = matchTransacao[1]
@@ -1230,30 +1229,6 @@ if (matchData) {
   dataValida = dataComprovante >= dataInicio;
 }
 
-    if (matchData) {
-
-      const dia = parseInt(matchData[1]);
-      const mes = meses[matchData[2]];
-      const ano = parseInt(matchData[3]);
-
-      const dataComprovante =
-        new Date(ano, mes, dia);
-
-      const hoje =
-        new Date();
-
-      const diffDias =
-        Math.floor(
-          (hoje - dataComprovante) /
-          (1000 * 60 * 60 * 24)
-        );
-
-      dataValida =
-        diffDias >= 0 &&
-        diffDias <= 3;
-
-    }
-
    // ----------------------
 // VALIDAR PIX
 // ----------------------
@@ -1271,9 +1246,10 @@ const temIgreja =
   texto.includes('bat. miss') ||
   texto.includes('batista miss');
 
+const textoNumeros = texto.replace(/\D/g, '');
+
 const temCNPJ =
-  texto.includes('05199886000168') ||
-  texto.includes('5199886000168');
+  textoNumeros.includes('51998860000168');
 
 const temChavePix =
   texto.includes('ibmjardimguararapes');
