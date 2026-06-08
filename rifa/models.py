@@ -47,3 +47,13 @@ class Sorteio(models.Model):
 
     def __str__(self):
         return f"Sorteio: #{self.numero_vencedor} - {self.nome_vencedor}"
+
+class ComprovanteUsado(models.Model):
+    id_transacao = models.CharField(max_length=200, unique=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Comprovante Usado"
+
+    def __str__(self):
+        return self.id_transacao

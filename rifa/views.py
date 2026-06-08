@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 
 from .models import Participante, Configuracao, Sorteio
+from .models import Participante, Configuracao, Sorteio, ComprovanteUsado
 
 
 def index(request):
@@ -113,3 +114,21 @@ def api_excluir(request):
         return JsonResponse({'ok': True, 'mensagem': f'Número {numero} de {nome} removido.'})
     except Participante.DoesNotExist:
         return JsonResponse({'ok': False, 'erro': 'Número não encontrado.'}, status=404)
+
+@csrf_exempt
+@require_POST
+def api_verificar_comprovante(request):
+    try:
+        data = json.loads(request.body)
+        id_transacao = data.get('id_transacao', '').strip()
+    except:
+        return JsonResponse({'ok': False, 'erro': 'Dados inválidos.'}, status=400)
+
+    if not id_transacao:
+        return JsonResponse({'ok': True})
+
+    if ComprovanteUsado.objects.filter(id_transacao=id_transacao).exists():
+        return JsonResponse({'ok': False, 'erro': 'Comprovante já utilizado.'})
+
+    ComprovanteUsado.objects.create(id_transacao=id_transacao)
+    return JsonResponse({'ok': True})

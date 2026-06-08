@@ -1264,23 +1264,12 @@ const temChavePix =
     console.log('valorEncontrado:', valorEncontrado);
     console.log('dataValida:', dataValida);
 
-    const transacoesUsadas =
-  JSON.parse(
-    localStorage.getItem('transacoesUsadas') || '[]'
-  );
-
-if (
-  idTransacao &&
-  transacoesUsadas.includes(idTransacao)
-) {
-
-  showToast(
-    'Este comprovante já foi utilizado.',
-    'error'
-  );
-
-  return;
-
+  if (idTransacao) {
+  const verificacao = await api('/api/verificar-comprovante/', 'POST', { id_transacao: idTransacao });
+  if (!verificacao.ok) {
+    showToast(verificacao.erro || 'Comprovante já utilizado.', 'error');
+    return;
+  }
 }
 
     // ----------------------

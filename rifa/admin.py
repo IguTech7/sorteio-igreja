@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Participante, Configuracao, Sorteio
+from .models import Participante, Configuracao, Sorteio, ComprovanteUsado
 
 
 @admin.register(Configuracao)
@@ -18,3 +18,7 @@ class ParticipanteAdmin(admin.ModelAdmin):
 class SorteioAdmin(admin.ModelAdmin):
     list_display = ['numero_vencedor', 'nome_vencedor', 'realizado_em']
     ordering = ['-realizado_em']
+
+@admin.register(ComprovanteUsado)
+class ComprovanteUsadoAdmin(admin.ModelAdmin):
+    list_display = ['id_transacao', 'criado_em']
