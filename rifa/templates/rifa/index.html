@@ -1157,14 +1157,21 @@ async function validarComprovanteOCR() {
     console.log('Texto OCR:');
     console.log(texto);
 
-    const matchTransacao = texto.match(
-  /id da transacao[:\s]*([a-z0-9]+)/i
-);
+    let idTransacao = null;
 
-let idTransacao = null;
+const matchTransacao =
+  texto.match(/id da transacao[:\s]*([a-z0-9]+)/i) ||
+  texto.match(/id de transacao pix[:\s]*([a-z0-9]+)/i) ||
+  texto.match(/id de transacao[:\s]*([a-z0-9]+)/i) ||
+  texto.match(/identificador[:\s]*([a-z0-9]+)/i) ||
+  texto.match(/numero de controle[:\s]*([a-z0-9]+)/i) ||
+  texto.match(/codigo de transacao[:\s]*([a-z0-9]+)/i) ||
+  texto.match(/transacao[:\s]*([a-z0-9]{15,})/i);
 
 if (matchTransacao) {
-  idTransacao = matchTransacao[1];
+  idTransacao = matchTransacao[1]
+    .replace(/\s/g, '')
+    .trim();
 }
 
 console.log('ID Transação:', idTransacao);
@@ -1270,40 +1277,63 @@ const temChavePix =
   texto.includes('ibmjardimguararapes');
 
     // ----------------------
-    // VALIDAR VALOR
-    // ----------------------
+// VALIDAR VALOR
+// ----------------------
 
-    let valorEncontrado = 0;
+let valorEncontrado = 0;
 
-  const matchValor = 
-  texto.match(/valor\s*[:\-]?\s*r?\$?\s*(\d+[.,]\d{2})/i) ||
-  texto.match(/quantia\s*[:\-]?\s*r?\$?\s*(\d+[.,]\d{2})/i) ||
-  texto.match(/total\s*[:\-]?\s*r?\$?\s*(\d+[.,]\d{2})/i) ||
-  texto.match(/r\$\s*(\d{1,4}[.,]\d{2})(?!\d)/);
+const matchValor =
+  texto.match(/valor enviado[:\s]*r?\$?\s*(\d+[.,]\d{2})/i) ||
+  texto.match(/valor transferido[:\s]*r?\$?\s*(\d+[.,]\d{2})/i) ||
+  texto.match(/valor do pagamento[:\s]*r?\$?\s*(\d+[.,]\d{2})/i) ||
+  texto.match(/valor original[:\s]*r?\$?\s*(\d+[.,]\d{2})/i) ||
+  texto.match(/valor[:\s\-]*r?\$?\s*(\d+[.,]\d{2})/i) ||
+  texto.match(/quantia[:\s\-]*r?\$?\s*(\d+[.,]\d{2})/i) ||
+  texto.match(/total[:\s\-]*r?\$?\s*(\d+[.,]\d{2})/i) ||
+  texto.match(/r\$\s*(\d{1,6}[.,]\d{2})/i);
 
-    if (matchValor) {
+if (matchValor) {
+  valorEncontrado = parseFloat(
+    matchValor[1]
+      .replace(/\./g, '')
+      .replace(',', '.')
+  );
+}
 
-      valorEncontrado =
-        parseFloat(
-          matchValor[1]
-            .replace('.', '')
-            .replace(',', '.')
-        );
+console.log('Valor encontrado:', valorEncontrado);
 
+console.log('temPix:', temPix);
+console.log('temIgreja:', temIgreja);
+console.log('temCNPJ:', temCNPJ);
+console.log('temChavePix:', temChavePix);
+console.log('valorEncontrado:', valorEncontrado);
+console.log('dataValida:', dataValida);
+console.log('ID Transação:', idTransacao);
+
+  if (!idTransacao) {
+  console.warn('ID da transação não encontrado');
+}
+
+if (idTransacao) {
+
+  const verificacao = await api(
+    '/api/verificar-comprovante/',
+    'POST',
+    {
+      id_transacao: idTransacao
     }
+  );
 
-    console.log('temPix:', temPix);
-    console.log('temIgreja:', temIgreja);
-    console.log('temCNPJ:', temCNPJ);
-    console.log('valorEncontrado:', valorEncontrado);
-    console.log('dataValida:', dataValida);
-
-  if (idTransacao) {
-  const verificacao = await api('/api/verificar-comprovante/', 'POST', { id_transacao: idTransacao });
   if (!verificacao.ok) {
-    showToast(verificacao.erro || 'Comprovante já utilizado.', 'error');
+
+    showToast(
+      verificacao.erro || 'Comprovante já utilizado.',
+      'error'
+    );
+
     return;
   }
+
 }
 
     // ----------------------
