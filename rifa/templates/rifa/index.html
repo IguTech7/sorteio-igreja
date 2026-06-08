@@ -469,6 +469,8 @@ function showLoading(v) {
 
 function showPage(id) {
 
+  alert('Abrindo: ' + id);
+
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
 
@@ -1360,6 +1362,7 @@ document.getElementById('status-comprovante').innerHTML =
   'error'
 );
 
+}
 }
 }
 </script>
