@@ -1362,8 +1362,19 @@ document.getElementById('status-comprovante').innerHTML =
   'error'
 );
 
+  }
+
+} catch (erro) {
+
+  console.error(erro);
+
+  showToast(
+    'Erro ao analisar comprovante.',
+    'error'
+  );
+
 }
-}
+
 }
 </script>
 
