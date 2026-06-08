@@ -1,6 +1,7 @@
 import random
 import io
 import qrcode
+from django.db import IntegrityError
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_POST, require_GET
@@ -47,13 +48,41 @@ def api_participar(request):
 
     if not nome:
         return JsonResponse({'ok': False, 'erro': 'Nome é obrigatório.'}, status=400)
+
     if numero < 1 or numero > config.total_numeros:
         return JsonResponse({'ok': False, 'erro': 'Número inválido.'}, status=400)
-    if Participante.objects.filter(numero=numero).exists():
-        return JsonResponse({'ok': False, 'erro': 'Número já está ocupado. Escolha outro.'}, status=409)
 
-    Participante.objects.create(numero=numero, nome=nome, telefone=telefone)
-    return JsonResponse({'ok': True, 'mensagem': f'Número {numero} confirmado para {nome}!'})
+    if Participante.objects.filter(numero=numero).exists():
+        return JsonResponse(
+            {
+                'ok': False,
+                'erro': 'Número já está ocupado. Escolha outro.'
+            },
+            status=409
+        )
+
+    try:
+        Participante.objects.create(
+            numero=numero,
+            nome=nome,
+            telefone=telefone
+        )
+
+    except IntegrityError:
+        return JsonResponse(
+            {
+                'ok': False,
+                'erro': 'Número já está ocupado. Escolha outro.'
+            },
+            status=409
+        )
+
+    return JsonResponse(
+        {
+            'ok': True,
+            'mensagem': f'Número {numero} confirmado para {nome}!'
+        }
+    )
 
 
 @require_GET
