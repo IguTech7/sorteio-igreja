@@ -893,32 +893,41 @@ async function carregarSorteio() {
 
   const d = await api('/api/vendidos/');
 
-  console.log(d);
+  console.log('API:', d);
 
   const grid = document.getElementById('sold-grid');
   const btn = document.getElementById('btn-sorteio');
 
-  if (!d.vendidos.length) {
+  if (!d.vendidos || !d.vendidos.length) {
+
+    console.log('Nenhum vendido encontrado');
+
     grid.innerHTML =
       '<div class="empty-msg">Nenhum número vendido ainda.</div>';
+
     btn.disabled = true;
+
     return;
   }
+
+  console.log('Quantidade:', d.vendidos.length);
 
   btn.disabled = false;
   grid.innerHTML = '';
 
-  d.vendidos.forEach(p => {
+  d.vendidos.forEach((p, i) => {
 
-    console.log(p);
+    console.log('Item', i, p);
 
     const chip = document.createElement('div');
 
     chip.className = 'sold-chip';
 
-    chip.innerHTML =
-      `<span class="sold-chip-num">${String(p.numero).padStart(2,'0')}</span>
-       <span class="sold-chip-name">${p.nome}</span>`;
+    chip.innerHTML = `
+      <span class="sold-chip-num">
+        ${JSON.stringify(p)}
+      </span>
+    `;
 
     grid.appendChild(chip);
 
