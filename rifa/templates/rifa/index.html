@@ -1191,8 +1191,36 @@ console.log('ID Transação:', idTransacao);
     let dataValida = false;
 
     const matchData = texto.match(
-      /(\d{1,2})\s+(jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)\s+(\d{4})/
-    );
+  /(\d{1,2})\s+(jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)\s+(\d{4})/
+) || texto.match(
+  /(\d{2})\/(\d{2})\/(\d{4})/
+) || texto.match(
+  /(\d{2})-(\d{2})-(\d{4})/
+);
+
+let dataValida = false;
+
+if (matchData) {
+  let dia, mes, ano;
+
+  if (matchData[2] && isNaN(matchData[2])) {
+    // formato: 07 jun 2026
+    const meses = {jan:0,fev:1,mar:2,abr:3,mai:4,jun:5,jul:6,ago:7,set:8,out:9,nov:10,dez:11};
+    dia = parseInt(matchData[1]);
+    mes = meses[matchData[2]];
+    ano = parseInt(matchData[3]);
+  } else {
+    // formato: 07/06/2026 ou 07-06-2026
+    dia = parseInt(matchData[1]);
+    mes = parseInt(matchData[2]) - 1;
+    ano = parseInt(matchData[3]);
+  }
+
+  const dataComprovante = new Date(ano, mes, dia);
+  const hoje = new Date();
+  const diffDias = Math.floor((hoje - dataComprovante) / (1000 * 60 * 60 * 24));
+  dataValida = diffDias >= 0 && diffDias <= 3;
+}
 
     if (matchData) {
 
@@ -1228,7 +1256,12 @@ const temPix =
 const temIgreja =
   texto.includes('igreja batista') ||
   texto.includes('igreja bastista') ||
-  texto.includes('missionaria');
+  texto.includes('missionaria') ||
+  texto.includes('ibm jardim') ||
+  texto.includes('ibmjardim') ||
+  texto.includes('jardim guararapes') ||
+  texto.includes('bat. miss') ||
+  texto.includes('batista miss');
 
 const temCNPJ =
   texto.includes('05199886000168') ||
@@ -1243,9 +1276,11 @@ const temChavePix =
 
     let valorEncontrado = 0;
 
-    const matchValor = texto.match(
-      /valor\s*r?\$?\s*(\d+[.,]\d{2})/
-    );
+  const matchValor = 
+  texto.match(/valor\s*[:\-]?\s*r?\$?\s*(\d+[.,]\d{2})/i) ||
+  texto.match(/quantia\s*[:\-]?\s*r?\$?\s*(\d+[.,]\d{2})/i) ||
+  texto.match(/total\s*[:\-]?\s*r?\$?\s*(\d+[.,]\d{2})/i) ||
+  texto.match(/r\$\s*(\d{1,4}[.,]\d{2})(?!\d)/);
 
     if (matchValor) {
 
