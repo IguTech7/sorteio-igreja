@@ -583,14 +583,15 @@ async function confirmarParticipacao() {
   try {
 
     const d = await api(
-      '/api/participar/',
-      'POST',
-      {
-        numero: selectedNums,
-        nome,
-        telefone
-      }
-    );
+  '/api/participar/',
+  'POST',
+  {
+    numero: selectedNums,
+    nome,
+    telefone,
+    id_transacao: idTransacaoAtual
+  }
+);
 
     if (d.ok) {
 
@@ -1159,283 +1160,165 @@ async function validarComprovanteOCR() {
 
     let idTransacao = null;
 
-const matchTransacao =
-  texto.match(/id da transacao[:\s]*([a-z0-9]{10,})/i) ||
-  texto.match(/id de transacao pix[:\s]*([a-z0-9]{10,})/i) ||
-  texto.match(/id de transacao[:\s]*([a-z0-9]{10,})/i) ||
-  texto.match(/identificador[:\s]*([a-z0-9]{10,})/i) ||
-  texto.match(/numero de controle[:\s]*([a-z0-9]{10,})/i) ||
-  texto.match(/codigo de transacao[:\s]*([a-z0-9]{10,})/i);
+    const matchTransacao =
+      texto.match(/id da transacao[:\s]*([a-z0-9]{10,})/i) ||
+      texto.match(/id de transacao pix[:\s]*([a-z0-9]{10,})/i) ||
+      texto.match(/id de transacao[:\s]*([a-z0-9]{10,})/i) ||
+      texto.match(/identificador[:\s]*([a-z0-9]{10,})/i) ||
+      texto.match(/numero de controle[:\s]*([a-z0-9]{10,})/i) ||
+      texto.match(/codigo de transacao[:\s]*([a-z0-9]{10,})/i);
 
-if (matchTransacao) {
-  idTransacao = matchTransacao[1]
-    .replace(/\s/g, '')
-    .trim();
-}
+    if (matchTransacao) {
+      idTransacao = matchTransacao[1].replace(/\s/g, '').trim();
+    }
 
-if (idTransacao) {
+    if (idTransacao) {
+      idTransacao = idTransacao
+        .replace(/o/g, '0')
+        .replace(/i/g, '1')
+        .replace(/l/g, '1');
+    }
 
-  idTransacao = idTransacao
-    .replace(/o/g, '0')
-    .replace(/i/g, '1')
-    .replace(/l/g, '1');
+    console.log('ID Transação:', idTransacao);
 
-}
-
-console.log('ID Transação:', idTransacao);
-
-    // ----------------------
     // VALIDAR DATA
-    // ----------------------
-
-    const meses = {
-      jan: 0,
-      fev: 1,
-      mar: 2,
-      abr: 3,
-      mai: 4,
-      jun: 5,
-      jul: 6,
-      ago: 7,
-      set: 8,
-      out: 9,
-      nov: 10,
-      dez: 11
-    };
-
     let dataValida = false;
 
     const matchData = texto.match(
-  /(\d{1,2})\s+(jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)\s+(\d{4})/
-) || texto.match(
-  /(\d{2})\/(\d{2})\/(\d{4})/
-) || texto.match(
-  /(\d{2})-(\d{2})-(\d{4})/
-);
-
-
-if (matchData) {
-  let dia, mes, ano;
-
-  if (matchData[2] && isNaN(matchData[2])) {
-    // formato: 07 jun 2026
-    const meses = {jan:0,fev:1,mar:2,abr:3,mai:4,jun:5,jul:6,ago:7,set:8,out:9,nov:10,dez:11};
-    dia = parseInt(matchData[1]);
-    mes = meses[matchData[2]];
-    ano = parseInt(matchData[3]);
-  } else {
-    // formato: 07/06/2026 ou 07-06-2026
-    dia = parseInt(matchData[1]);
-    mes = parseInt(matchData[2]) - 1;
-    ano = parseInt(matchData[3]);
-  }
-
-  const dataComprovante = new Date(ano, mes, dia);
-
-  const dataInicio = new Date(2026, 5, 7); // 07/06/2026
-  dataInicio.setHours(0, 0, 0, 0);
-
-  dataValida = dataComprovante >= dataInicio;
-}
-
-   // ----------------------
-// VALIDAR PIX
-// ----------------------
-
-const temPix =
-  texto.includes('pix') ||
-  texto.includes('pix enviado') ||
-  texto.includes('comprovante pix') ||
-  texto.includes('transferencia pix') ||
-  texto.includes('pagamento pix');
-
-const temIgreja =
-  texto.includes('igreja batista') ||
-  texto.includes('igreja bastista') ||
-  texto.includes('missionaria') ||
-  texto.includes('ibm jardim') ||
-  texto.includes('ibmjardim') ||
-  texto.includes('jardim guararapes') ||
-  texto.includes('bat. miss') ||
-  texto.includes('batista miss');
-
-const textoNumeros = texto.replace(/\D/g, '');
-
-console.log('textoNumeros:', textoNumeros);
-
-const temCNPJ =
-  textoNumeros.includes('51998860000168') ||
-  textoNumeros.includes('05199886000168');
-  
-console.log('temCNPJ:', temCNPJ);
-
-const temChavePix =
-  texto.includes('ibmjardimguararapes');
-
-    // ----------------------
-// VALIDAR VALOR
-// ----------------------
-
-let valorEncontrado = 0;
-
-const matchValor =
-  texto.match(/valor enviado[:\s]*r?\$?\s*(\d+[.,]\d{2})/i) ||
-  texto.match(/valor transferido[:\s]*r?\$?\s*(\d+[.,]\d{2})/i) ||
-  texto.match(/valor do pagamento[:\s]*r?\$?\s*(\d+[.,]\d{2})/i) ||
-  texto.match(/valor original[:\s]*r?\$?\s*(\d+[.,]\d{2})/i) ||
-  texto.match(/valor[:\s\-]*r?\$?\s*(\d+[.,]\d{2})/i) ||
-  texto.match(/quantia[:\s\-]*r?\$?\s*(\d+[.,]\d{2})/i) ||
-  texto.match(/total[:\s\-]*r?\$?\s*(\d+[.,]\d{2})/i) ||
-  texto.match(/r\$\s*(\d{1,6}[.,]\d{2})/i);
-
-if (matchValor) {
-  valorEncontrado = parseFloat(
-    matchValor[1]
-      .replace(/\./g, '')
-      .replace(',', '.')
-  );
-}
-
-console.log('Valor encontrado:', valorEncontrado);
-
-console.log('temPix:', temPix);
-console.log('temIgreja:', temIgreja);
-console.log('temCNPJ:', temCNPJ);
-console.log('temChavePix:', temChavePix);
-console.log('valorEncontrado:', valorEncontrado);
-console.log('dataValida:', dataValida);
-console.log('ID Transação:', idTransacao);
-
-  if (!idTransacao) {
-  console.warn('ID da transação não encontrado');
-}
-
-if (idTransacao) {
-
-  const verificacao = await api(
-    '/api/verificar-comprovante/',
-    'POST',
-    {
-      id_transacao: idTransacao
-    }
-  );
-
-  if (!verificacao.ok) {
-
-    showToast(
-      verificacao.erro || 'Comprovante já utilizado.',
-      'error'
+      /(\d{1,2})\s+(jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)\s+(\d{4})/
+    ) || texto.match(
+      /(\d{2})\/(\d{2})\/(\d{4})/
+    ) || texto.match(
+      /(\d{2})-(\d{2})-(\d{4})/
     );
 
-    return;
-  }
+    if (matchData) {
+      let dia, mes, ano;
+      if (matchData[2] && isNaN(matchData[2])) {
+        const meses = {jan:0,fev:1,mar:2,abr:3,mai:4,jun:5,jul:6,ago:7,set:8,out:9,nov:10,dez:11};
+        dia = parseInt(matchData[1]);
+        mes = meses[matchData[2]];
+        ano = parseInt(matchData[3]);
+      } else {
+        dia = parseInt(matchData[1]);
+        mes = parseInt(matchData[2]) - 1;
+        ano = parseInt(matchData[3]);
+      }
+      const dataComprovante = new Date(ano, mes, dia);
+      const dataInicio = new Date(2026, 5, 7);
+      dataInicio.setHours(0, 0, 0, 0);
+      dataValida = dataComprovante >= dataInicio;
+    }
 
-}
+    // VALIDAR PIX
+    const temPix =
+      texto.includes('pix') ||
+      texto.includes('pix enviado') ||
+      texto.includes('comprovante pix') ||
+      texto.includes('transferencia pix') ||
+      texto.includes('pagamento pix');
 
-    // ----------------------
-    // APROVAÇÃO
-    // ----------------------
+    const temIgreja =
+      texto.includes('igreja batista') ||
+      texto.includes('igreja bastista') ||
+      texto.includes('missionaria') ||
+      texto.includes('ibm jardim') ||
+      texto.includes('ibmjardim') ||
+      texto.includes('jardim guararapes') ||
+      texto.includes('bat. miss') ||
+      texto.includes('batista miss');
 
-let score = 0;
+    const textoNumeros = texto.replace(/\D/g, '');
+    const temCNPJ =
+      textoNumeros.includes('51998860000168') ||
+      textoNumeros.includes('05199886000168');
 
-if (temPix)
-  score += 30;
+    const temChavePix = texto.includes('ibmjardimguararapes');
 
-if (temIgreja)
-  score += 20;
+    // VALIDAR VALOR
+    let valorEncontrado = 0;
 
-if (temCNPJ)
-  score += 40;
+    const matchValor =
+      texto.match(/valor enviado[:\s]*r?\$?\s*(\d+[.,]\d{2})/i) ||
+      texto.match(/valor transferido[:\s]*r?\$?\s*(\d+[.,]\d{2})/i) ||
+      texto.match(/valor do pagamento[:\s]*r?\$?\s*(\d+[.,]\d{2})/i) ||
+      texto.match(/valor original[:\s]*r?\$?\s*(\d+[.,]\d{2})/i) ||
+      texto.match(/valor[:\s\-]*r?\$?\s*(\d+[.,]\d{2})/i) ||
+      texto.match(/quantia[:\s\-]*r?\$?\s*(\d+[.,]\d{2})/i) ||
+      texto.match(/total[:\s\-]*r?\$?\s*(\d+[.,]\d{2})/i) ||
+      texto.match(/r\$\s*(\d{1,6}[.,]\d{2})/i);
 
-if (temChavePix)
-  score += 20;
+    if (matchValor) {
+      valorEncontrado = parseFloat(
+        matchValor[1].replace(/\./g, '').replace(',', '.')
+      );
+    }
 
-if (valorEncontrado >= 50)
-  score += 20;
+    console.log('temPix:', temPix);
+    console.log('temIgreja:', temIgreja);
+    console.log('temCNPJ:', temCNPJ);
+    console.log('temChavePix:', temChavePix);
+    console.log('valorEncontrado:', valorEncontrado);
+    console.log('dataValida:', dataValida);
 
-if (dataValida)
-  score += 20;
+    // VERIFICAR COMPROVANTE DUPLICADO
+    if (idTransacao) {
+      const verificacao = await api('/api/verificar-comprovante/', 'POST', { id_transacao: idTransacao });
+      if (!verificacao.ok) {
+        showToast(verificacao.erro || 'Comprovante já utilizado.', 'error');
+        return;
+      }
+    }
 
-console.log('Score OCR:', score);
+    // APROVAÇÃO POR SCORE
+    let score = 0;
+    if (temPix) score += 30;
+    if (temIgreja) score += 20;
+    if (temCNPJ) score += 40;
+    if (temChavePix) score += 20;
+    if (valorEncontrado >= 50) score += 20;
+    if (dataValida) score += 20;
 
-if (score >= 70) {
+    console.log('Score OCR:', score);
+
+    if (score >= 70) {
 
       console.log('APROVADO');
 
       comprovanteEnviado = true;
+      idTransacaoAtual = idTransacao;
 
-      if (idTransacao) {
+      quantidadePermitida = Math.floor(valorEncontrado / 50);
 
+      document.getElementById('status-comprovante').innerHTML =
+        `✅ Comprovante validado • ${quantidadePermitida} número(s) disponível(is)`;
 
+      document.getElementById('creditos-comprovante').innerHTML =
+        `🎟 Créditos disponíveis: ${quantidadePermitida}`;
 
-}
-
-quantidadePermitida =
-  Math.floor(valorEncontrado / 50);
-
-document.getElementById('status-comprovante').innerHTML =
-  `✅ Comprovante validado • ${quantidadePermitida} número(s) disponível(is)`;
-
-      const status =
-        document.getElementById(
-          'status-comprovante'
-        );
-
-      if (status) {
-        status.innerHTML =
-          '✅ Comprovante validado';
-      }
-
-      showToast(
-        'Comprovante validado com sucesso!',
-        'success'
-      );
+      showToast('Comprovante validado com sucesso!', 'success');
 
     } else {
 
-  console.log('REPROVADO');
+      console.log('REPROVADO');
 
-  let erros = [];
+      let erros = [];
+      if (!temPix) erros.push('PIX não identificado');
+      if (valorEncontrado < 50) erros.push('Valor menor que R$ 50');
+      if (!dataValida) erros.push('Data inválida');
+      if (!temIgreja && !temCNPJ && !temChavePix) erros.push('Destinatário não identificado');
 
-  if (!temPix)
-    erros.push('PIX não identificado');
+      console.log('Erros encontrados:', erros);
 
-  if (valorEncontrado < 50)
-    erros.push('Valor menor que R$ 50');
+      showToast(erros.length ? erros.join(' | ') : 'Comprovante inválido.', 'error');
+    }
 
-  if (!dataValida)
-    erros.push('Data inválida');
-
-  if (
-    !temIgreja &&
-    !temCNPJ &&
-    !temChavePix
-  )
-    erros.push('Destinatário não identificado');
-
-  console.log('Erros encontrados:', erros);
-
-  showToast(
-  erros.length
-    ? erros.join(' | ')
-    : 'Comprovante inválido.',
-  'error'
-);
-
+  } catch (erro) {
+    console.error(erro);
+    showToast('Erro ao analisar comprovante.', 'error');
   }
-
-} catch (erro) {
-
-  console.error(erro);
-
-  showToast(
-    'Erro ao analisar comprovante.',
-    'error'
-  );
-
 }
 
-}
 </script>
 
 <div class="loading-overlay" id="loading"><div class="loading-spinner"></div></div>

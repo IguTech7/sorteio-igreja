@@ -8,7 +8,6 @@ from django.views.decorators.http import require_POST, require_GET
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-from .models import Participante, Configuracao, Sorteio
 from .models import Participante, Configuracao, Sorteio, ComprovanteUsado
 
 
@@ -41,6 +40,7 @@ def api_participar(request):
         numero = int(data.get('numero', 0))
         nome = data.get('nome', '').strip()
         telefone = data.get('telefone', '').strip()
+        id_transacao = data.get('id_transacao', '').strip()
     except (ValueError, KeyError):
         return JsonResponse({'ok': False, 'erro': 'Dados inválidos.'}, status=400)
 
@@ -53,36 +53,18 @@ def api_participar(request):
         return JsonResponse({'ok': False, 'erro': 'Número inválido.'}, status=400)
 
     if Participante.objects.filter(numero=numero).exists():
-        return JsonResponse(
-            {
-                'ok': False,
-                'erro': 'Número já está ocupado. Escolha outro.'
-            },
-            status=409
-        )
+        return JsonResponse({'ok': False, 'erro': 'Número já está ocupado. Escolha outro.'}, status=409)
 
     try:
-        Participante.objects.create(
-            numero=numero,
-            nome=nome,
-            telefone=telefone
-        )
+        Participante.objects.create(numero=numero, nome=nome, telefone=telefone)
+
+        if id_transacao:
+            ComprovanteUsado.objects.get_or_create(id_transacao=id_transacao)
 
     except IntegrityError:
-        return JsonResponse(
-            {
-                'ok': False,
-                'erro': 'Número já está ocupado. Escolha outro.'
-            },
-            status=409
-        )
+        return JsonResponse({'ok': False, 'erro': 'Número já está ocupado. Escolha outro.'}, status=409)
 
-    return JsonResponse(
-        {
-            'ok': True,
-            'mensagem': f'Número {numero} confirmado para {nome}!'
-        }
-    )
+    return JsonResponse({'ok': True, 'mensagem': f'Número {numero} confirmado para {nome}!'})
 
 
 @require_GET
@@ -125,6 +107,7 @@ def qrcode_pix(request):
     buf.seek(0)
     return HttpResponse(buf, content_type='image/png')
 
+
 @csrf_exempt
 @require_POST
 def api_excluir(request):
@@ -143,6 +126,7 @@ def api_excluir(request):
         return JsonResponse({'ok': True, 'mensagem': f'Número {numero} de {nome} removido.'})
     except Participante.DoesNotExist:
         return JsonResponse({'ok': False, 'erro': 'Número não encontrado.'}, status=404)
+
 
 @csrf_exempt
 @require_POST
