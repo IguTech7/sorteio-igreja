@@ -1261,8 +1261,13 @@ const temIgreja =
 
 const textoNumeros = texto.replace(/\D/g, '');
 
+console.log('textoNumeros:', textoNumeros);
+
 const temCNPJ =
-  textoNumeros.includes('51998860000168');
+  textoNumeros.includes('51998860000168') ||
+  textoNumeros.includes('05199886000168');
+  
+console.log('temCNPJ:', temCNPJ);
 
 const temChavePix =
   texto.includes('ibmjardimguararapes');
