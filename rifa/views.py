@@ -159,5 +159,4 @@ def api_verificar_comprovante(request):
     if ComprovanteUsado.objects.filter(id_transacao=id_transacao).exists():
         return JsonResponse({'ok': False, 'erro': 'Comprovante já utilizado.'})
 
-    ComprovanteUsado.objects.create(id_transacao=id_transacao)
     return JsonResponse({'ok': True})
