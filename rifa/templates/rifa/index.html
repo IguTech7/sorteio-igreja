@@ -390,7 +390,6 @@
 
 </div>
 
-</div>
     <div class="numbers-grid" id="numbers-grid"></div>
     <div class="form-card">
       <div class="card-title">✦ Confirmar Participação</div>
@@ -505,8 +504,6 @@ async function carregarRifa() {
 function renderGrid() {
   const grid = document.getElementById('numbers-grid');
   grid.innerHTML = '';
-  grid.style.border = '3px solid red';
-grid.style.minHeight = '100px';
   for (let i = 1; i <= TOTAL; i++) {
     const btn = document.createElement('button');
     btn.className = 'num-btn';
@@ -1384,10 +1381,8 @@ document.getElementById('status-comprovante').innerHTML =
 }
 </script>
 
-<div id="loading" class="loading-overlay">
-  Carregando...
-</div>
-
-<div id="toast" class="toast"></div>
+<div class="loading-overlay" id="loading"><div class="loading-spinner"></div></div>
+<div class="toast" id="toast"></div>
+</body>
 </body>
 </html>
