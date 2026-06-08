@@ -390,6 +390,11 @@
 
 </div>
 
+<div style="display:flex;gap:0.5rem;margin-bottom:1rem;">
+  <input type="number" id="busca-numero" min="1" max="{{ config.total_numeros }}" placeholder="Buscar número..." style="flex:1;padding:0.7rem 0.9rem;border-radius:7px;border:1.5px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:white;font-size:1rem;font-family:'Lato',sans-serif;">
+  <button onclick="buscarNumero()" style="padding:0.7rem 1.2rem;background:var(--gold);border:none;border-radius:7px;color:#111;font-size:0.85rem;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;">Buscar</button>
+</div>
+
     <div class="numbers-grid" id="numbers-grid"></div>
     <div class="form-card">
       <div class="card-title">✦ Confirmar Participação</div>
@@ -1325,6 +1330,25 @@ async function validarComprovanteOCR() {
   } catch (erro) {
     console.error(erro);
     showToast('Erro ao analisar comprovante.', 'error');
+  }
+}
+
+function buscarNumero() {
+  const n = parseInt(document.getElementById('busca-numero').value);
+  if (!n || n < 1 || n > TOTAL) {
+    showToast('Número inválido.', 'error');
+    return;
+  }
+  const btns = document.querySelectorAll('.num-btn');
+  btns.forEach(btn => btn.style.outline = '');
+  const btn = btns[n - 1];
+  if (!btn) return;
+  btn.style.outline = '3px solid white';
+  btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  if (!btn.classList.contains('taken')) {
+    selectNums(n);
+  } else {
+    showToast(`Número ${n} já está ocupado.`, 'error');
   }
 }
 
