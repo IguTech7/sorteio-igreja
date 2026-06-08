@@ -1223,9 +1223,11 @@ if (matchData) {
   }
 
   const dataComprovante = new Date(ano, mes, dia);
-  const hoje = new Date();
-  const diffDias = Math.floor((hoje - dataComprovante) / (1000 * 60 * 60 * 24));
-  dataValida = diffDias >= 0 && diffDias <= 3;
+
+  const dataInicio = new Date(2026, 5, 7); // 07/06/2026
+  dataInicio.setHours(0, 0, 0, 0);
+
+  dataValida = dataComprovante >= dataInicio;
 }
 
     if (matchData) {
