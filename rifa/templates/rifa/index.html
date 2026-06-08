@@ -893,30 +893,24 @@ async function carregarSorteio() {
 
   const d = await api('/api/vendidos/');
 
-  console.log('RETORNO API:', d);
+  console.log(d);
 
   const grid = document.getElementById('sold-grid');
   const btn = document.getElementById('btn-sorteio');
 
   if (!d.vendidos.length) {
-
     grid.innerHTML =
       '<div class="empty-msg">Nenhum número vendido ainda.</div>';
-
     btn.disabled = true;
-
     return;
-
   }
 
   btn.disabled = false;
-
   grid.innerHTML = '';
 
   d.vendidos.forEach(p => {
 
-  console.log(p);
-g
+    console.log(p);
 
     const chip = document.createElement('div');
 
