@@ -242,6 +242,7 @@
     margin-bottom: 20px;
     font-size: 1.4rem;
     letter-spacing: 1px;
+}
 
     @media (max-width: 768px){
 
@@ -365,6 +366,13 @@
   font-weight:600;
 }
 
+.btn-copiar-pix {
+  width: auto !important;
+  padding: 8px 18px !important;
+  font-size: 0.8rem !important;
+  white-space: nowrap;
+}
+E no HTML:
 
 </style>
 </head>
@@ -519,11 +527,9 @@
           {{ config.pix_chave }}
         </div>
 
-        <button
-          onclick="copiarPix()"
-          class="btn-primary">
-          COPIAR
-        </button>
+        <button onclick="copiarPix()" class="btn-primary btn-copiar-pix">
+  COPIAR
+</button>
 
       </div>
 
