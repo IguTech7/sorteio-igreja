@@ -277,34 +277,51 @@
 }
 
 .pix-box{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    margin:1rem 0;
+  display:flex;
+  align-items:center;
+  gap:25px;
+  margin:20px 0;
 }
 
 .pix-qrcode{
-    width:220px;
-    height:auto;
-    border-radius:10px;
-    background:#fff;
-    padding:10px;
+  width:170px;
+  background:#fff;
+  padding:8px;
+  border-radius:10px;
+  border:3px solid var(--gold);
+  flex-shrink:0;
+}
+
+.pix-info{
+  flex:1;
+}
+
+.pix-info h3{
+  margin:0 0 8px;
+  color:var(--navy);
+  font-family:'Cinzel', serif;
+}
+
+.pix-chave-area{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+  margin:10px 0;
 }
 
 .pix-chave{
-    margin-top:10px;
-    padding:10px 15px;
-    background:rgba(201,148,42,0.1);
-    border:1px solid rgba(201,148,42,0.3);
-    border-radius:8px;
-    color:var(--gold);
-    font-weight:600;
-    text-align:center;
+  padding:8px 12px;
+  border:1px solid rgba(201,148,42,.4);
+  border-radius:8px;
+  background:#f5f5f5;
+  color:#333;
 }
 
-.btn-copiar-pix{
-  max-width:250px;
+.valor-pix{
+  font-size:2rem;
+  font-weight:700;
+  color:var(--gold);
 }
 
 }
@@ -432,33 +449,44 @@
   </div>
 </div>
 
-<h3 style="
-  color:var(--gold);
-  text-align:center;
-  margin-bottom:10px;
-">
-  Faça o pagamento via PIX
-</h3>
-
-      <div class="pix-box">
+<div class="pix-box">
 
   <img
     src="{% static 'rifa/qrcode_pix.png' %}"
     alt="QR Code PIX"
     class="pix-qrcode">
 
-  <div class="pix-chave">
-    {{ config.pix_chave }}
+  <div class="pix-info">
+
+    <h3>REALIZE SUA OFERTA</h3>
+
+    <p>
+      Escaneie o QR Code ou use a chave PIX:
+    </p>
+
+    <div class="pix-chave-area">
+
+      <div class="pix-chave">
+        {{ config.pix_chave }}
+      </div>
+
+      <button
+        onclick="copiarPix()"
+        class="btn-primary">
+        COPIAR
+      </button>
+
+    </div>
+
+    <div class="valor-pix">
+      R$ 50,00
+    </div>
+
+    <small>por número</small>
+
   </div>
 
- <button
-  onclick="copiarPix()"
-  class="btn-primary btn-copiar-pix">
-  COPIAR CHAVE PIX
-</button>
-
 </div>
-
       </div>
 
       <div class="form-group">
