@@ -277,7 +277,7 @@
 }
 
 .pix-box{
-  display:flex;
+  display:flex !important;
   align-items:center;
   gap:25px;
   margin:20px 0;
@@ -287,7 +287,7 @@
   width:170px;
   background:#fff;
   padding:8px;
-  border-radius:10px;
+  border-radius:12px;
   border:3px solid var(--gold);
   flex-shrink:0;
 }
@@ -302,12 +302,17 @@
   font-family:'Cinzel', serif;
 }
 
+.pix-info p{
+  margin-bottom:10px;
+  color:#555;
+}
+
 .pix-chave-area{
   display:flex;
   gap:10px;
   align-items:center;
   flex-wrap:wrap;
-  margin:10px 0;
+  margin:12px 0;
 }
 
 .pix-chave{
@@ -324,6 +329,41 @@
   color:var(--gold);
 }
 
+#resumo-compra{
+  display:flex;
+  justify-content:center;
+  gap:40px;
+  margin-bottom:20px;
+  padding:12px;
+  border-radius:8px;
+  background:rgba(201,148,42,.08);
+  border:1px solid rgba(201,148,42,.2);
+}
+
+#resumo-compra div{
+  text-align:center;
+}
+
+#resumo-compra span{
+  display:block;
+  font-size:.75rem;
+  text-transform:uppercase;
+  color:#888;
+  font-weight:700;
+}
+
+#resumo-compra strong{
+  display:block;
+  font-family:'Cinzel', serif;
+  font-size:1.3rem;
+  color:var(--gold);
+}
+
+#status-comprovante{
+  text-align:center;
+  margin:10px 0;
+  font-weight:600;
+}
 }
 
 </style>
@@ -431,88 +471,119 @@
     <div class="numbers-grid" id="numbers-grid"></div>
 
     <div class="form-card">
-      <div class="card-title">✦ Confirmar Participação</div>
 
-      <div class="selected-badge">
-  <span class="selected-badge-text">Números selecionados</span>
-  <span class="selected-badge-num" id="selected-num-display">—</span>
-</div>
-
-<div id="resumo-compra" style="display:flex;justify-content:center;gap:2rem;background:rgba(201,148,42,0.08);border:1px solid rgba(201,148,42,0.2);border-radius:8px;padding:0.75rem 1rem;margin-bottom:1rem;">
-  <div style="text-align:center;">
-    <div style="font-size:0.7rem;color:#888;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;">Quantidade</div>
-    <div id="resumo-qtd" style="font-family:'Cinzel',serif;font-size:1.2rem;font-weight:700;color:#C9942A;">0</div>
+  <div class="card-title">
+    ✦ Confirmar Participação
   </div>
-  <div style="text-align:center;">
-    <div style="font-size:0.7rem;color:#888;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;">Total</div>
-    <div id="resumo-total" style="font-family:'Cinzel',serif;font-size:1.2rem;font-weight:700;color:#C9942A;">R$ 0,00</div>
+
+  <div class="selected-badge">
+    <span class="selected-badge-text">
+      Números selecionados
+    </span>
+
+    <span class="selected-badge-num" id="selected-num-display">
+      —
+    </span>
   </div>
-</div>
 
-<div class="pix-box">
+  <div id="resumo-compra">
+    <div>
+      <span>Quantidade</span>
+      <strong id="resumo-qtd">0</strong>
+    </div>
 
-  <img
-    src="{% static 'rifa/qrcode_pix.png' %}"
-    alt="QR Code PIX"
-    class="pix-qrcode">
+    <div>
+      <span>Total</span>
+      <strong id="resumo-total">R$ 0,00</strong>
+    </div>
+  </div>
 
-  <div class="pix-info">
+  <div class="pix-box">
 
-    <h3>REALIZE SUA OFERTA</h3>
+    <img
+      src="{% static 'rifa/qrcode_pix.png' %}"
+      alt="QR Code PIX"
+      class="pix-qrcode">
 
-    <p>
-      Escaneie o QR Code ou use a chave PIX:
-    </p>
+    <div class="pix-info">
 
-    <div class="pix-chave-area">
+      <h3>REALIZE SUA OFERTA</h3>
 
-      <div class="pix-chave">
-        {{ config.pix_chave }}
+      <p>
+        Escaneie o QR Code ou use a chave PIX:
+      </p>
+
+      <div class="pix-chave-area">
+
+        <div class="pix-chave">
+          {{ config.pix_chave }}
+        </div>
+
+        <button
+          onclick="copiarPix()"
+          class="btn-primary">
+          COPIAR
+        </button>
+
       </div>
 
-      <button
-        onclick="copiarPix()"
-        class="btn-primary">
-        COPIAR
-      </button>
+      <div class="valor-pix">
+        R$ {{ config.valor }}
+      </div>
+
+      <small>por número</small>
 
     </div>
 
-    <div class="valor-pix">
-      R$ 50,00
-    </div>
-
-    <small>por número</small>
-
   </div>
 
-</div>
-      </div>
+  <div class="form-group">
+    <label class="form-label" for="nome-input">
+      Seu Nome Completo
+    </label>
 
-      <div class="form-group">
-        <label class="form-label" for="nome-input">Seu Nome Completo</label>
-        <input type="text" id="nome-input" class="form-input" placeholder="Ex: Maria das Graças Silva" maxlength="60" autocomplete="name">
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="tel-input">Telefone (opcional)</label>
-        <input type="tel" id="tel-input" class="form-input" placeholder="(87) 99999-9999" maxlength="20">
-      </div>
-
-      <button class="btn-primary btn-comprovante" onclick="abrirComprovante()">
-        ENVIAR COMPROVANTE PIX
-      </button>
-
-        <div id="status-comprovante" style="text-align:center;margin-bottom:0.75rem;color:#888;font-weight:600;font-size:0.9rem;">
-  ❌ Comprovante não enviado
-</div>
-
-      <button class="btn-confirm" id="btn-confirm" onclick="confirmarParticipacao()" disabled>
-        ✦ Confirmar Participação
-      </button>
-    </div>
+    <input
+      type="text"
+      id="nome-input"
+      class="form-input"
+      placeholder="Ex: Maria das Graças Silva"
+      maxlength="60"
+      autocomplete="name">
   </div>
+
+  <div class="form-group">
+    <label class="form-label" for="tel-input">
+      Telefone (opcional)
+    </label>
+
+    <input
+      type="tel"
+      id="tel-input"
+      class="form-input"
+      placeholder="(87) 99999-9999"
+      maxlength="20">
+  </div>
+
+  <button
+    class="btn-primary btn-comprovante"
+    onclick="abrirComprovante()">
+    ENVIAR COMPROVANTE PIX
+  </button>
+
+  <div id="status-comprovante">
+    ❌ Comprovante não enviado
+  </div>
+
+  <button
+    class="btn-confirm"
+    id="btn-confirm"
+    onclick="confirmarParticipacao()"
+    disabled>
+    ✦ Confirmar Participação
+  </button>
+
 </div>
+  </div>
 
 <!-- SORTEIO -->
 <div id="page-sorteio" class="page">
