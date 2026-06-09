@@ -41,7 +41,7 @@ def api_participar(request):
         numeros = data.get('numeros', [])
         nome = data.get('nome', '').strip()
         telefone = data.get('telefone', '').strip()
-        id_transacao = data.get('id_transacao', '').strip().lower()[:35]
+        id_transacao = data.get('id_transacao', '').strip().lower()
 
     except:
         return JsonResponse(
@@ -193,7 +193,7 @@ def api_excluir(request):
 def api_verificar_comprovante(request):
     try:
         data = json.loads(request.body)
-        id_transacao = data.get('id_transacao', '').strip().lower()[:35]
+        id_transacao = data.get('id_transacao', '').strip().lower()
     except:
         return JsonResponse({'ok': False, 'erro': 'Dados inválidos.'}, status=400)
 
