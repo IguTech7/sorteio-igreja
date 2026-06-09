@@ -420,20 +420,22 @@
 
       <div class="pix-box">
 
-        <img
-          src="/static/img/qrcode_pix.png"
-          alt="QR Code PIX"
-          class="pix-qrcode">
+  <img
+    src="{% static 'rifa/qrcode_pix.png' %}"
+    alt="QR Code PIX"
+    class="pix-qrcode">
 
-        <div class="pix-chave">
-          ibmjardimguararapes@gmail.com
-        </div>
+  <div class="pix-chave">
+    {{ config.pix_chave }}
+  </div>
 
-        <button
-          class="btn-primary"
-          onclick="copiarPix()">
-          COPIAR CHAVE PIX
-        </button>
+  <button
+    onclick="copiarPix()"
+    class="btn-primary">
+    COPIAR CHAVE PIX
+  </button>
+
+</div>
 
       </div>
 
