@@ -275,6 +275,24 @@
   font-size: 0.95rem;
   font-weight: 600;
 }
+
+.pix-box{
+  text-align:center;
+  margin:1rem 0;
+}
+
+.pix-qrcode{
+  width:180px;
+  max-width:100%;
+  border-radius:8px;
+}
+
+.pix-chave{
+  margin:0.8rem 0;
+  color:var(--gold-light);
+  font-weight:600;
+  word-break:break-all;
+}
 }
 
 </style>
@@ -399,6 +417,25 @@
     <div id="resumo-total" style="font-family:'Cinzel',serif;font-size:1.2rem;font-weight:700;color:#C9942A;">R$ 0,00</div>
   </div>
 </div>
+
+      <div class="pix-box">
+
+        <img
+          src="/static/img/qrcode-pix.png"
+          alt="QR Code PIX"
+          class="pix-qrcode">
+
+        <div class="pix-chave">
+          ibmjardimguararapes@gmail.com
+        </div>
+
+        <button
+          class="btn-primary"
+          onclick="copiarPix()">
+          COPIAR CHAVE PIX
+        </button>
+
+      </div>
 
       <div class="form-group">
         <label class="form-label" for="nome-input">Seu Nome Completo</label>
@@ -1348,6 +1385,19 @@ function buscarNumero() {
   } else {
     showToast(`Número ${n} já está ocupado.`, 'error');
   }
+}
+
+function copiarPix() {
+
+  navigator.clipboard.writeText(
+    'ibmjardimguararapes@gmail.com'
+  );
+
+  showToast(
+    'Chave PIX copiada!',
+    'success'
+  );
+
 }
 
 </script>
