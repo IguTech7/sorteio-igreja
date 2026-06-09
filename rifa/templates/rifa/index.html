@@ -414,13 +414,13 @@
       <img src="{% static 'rifa/logo_nav.png' %}" alt="Logo" style="height:85px;width:auto;margin:-18px 0;">
     </div>
     <div class="nav-tabs">
-      <button class="nav-tab active" onclick="showPage('home')">Início</button>
-      <button class="nav-tab" onclick="showPage('rifa')">Números</button>
-      {% if request.user.is_authenticated %}
-<button class="nav-tab" onclick="showPage('sorteio')">Sorteio</button>
-<button class="nav-tab" onclick="showPage('comprovantes')">Comprovantes</button>
-{% endif %}
-    </div>
+  <button class="nav-tab active" onclick="showPage('home')">Início</button>
+  <button class="nav-tab" onclick="showPage('rifa')">Números</button>
+  {% if request.user.is_authenticated %}
+  <button class="nav-tab" onclick="showPage('sorteio')">Sorteio</button>
+  <button class="nav-tab" onclick="showPage('comprovantes')">Comprovantes</button>
+  {% endif %}
+</div>
   </div>
 </nav>
 
