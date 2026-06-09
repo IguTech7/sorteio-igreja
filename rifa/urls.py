@@ -13,5 +13,5 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='rifa/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
     path('api/excluir/', views.api_excluir, name='api_excluir'),
-    path('api/verificar-comprovante/', views.api_verificar_comprovante, name='api_verificar_comprovante'),
+    path('api/registrar-comprovante/', views.api_registrar_comprovante, name='api_registrar_comprovante'),
 ]

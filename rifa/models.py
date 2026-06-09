@@ -21,7 +21,7 @@ class Configuracao(models.Model):
     premio = models.CharField(max_length=200, default="Cesta Especial")
     causa = models.CharField(max_length=200, default="Reforma do Templo")
     pix_chave = models.CharField(max_length=200, default="contato@igrejaesperanca.com")
-    pix_emv = models.TextField(blank=True, help_text="Cole aqui o código EMV completo (copia e cola do banco). Se preenchido, o QR Code usa ele. Se vazio, usa a chave PIX acima.")
+    pix_emv = models.TextField(blank=True)
     total_numeros = models.IntegerField(default=100)
 
     class Meta:
@@ -48,12 +48,18 @@ class Sorteio(models.Model):
     def __str__(self):
         return f"Sorteio: #{self.numero_vencedor} - {self.nome_vencedor}"
 
-class ComprovanteUsado(models.Model):
-    id_transacao = models.CharField(max_length=200, unique=True)
+
+class RegistroComprovante(models.Model):
+    nome_participante = models.CharField(max_length=100, blank=True)
+    pagador = models.CharField(max_length=200, blank=True)
+    data_hora_pix = models.CharField(max_length=50, blank=True)
+    valor = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    texto_ocr = models.TextField(blank=True)
     criado_em = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = "Comprovante Usado"
+        verbose_name = "Registro de Comprovante"
+        verbose_name_plural = "Registros de Comprovantes"
 
     def __str__(self):
-        return self.id_transacao
+        return f"{self.pagador} — R${self.valor} — {self.data_hora_pix}"

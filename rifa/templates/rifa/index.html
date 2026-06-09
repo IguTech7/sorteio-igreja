@@ -666,6 +666,10 @@ let selectedNums = [];
 let spinning = false;
 let comprovanteEnviado = false;
 let comprovanteArquivo = null;
+let nomePagador = '';
+let dataHoraComprovante = '';
+let idTransacao = null;
+let dadosComprovante = {};
 
 async function api(url, method='GET', body=null) {
   const opts = { method, headers: {'Content-Type': 'application/json'} };
@@ -764,104 +768,69 @@ function updateConfirmBtn() {
   selectedNums.length === 0 || !nome;
 }
 
-async function confirmarParticipacao() {
-
+  async function confirmarParticipacao() {
   if (!comprovanteEnviado) {
+    showToast('Envie o comprovante PIX para confirmar a participação.', 'error');
+    return;
+  }
 
-  showToast(
-    'Envie o comprovante PIX para confirmar a participação.',
-    'error'
-  );
+  const nome = document.getElementById('nome-input').value.trim();
+  const telefone = document.getElementById('tel-input').value.trim();
 
-  return;
+  if (selectedNums.length === 0 || !nome) return;
 
-}
-
-  const nome =
-    document.getElementById('nome-input').value.trim();
-
-  const telefone =
-    document.getElementById('tel-input').value.trim();
-
-  if (selectedNums.length === 0 || !nome)
-  return;
-
-  const valorEsperado =
-  selectedNums.length * 50;
-
-if (valorEncontrado < valorEsperado) {
-
-  showToast(
-    `Pagamento insuficiente. Valor esperado: R$ ${valorEsperado}`,
-    'error'
-  );
-
-  return;
-
-}
-
+  const valorEsperado = selectedNums.length * 50;
+  if (valorEncontrado < valorEsperado) {
+    showToast(`Pagamento insuficiente. Valor esperado: R$ ${valorEsperado}`, 'error');
+    return;
+  }
 
   showLoading(true);
 
   try {
+    // Salva registro do comprovante para auditoria do admin
+    await api('/api/registrar-comprovante/', 'POST', {
+      nome_participante: nome,
+      pagador: dadosComprovante?.pagador || '',
+      data_hora_pix: dadosComprovante?.data_hora || '',
+      valor: valorEncontrado,
+      texto_ocr: dadosComprovante?.texto_ocr || ''
+    });
 
-    const d = await api(
-  '/api/participar/',
-  'POST',
-  {
-  numeros: selectedNums,
-  nome,
-  telefone,
-  id_transacao: idTransacaoAtual
-}
-);
+    const d = await api('/api/participar/', 'POST', {
+      numeros: selectedNums,
+      nome,
+      telefone
+    });
 
-   if (d.ok) {
+    if (d.ok) {
+      document.getElementById('nome-input').value = '';
+      document.getElementById('tel-input').value = '';
+      document.getElementById('selected-num-display').textContent = '—';
 
-  document.getElementById('nome-input').value = '';
-  document.getElementById('tel-input').value = '';
-  document.getElementById('selected-num-display').textContent = '—';
+      const num = [...selectedNums];
+      selectedNums = [];
+      dadosComprovante = null;
+      valorEncontrado = 0;
 
-  const num = [...selectedNums];
+      await carregarRifa();
+      mostrarComprovante(nome, num);
 
-  selectedNums = [];
+      comprovanteEnviado = false;
+      document.getElementById('status-comprovante').innerHTML = '❌ Envie um novo comprovante';
 
-  await carregarRifa();
+      showToast(d.mensagem || 'Participação confirmada!', 'success');
 
-  mostrarComprovante(nome, num);
+    } else {
+      showToast(d.erro, 'error');
+      selectedNums = [];
+      await carregarRifa();
+    }
 
-  comprovanteEnviado = false;
-
-  document.getElementById(
-    'status-comprovante'
-  ).innerHTML =
-    '❌ Envie um novo comprovante';
-
-  showToast(
-    d.mensagem || 'Participação confirmada!',
-    'success'
-  );
-
-} else {
-
-  showToast(
-    d.erro,
-    'error'
-  );
-
-  selectedNums = [];
-
-  await carregarRifa();
-
-}
-
-  } finally {
-
-    showLoading(false);
-
+    } finally {
+      showLoading(false);
+    }
   }
-
-}
 
 
 function mostrarComprovante(nome, numero) {
@@ -1342,63 +1311,36 @@ async function abrirComprovante() {
 }
 
 async function validarComprovanteOCR() {
-
   try {
-
-    const resultado = await Tesseract.recognize(
-      comprovanteArquivo,
-      'por'
-    );
+    const resultado = await Tesseract.recognize(comprovanteArquivo, 'por');
 
     const texto = resultado.data.text
       .toLowerCase()
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '');
 
-    console.log('Texto OCR:');
-    console.log(texto);
+    console.log('Texto OCR:', texto);
 
-    let idTransacao = null;
+    // PAGADOR
+    let nomePagador = '';
+    const matchPagador = texto.match(/origem[\s\S]*?nome\s+([^\n]+)/i);
+    if (matchPagador) nomePagador = matchPagador[1].trim();
 
-   const matchTransacao =
-      texto.match(/id da transacao[:\s]*([a-z0-9]{10,})/i) ||
-      texto.match(/id de transacao pix[:\s]*([a-z0-9]{10,})/i) ||
-      texto.match(/id de transacao[:\s]*([a-z0-9]{10,})/i) ||
-      texto.match(/identificador[:\s]*([a-z0-9]{10,})/i) ||
-      texto.match(/numero de controle[:\s]*([a-z0-9]{10,})/i) ||
-      texto.match(/codigo de transacao[:\s]*([a-z0-9]{10,})/i) ||
-      texto.match(/\b1d[:\s]+([a-z0-9]{10,})/i) ||
-      texto.match(/\bid[:\s]+([a-z0-9]{10,})/i) ||
-      texto.match(/documento[:\s]*([0-9]{10,})/i);
+    // DATA/HORA
+    let dataHoraComprovante = '';
+   const matchDataHora = texto.match(/(\d{2}\s+\w+\s+\d{4}\s*-\s*\d{2}:\d{2}:\d{2})/i)
+  || texto.match(/([o0]\d\s+\w+\s+\d{4}\s*-\s*\d{2}:\d{2}:\d{2})/i);
+    if (matchDataHora) dataHoraComprovante = matchDataHora[1];
 
-      console.log('match1:', texto.match(/\b1d[:\s]+([a-z0-9]{10,})/i));
-      console.log('match2:', texto.match(/documento[:\s]*([0-9]{10,})/i));
-
-    if (matchTransacao) {
-      idTransacao = matchTransacao[1].replace(/\s/g, '').trim();
-    }
-
-    if (idTransacao) {
-  idTransacao = idTransacao
-    .replace(/\s/g, '')
-    .replace(/o/g, '0')
-    .replace(/i/g, '1')
-    .replace(/l/g, '1')
-    .toLowerCase()
-}
-
-    console.log('ID Transação:', idTransacao);
+    console.log('Pagador:', nomePagador);
+    console.log('Data/Hora:', dataHoraComprovante);
 
     // VALIDAR DATA
     let dataValida = false;
-
-    const matchData = texto.match(
-      /(\d{1,2})\s+(jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)\s+(\d{4})/
-    ) || texto.match(
-      /(\d{2})\/(\d{2})\/(\d{4})/
-    ) || texto.match(
-      /(\d{2})-(\d{2})-(\d{4})/
-    );
+    const matchData =
+      texto.match(/(\d{1,2})\s+(jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)\s+(\d{4})/i) ||
+      texto.match(/(\d{2})\/(\d{2})\/(\d{4})/) ||
+      texto.match(/(\d{2})-(\d{2})-(\d{4})/);
 
     if (matchData) {
       let dia, mes, ano;
@@ -1446,7 +1388,6 @@ async function validarComprovanteOCR() {
 
     // VALIDAR VALOR
     valorEncontrado = 0;
-
     const matchValor =
       texto.match(/valor enviado[:\s]*r?\$?\s*(\d+[.,]\d{2})/i) ||
       texto.match(/valor transferido[:\s]*r?\$?\s*(\d+[.,]\d{2})/i) ||
@@ -1456,13 +1397,9 @@ async function validarComprovanteOCR() {
       texto.match(/quantia[:\s\-]*r?\$?\s*(\d+[.,]\d{2})/i) ||
       texto.match(/total[:\s\-]*r?\$?\s*(\d+[.,]\d{2})/i) ||
       texto.match(/r\$\s*(\d{1,6}[.,]\d{2})/i);
-      texto.match(/\b1d[:\s]*([a-z0-9]{10,})/i) ||
-      texto.match(/\bid[:\s]*([a-z0-9]{10,})/i)
 
     if (matchValor) {
-      valorEncontrado = parseFloat(
-        matchValor[1].replace(/\./g, '').replace(',', '.')
-      );
+      valorEncontrado = parseFloat(matchValor[1].replace(/\./g, '').replace(',', '.'));
     }
 
     console.log('temPix:', temPix);
@@ -1471,15 +1408,6 @@ async function validarComprovanteOCR() {
     console.log('temChavePix:', temChavePix);
     console.log('valorEncontrado:', valorEncontrado);
     console.log('dataValida:', dataValida);
-
-    // VERIFICAR COMPROVANTE DUPLICADO
-    if (idTransacao) {
-      const verificacao = await api('/api/verificar-comprovante/', 'POST', { id_transacao: idTransacao });
-      if (!verificacao.ok) {
-        showToast(verificacao.erro || 'Comprovante já utilizado.', 'error');
-        return;
-      }
-    }
 
     // APROVAÇÃO POR SCORE
     let score = 0;
@@ -1493,12 +1421,15 @@ async function validarComprovanteOCR() {
     console.log('Score OCR:', score);
 
     if (score >= 70) {
-
       console.log('APROVADO');
 
       comprovanteEnviado = true;
-      idTransacaoAtual = idTransacao;
-
+      dadosComprovante = {
+        pagador: nomePagador,
+        data_hora: dataHoraComprovante,
+        valor: valorEncontrado,
+        texto_ocr: texto
+      };
       quantidadePermitida = Math.floor(valorEncontrado / 50);
 
       document.getElementById('status-comprovante').innerHTML =
@@ -1507,17 +1438,13 @@ async function validarComprovanteOCR() {
       showToast('Comprovante validado com sucesso!', 'success');
 
     } else {
-
       console.log('REPROVADO');
-
       let erros = [];
       if (!temPix) erros.push('PIX não identificado');
       if (valorEncontrado < 50) erros.push('Valor menor que R$ 50');
       if (!dataValida) erros.push('Data inválida');
       if (!temIgreja && !temCNPJ && !temChavePix) erros.push('Destinatário não identificado');
-
       console.log('Erros encontrados:', erros);
-
       showToast(erros.length ? erros.join(' | ') : 'Comprovante inválido.', 'error');
     }
 

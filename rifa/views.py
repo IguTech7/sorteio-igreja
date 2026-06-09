@@ -8,7 +8,7 @@ from django.views.decorators.http import require_POST, require_GET
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-from .models import Participante, Configuracao, Sorteio, ComprovanteUsado
+from .models import Participante, Configuracao, Sorteio, RegistroComprovante
 
 
 def index(request):
@@ -37,95 +37,37 @@ def api_status(request):
 def api_participar(request):
     try:
         data = json.loads(request.body)
-
         numeros = data.get('numeros', [])
         nome = data.get('nome', '').strip()
         telefone = data.get('telefone', '').strip()
-        id_transacao = data.get('id_transacao', '').strip().lower()
-
     except:
-        return JsonResponse(
-            {'ok': False, 'erro': 'Dados inválidos.'},
-            status=400
-        )
+        return JsonResponse({'ok': False, 'erro': 'Dados inválidos.'}, status=400)
 
     config = Configuracao.get()
 
     if not nome:
-        return JsonResponse(
-            {'ok': False, 'erro': 'Nome é obrigatório.'},
-            status=400
-        )
+        return JsonResponse({'ok': False, 'erro': 'Nome é obrigatório.'}, status=400)
 
     if not numeros:
-        return JsonResponse(
-            {'ok': False, 'erro': 'Selecione ao menos um número.'},
-            status=400
-        )
+        return JsonResponse({'ok': False, 'erro': 'Selecione ao menos um número.'}, status=400)
 
     try:
-
         with transaction.atomic():
-
             for numero in numeros:
-
                 numero = int(numero)
-
-                if (
-                    numero < 1 or
-                    numero > config.total_numeros
-                ):
-                    return JsonResponse(
-                        {
-                            'ok': False,
-                            'erro': f'Número {numero} inválido.'
-                        },
-                        status=400
-                    )
-
-                if Participante.objects.filter(
-                    numero=numero
-                ).exists():
-
-                    return JsonResponse(
-                        {
-                            'ok': False,
-                            'erro': f'O número {numero} já está ocupado.'
-                        },
-                        status=409
-                    )
+                if numero < 1 or numero > config.total_numeros:
+                    return JsonResponse({'ok': False, 'erro': f'Número {numero} inválido.'}, status=400)
+                if Participante.objects.filter(numero=numero).exists():
+                    return JsonResponse({'ok': False, 'erro': f'O número {numero} já está ocupado.'}, status=409)
 
             for numero in numeros:
-
-                Participante.objects.create(
-                    numero=numero,
-                    nome=nome,
-                    telefone=telefone
-                )
-
-            if id_transacao:
-
-                ComprovanteUsado.objects.get_or_create(
-                    id_transacao=id_transacao
-                )
+                Participante.objects.create(numero=numero, nome=nome, telefone=telefone)
 
     except IntegrityError:
+        return JsonResponse({'ok': False, 'erro': 'Um ou mais números já foram reservados.'}, status=409)
 
-        return JsonResponse(
-            {
-                'ok': False,
-                'erro': 'Um ou mais números já foram reservados.'
-            },
-            status=409
-        )
+    return JsonResponse({'ok': True, 'mensagem': f'{len(numeros)} número(s) confirmado(s) para {nome}!'})
 
-    return JsonResponse(
-        {
-            'ok': True,
-            'mensagem':
-                f'{len(numeros)} número(s) confirmado(s) para {nome}!'
-        }
-    )
 
 @require_GET
 def api_vendidos(request):
@@ -190,17 +132,16 @@ def api_excluir(request):
 
 @csrf_exempt
 @require_POST
-def api_verificar_comprovante(request):
+def api_registrar_comprovante(request):
     try:
         data = json.loads(request.body)
-        id_transacao = data.get('id_transacao', '').strip().lower()
-    except:
-        return JsonResponse({'ok': False, 'erro': 'Dados inválidos.'}, status=400)
-
-    if not id_transacao:
+        RegistroComprovante.objects.create(
+            nome_participante=data.get('nome_participante', '').strip(),
+            pagador=data.get('pagador', '').strip(),
+            data_hora_pix=data.get('data_hora_pix', '').strip(),
+            valor=data.get('valor', 0),
+            texto_ocr=data.get('texto_ocr', '').strip(),
+        )
         return JsonResponse({'ok': True})
-
-    if ComprovanteUsado.objects.filter(id_transacao=id_transacao).exists():
-        return JsonResponse({'ok': False, 'erro': 'Comprovante já utilizado.'})
-
-    return JsonResponse({'ok': True})
+    except Exception as e:
+        return JsonResponse({'ok': False, 'erro': str(e)}, status=400)

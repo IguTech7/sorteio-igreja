@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Participante, Configuracao, Sorteio, ComprovanteUsado
+from .models import Participante, Configuracao, Sorteio, RegistroComprovante
 
 
 @admin.register(Configuracao)
@@ -19,6 +19,10 @@ class SorteioAdmin(admin.ModelAdmin):
     list_display = ['numero_vencedor', 'nome_vencedor', 'realizado_em']
     ordering = ['-realizado_em']
 
-@admin.register(ComprovanteUsado)
-class ComprovanteUsadoAdmin(admin.ModelAdmin):
-    list_display = ['id_transacao', 'criado_em']
+
+@admin.register(RegistroComprovante)
+class RegistroComprovanteAdmin(admin.ModelAdmin):
+    list_display = ('pagador', 'data_hora_pix', 'valor', 'nome_participante', 'criado_em')
+    list_filter = ('criado_em',)
+    search_fields = ('pagador', 'nome_participante')
+    ordering = ('-criado_em',)
