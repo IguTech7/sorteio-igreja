@@ -373,87 +373,46 @@
       <div class="legend-item"><div class="legend-dot selected"></div> Selecionado</div>
       <div class="legend-item"><div class="legend-dot taken"></div> Ocupado</div>
     </div>
-    
-<div style="display:flex;gap:0.5rem;margin-bottom:1rem;margin-top:1rem;">
-  <input type="number" id="busca-numero" min="1" max="{{ config.total_numeros }}" placeholder="Buscar número..." style="flex:1;padding:0.7rem 0.9rem;border-radius:7px;border:1.5px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:white;font-size:1rem;font-family:'Lato',sans-serif;">
-  <button onclick="buscarNumero()" style="padding:0.7rem 1.2rem;background:var(--gold);border:none;border-radius:7px;color:#111;font-size:0.85rem;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;">Buscar</button>
-</div>
 
-    <div class="numbers-grid" id="numbers-grid"></div>
-    <div class="form-card">
-
-  <div class="card-title">
-    ✦ Confirmar Participação
-  </div>
-
-  <div class="selected-badge">
-
-    <span class="selected-badge-text">
-      Números selecionados
-    </span>
-
-    <span
-      class="selected-badge-num"
-      id="selected-num-display">
-      —
-    </span>
-
-    <div id="resumo-compra">
-      Quantidade: 0 • Total: R$ 0,00
+    <div style="display:flex;gap:0.5rem;margin-bottom:1rem;margin-top:1rem;">
+      <input type="number" id="busca-numero" min="1" max="{{ config.total_numeros }}" placeholder="Buscar número..." style="flex:1;padding:0.7rem 0.9rem;border-radius:7px;border:1.5px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:white;font-size:1rem;font-family:'Lato',sans-serif;">
+      <button onclick="buscarNumero()" style="padding:0.7rem 1.2rem;background:var(--gold);border:none;border-radius:7px;color:#111;font-size:0.85rem;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;">Buscar</button>
     </div>
 
+    <div class="numbers-grid" id="numbers-grid"></div>
+
+    <div class="form-card">
+      <div class="card-title">✦ Confirmar Participação</div>
+
+      <div class="selected-badge">
+        <span class="selected-badge-text">Números selecionados</span>
+        <span class="selected-badge-num" id="selected-num-display">—</span>
+        <div id="resumo-compra">Quantidade: 0 • Total: R$ 0,00</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="nome-input">Seu Nome Completo</label>
+        <input type="text" id="nome-input" class="form-input" placeholder="Ex: Maria das Graças Silva" maxlength="60" autocomplete="name">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="tel-input">Telefone (opcional)</label>
+        <input type="tel" id="tel-input" class="form-input" placeholder="(87) 99999-9999" maxlength="20">
+      </div>
+
+      <button class="btn-primary btn-comprovante" onclick="abrirComprovante()">
+        ENVIAR COMPROVANTE PIX
+      </button>
+
+      <div id="status-comprovante" style="text-align:center;margin-top:8px;color:#fff;font-weight:600;">
+        ❌ Comprovante não enviado
+      </div>
+
+      <button class="btn-confirm" id="btn-confirm" onclick="confirmarParticipacao()" disabled>
+        ✦ Confirmar Participação
+      </button>
+    </div>
   </div>
-
-  <div class="form-group">
-    <label class="form-label" for="nome-input">
-      Seu Nome Completo
-    </label>
-
-    <input
-      type="text"
-      id="nome-input"
-      class="form-input"
-      placeholder="Ex: Maria das Graças Silva"
-      maxlength="60"
-      autocomplete="name">
-  </div>
-
-  <div class="form-group">
-    <label class="form-label" for="tel-input">
-      Telefone (opcional)
-    </label>
-
-    <input
-      type="tel"
-      id="tel-input"
-      class="form-input"
-      placeholder="(87) 99999-9999"
-      maxlength="20">
-  </div>
-
-  <button
-    class="btn-primary btn-comprovante"
-    onclick="abrirComprovante()">
-    ENVIAR COMPROVANTE PIX
-  </button>
-
-  <div id="status-comprovante" style="
-    text-align:center;
-    margin-top:8px;
-    color:#fff;
-    font-weight:600;
-  ">
-    ❌ Comprovante não enviado
-  </div>
-
-  <button
-    class="btn-confirm"
-    id="btn-confirm"
-    onclick="confirmarParticipacao()"
-    disabled>
-    ✦ Confirmar Participação
-  </button>
-
 </div>
 
 <!-- SORTEIO -->
