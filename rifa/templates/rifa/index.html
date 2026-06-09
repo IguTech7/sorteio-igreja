@@ -264,6 +264,17 @@
   display: block;
   padding: 12px 24px;
 }
+
+#resumo-compra {
+  width: 100%;
+  text-align: center;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(201,148,42,0.2);
+  color: var(--gold-light);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
 }
 
 </style>
@@ -362,7 +373,63 @@
       <div class="legend-item"><div class="legend-dot selected"></div> Selecionado</div>
       <div class="legend-item"><div class="legend-dot taken"></div> Ocupado</div>
     </div>
-    <div class="comprovante-box">
+    
+<div style="display:flex;gap:0.5rem;margin-bottom:1rem;margin-top:1rem;">
+  <input type="number" id="busca-numero" min="1" max="{{ config.total_numeros }}" placeholder="Buscar número..." style="flex:1;padding:0.7rem 0.9rem;border-radius:7px;border:1.5px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:white;font-size:1rem;font-family:'Lato',sans-serif;">
+  <button onclick="buscarNumero()" style="padding:0.7rem 1.2rem;background:var(--gold);border:none;border-radius:7px;color:#111;font-size:0.85rem;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;">Buscar</button>
+</div>
+
+    <div class="numbers-grid" id="numbers-grid"></div>
+    <div class="form-card">
+
+  <div class="card-title">
+    ✦ Confirmar Participação
+  </div>
+
+  <div class="selected-badge">
+
+    <span class="selected-badge-text">
+      Números selecionados
+    </span>
+
+    <span
+      class="selected-badge-num"
+      id="selected-num-display">
+      —
+    </span>
+
+    <div id="resumo-compra">
+      Quantidade: 0 • Total: R$ 0,00
+    </div>
+
+  </div>
+
+  <div class="form-group">
+    <label class="form-label" for="nome-input">
+      Seu Nome Completo
+    </label>
+
+    <input
+      type="text"
+      id="nome-input"
+      class="form-input"
+      placeholder="Ex: Maria das Graças Silva"
+      maxlength="60"
+      autocomplete="name">
+  </div>
+
+  <div class="form-group">
+    <label class="form-label" for="tel-input">
+      Telefone (opcional)
+    </label>
+
+    <input
+      type="tel"
+      id="tel-input"
+      class="form-input"
+      placeholder="(87) 99999-9999"
+      maxlength="20">
+  </div>
 
   <button
     class="btn-primary btn-comprovante"
@@ -379,40 +446,14 @@
     ❌ Comprovante não enviado
   </div>
 
-  <div id="creditos-comprovante" style="
-    text-align:center;
-    margin-top:4px;
-    color:#C9942A;
-    font-weight:700;
-  ">
-    🎟 Créditos disponíveis: 0
-  </div>
+  <button
+    class="btn-confirm"
+    id="btn-confirm"
+    onclick="confirmarParticipacao()"
+    disabled>
+    ✦ Confirmar Participação
+  </button>
 
-</div>
-
-<div style="display:flex;gap:0.5rem;margin-bottom:1rem;margin-top:1rem;">
-  <input type="number" id="busca-numero" min="1" max="{{ config.total_numeros }}" placeholder="Buscar número..." style="flex:1;padding:0.7rem 0.9rem;border-radius:7px;border:1.5px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:white;font-size:1rem;font-family:'Lato',sans-serif;">
-  <button onclick="buscarNumero()" style="padding:0.7rem 1.2rem;background:var(--gold);border:none;border-radius:7px;color:#111;font-size:0.85rem;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;">Buscar</button>
-</div>
-
-    <div class="numbers-grid" id="numbers-grid"></div>
-    <div class="form-card">
-      <div class="card-title">✦ Confirmar Participação</div>
-      <div class="selected-badge">
-        <span class="selected-badge-text">Número selecionado</span>
-        <span class="selected-badge-num" id="selected-num-display">—</span>
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="nome-input">Seu Nome Completo</label>
-        <input type="text" id="nome-input" class="form-input" placeholder="Ex: Maria das Graças Silva" maxlength="60" autocomplete="name">
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="tel-input">Telefone (opcional)</label>
-        <input type="tel" id="tel-input" class="form-input" placeholder="(87) 99999-9999" maxlength="20">
-      </div>
-      <button class="btn-confirm" id="btn-confirm" onclick="confirmarParticipacao()" disabled>✦ Confirmar Participação</button>
-    </div>
-  </div>
 </div>
 
 <!-- SORTEIO -->
@@ -517,10 +558,10 @@ function renderGrid() {
       btn.classList.add('taken');
       btn.title = 'Ocupado: ' + ocupados[i];
       btn.disabled = true;
-    } else if (selectedNums === i) {
-      btn.classList.add('selected');
-      btn.onclick = () => selectNums(i);
-    } else {
+    } else if (selectedNums.includes(i)) {
+  btn.classList.add('selected');
+  btn.onclick = () => selectNums(i);
+} else {
       btn.onclick = () => selectNums(i);
     }
     grid.appendChild(btn);
@@ -530,38 +571,59 @@ function renderGrid() {
 
 function selectNums(n) {
 
-  if (!comprovanteEnviado) {
-
-    showToast(
-      'Envie o comprovante PIX antes de escolher um número.',
-      'error'
-    );
-
-    return;
-  }
-
   if (ocupados[n]) return;
 
-  selectedNums = (selectedNums === n) ? null : n;
+  if (selectedNums.includes(n)) {
+
+  selectedNums = selectedNums.filter(
+    num => num !== n
+  );
+
+} else {
+
+  selectedNums.push(n);
+
+}
 
   renderGrid();
 
-  document.getElementById(
-    'selected-num-display'
-  ).textContent =
-    selectedNums
-      ? String(selectedNums).padStart(2,'0')
-      : '—';
+ document.getElementById(
+  'selected-num-display'
+).textContent =
+  selectedNums.length
+    ? selectedNums.join(', ')
+    : '—';
+
+    const quantidade = selectedNums.length;
+    const total = quantidade * 50;
+
+    document.getElementById(
+      'resumo-compra'
+    ).innerHTML =
+      `Quantidade: ${quantidade}<br>
+      Total: R$ ${total},00`;
 
   updateConfirmBtn();
 }
 
 function updateConfirmBtn() {
   const nome = document.getElementById('nome-input').value.trim();
-  document.getElementById('btn-confirm').disabled = !selectedNums || !nome;
+ document.getElementById('btn-confirm').disabled =
+  selectedNums.length === 0 || !nome;
 }
 
 async function confirmarParticipacao() {
+
+  if (!comprovanteEnviado) {
+
+  showToast(
+    'Envie o comprovante PIX para confirmar a participação.',
+    'error'
+  );
+
+  return;
+
+}
 
   const nome =
     document.getElementById('nome-input').value.trim();
@@ -569,19 +631,23 @@ async function confirmarParticipacao() {
   const telefone =
     document.getElementById('tel-input').value.trim();
 
-  if (!selectedNums || !nome)
-    return;
+  if (selectedNums.length === 0 || !nome)
+  return;
 
-  if (quantidadePermitida <= 0) {
+  const valorEsperado =
+  selectedNums.length * 50;
 
-    showToast(
-      'Você já utilizou todos os números deste comprovante.',
-      'error'
-    );
+if (valorEncontrado < valorEsperado) {
 
-    return;
+  showToast(
+    `Pagamento insuficiente. Valor esperado: R$ ${valorEsperado}`,
+    'error'
+  );
 
-  }
+  return;
+
+}
+
 
   showLoading(true);
 
@@ -591,74 +657,51 @@ async function confirmarParticipacao() {
   '/api/participar/',
   'POST',
   {
-    numero: selectedNums,
-    nome,
-    telefone,
-    id_transacao: idTransacaoAtual
-  }
+  numeros: selectedNums,
+  nome,
+  telefone,
+  id_transacao: idTransacaoAtual
+}
 );
 
-    if (d.ok) {
+   if (d.ok) {
 
-      quantidadePermitida--;
+  document.getElementById('nome-input').value = '';
+  document.getElementById('tel-input').value = '';
+  document.getElementById('selected-num-display').textContent = '—';
 
-      document.getElementById(
-        'creditos-comprovante'
-      ).innerHTML =
-        `🎟 Créditos disponíveis: ${quantidadePermitida}`;
+  const num = [...selectedNums];
 
-      document.getElementById('nome-input').value = '';
-      document.getElementById('tel-input').value = '';
-      document.getElementById('selected-num-display').textContent = '—';
+  selectedNums = [];
 
-      const num = selectedNums;
+  await carregarRifa();
 
-      selectedNums = null;
+  mostrarComprovante(nome, num);
 
-      await carregarRifa();
+  comprovanteEnviado = false;
 
-      mostrarComprovante(nome, num);
+  document.getElementById(
+    'status-comprovante'
+  ).innerHTML =
+    '❌ Envie um novo comprovante';
 
-      if (quantidadePermitida > 0) {
+  showToast(
+    d.mensagem || 'Participação confirmada!',
+    'success'
+  );
 
-        showToast(
-          `Você ainda pode escolher mais ${quantidadePermitida} número(s).`,
-          'success'
-        );
+} else {
 
-        document.getElementById(
-          'status-comprovante'
-        ).innerHTML =
-          `✅ Comprovante validado • ${quantidadePermitida} número(s) restante(s)`;
+  showToast(
+    d.erro,
+    'error'
+  );
 
-      } else {
+  selectedNums = [];
 
-        comprovanteEnviado = false;
+  await carregarRifa();
 
-        document.getElementById(
-          'status-comprovante'
-        ).innerHTML =
-          '❌ Envie um novo comprovante';
-
-        document.getElementById(
-          'creditos-comprovante'
-        ).innerHTML =
-          '🎟 Créditos disponíveis: 0';
-
-      }
-
-    } else {
-
-      showToast(
-        d.erro,
-        'error'
-      );
-
-      selectedNums = null;
-
-      await carregarRifa();
-
-    }
+}
 
   } finally {
 
@@ -1248,7 +1291,7 @@ async function validarComprovanteOCR() {
     const temChavePix = texto.includes('ibmjardimguararapes');
 
     // VALIDAR VALOR
-    let valorEncontrado = 0;
+    valorEncontrado = 0;
 
     const matchValor =
       texto.match(/valor enviado[:\s]*r?\$?\s*(\d+[.,]\d{2})/i) ||
@@ -1306,9 +1349,6 @@ async function validarComprovanteOCR() {
 
       document.getElementById('status-comprovante').innerHTML =
         `✅ Comprovante validado • ${quantidadePermitida} número(s) disponível(is)`;
-
-      document.getElementById('creditos-comprovante').innerHTML =
-        `🎟 Créditos disponíveis: ${quantidadePermitida}`;
 
       showToast('Comprovante validado com sucesso!', 'success');
 

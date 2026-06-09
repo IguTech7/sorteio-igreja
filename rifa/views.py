@@ -1,7 +1,7 @@
 import random
 import io
 import qrcode
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_POST, require_GET
@@ -37,35 +37,95 @@ def api_status(request):
 def api_participar(request):
     try:
         data = json.loads(request.body)
-        numero = int(data.get('numero', 0))
+
+        numeros = data.get('numeros', [])
         nome = data.get('nome', '').strip()
         telefone = data.get('telefone', '').strip()
         id_transacao = data.get('id_transacao', '').strip()
-    except (ValueError, KeyError):
-        return JsonResponse({'ok': False, 'erro': 'Dados inválidos.'}, status=400)
+
+    except:
+        return JsonResponse(
+            {'ok': False, 'erro': 'Dados inválidos.'},
+            status=400
+        )
 
     config = Configuracao.get()
 
     if not nome:
-        return JsonResponse({'ok': False, 'erro': 'Nome é obrigatório.'}, status=400)
+        return JsonResponse(
+            {'ok': False, 'erro': 'Nome é obrigatório.'},
+            status=400
+        )
 
-    if numero < 1 or numero > config.total_numeros:
-        return JsonResponse({'ok': False, 'erro': 'Número inválido.'}, status=400)
-
-    if Participante.objects.filter(numero=numero).exists():
-        return JsonResponse({'ok': False, 'erro': 'Número já está ocupado. Escolha outro.'}, status=409)
+    if not numeros:
+        return JsonResponse(
+            {'ok': False, 'erro': 'Selecione ao menos um número.'},
+            status=400
+        )
 
     try:
-        Participante.objects.create(numero=numero, nome=nome, telefone=telefone)
 
-        if id_transacao:
-            ComprovanteUsado.objects.get_or_create(id_transacao=id_transacao)
+        with transaction.atomic():
+
+            for numero in numeros:
+
+                numero = int(numero)
+
+                if (
+                    numero < 1 or
+                    numero > config.total_numeros
+                ):
+                    return JsonResponse(
+                        {
+                            'ok': False,
+                            'erro': f'Número {numero} inválido.'
+                        },
+                        status=400
+                    )
+
+                if Participante.objects.filter(
+                    numero=numero
+                ).exists():
+
+                    return JsonResponse(
+                        {
+                            'ok': False,
+                            'erro': f'O número {numero} já está ocupado.'
+                        },
+                        status=409
+                    )
+
+            for numero in numeros:
+
+                Participante.objects.create(
+                    numero=numero,
+                    nome=nome,
+                    telefone=telefone
+                )
+
+            if id_transacao:
+
+                ComprovanteUsado.objects.get_or_create(
+                    id_transacao=id_transacao
+                )
 
     except IntegrityError:
-        return JsonResponse({'ok': False, 'erro': 'Número já está ocupado. Escolha outro.'}, status=409)
 
-    return JsonResponse({'ok': True, 'mensagem': f'Número {numero} confirmado para {nome}!'})
+        return JsonResponse(
+            {
+                'ok': False,
+                'erro': 'Um ou mais números já foram reservados.'
+            },
+            status=409
+        )
 
+    return JsonResponse(
+        {
+            'ok': True,
+            'mensagem':
+                f'{len(numeros)} número(s) confirmado(s) para {nome}!'
+        }
+    )
 
 @require_GET
 def api_vendidos(request):
