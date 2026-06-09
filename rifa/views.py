@@ -145,3 +145,36 @@ def api_registrar_comprovante(request):
         return JsonResponse({'ok': True})
     except Exception as e:
         return JsonResponse({'ok': False, 'erro': str(e)}, status=400)
+
+@require_GET
+def api_comprovantes(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'ok': False, 'erro': 'Não autorizado.'}, status=401)
+    registros = RegistroComprovante.objects.all().order_by('-criado_em')
+    data = [{
+        'id': r.id,
+        'pagador': r.pagador,
+        'data_hora_pix': r.data_hora_pix,
+        'valor': float(r.valor),
+        'nome_participante': r.nome_participante,
+        'criado_em': r.criado_em.strftime('%d/%m/%Y %H:%M'),
+    } for r in registros]
+    return JsonResponse({'comprovantes': data})
+
+
+@csrf_exempt
+@require_POST
+def api_excluir_comprovante(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'ok': False, 'erro': 'Não autorizado.'}, status=401)
+    try:
+        data = json.loads(request.body)
+        reg_id = int(data.get('id', 0))
+    except:
+        return JsonResponse({'ok': False, 'erro': 'Dados inválidos.'}, status=400)
+    try:
+        r = RegistroComprovante.objects.get(id=reg_id)
+        r.delete()
+        return JsonResponse({'ok': True})
+    except RegistroComprovante.DoesNotExist:
+        return JsonResponse({'ok': False, 'erro': 'Registro não encontrado.'}, status=404)

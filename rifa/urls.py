@@ -14,4 +14,6 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
     path('api/excluir/', views.api_excluir, name='api_excluir'),
     path('api/registrar-comprovante/', views.api_registrar_comprovante, name='api_registrar_comprovante'),
+    path('api/comprovantes/', views.api_comprovantes, name='api_comprovantes'),
+    path('api/excluir-comprovante/', views.api_excluir_comprovante, name='api_excluir_comprovante'),
 ]

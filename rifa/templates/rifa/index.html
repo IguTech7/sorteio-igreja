@@ -659,6 +659,34 @@
   </div>
 </div>
 
+{% if request.user.is_authenticated %}
+<button class="nav-tab" onclick="showPage('comprovantes')">Comprovantes</button>
+{% endif %}
+
+<!-- COMPROVANTES -->
+<div id="page-comprovantes" class="page">
+  <div class="page-inner">
+    <div class="sorteio-header"><h2>Comprovantes</h2></div>
+    <div class="admin-card" style="overflow-x:auto;">
+      <table id="tabela-comprovantes" style="width:100%;border-collapse:collapse;font-size:0.85rem;">
+        <thead>
+          <tr style="border-bottom:1px solid rgba(201,148,42,0.3);">
+            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Pagador</th>
+            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Data/Hora</th>
+            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Valor</th>
+            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Participante</th>
+            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Enviado em</th>
+            <th style="padding:0.6rem 0.5rem;"></th>
+          </tr>
+        </thead>
+        <tbody id="comprovantes-body">
+          <tr><td colspan="6" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;">Carregando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <script>
 const TOTAL = {{ config.total_numeros }};
 let ocupados = {};
@@ -689,12 +717,13 @@ function showPage(id) {
 
   document.getElementById('page-' + id).classList.add('active');
 
-  const names = ['home','rifa','sorteio'];
+  const names = ['home', 'rifa', 'sorteio', 'comprovantes'];
   document.querySelectorAll('.nav-tab')[names.indexOf(id)].classList.add('active');
 
   if (id === 'home') carregarStatus();
   if (id === 'rifa') carregarRifa();
   if (id === 'sorteio') carregarSorteio();
+  if (id === 'comprovantes') carregarComprovantes();
 }
 
 async function carregarStatus() {
@@ -1484,6 +1513,42 @@ function copiarPix() {
     'success'
   );
 
+}
+
+async function carregarComprovantes() {
+  const d = await api('/api/comprovantes/');
+  const tbody = document.getElementById('comprovantes-body');
+
+  if (!d.comprovantes || !d.comprovantes.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;">Nenhum comprovante registrado.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = d.comprovantes.map(c => `
+    <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+      <td style="padding:0.6rem 0.5rem;color:white;">${c.pagador || '—'}</td>
+      <td style="padding:0.6rem 0.5rem;color:rgba(255,255,255,0.6);">${c.data_hora_pix || '—'}</td>
+      <td style="padding:0.6rem 0.5rem;color:var(--gold);font-weight:700;">R$ ${c.valor.toFixed(2).replace('.', ',')}</td>
+      <td style="padding:0.6rem 0.5rem;color:rgba(255,255,255,0.8);">${c.nome_participante || '—'}</td>
+      <td style="padding:0.6rem 0.5rem;color:rgba(255,255,255,0.4);font-size:0.78rem;">${c.criado_em}</td>
+      <td style="padding:0.6rem 0.5rem;">
+        <button onclick="excluirComprovante(${c.id})" style="padding:0.3rem 0.7rem;background:rgba(139,26,26,0.4);border:1px solid rgba(248,180,180,0.3);border-radius:5px;color:rgba(248,180,180,0.8);font-size:0.75rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Excluir</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+async function excluirComprovante(id) {
+  if (!confirm('Excluir este registro de comprovante?')) return;
+  showLoading(true);
+  const d = await api('/api/excluir-comprovante/', 'POST', { id });
+  showLoading(false);
+  if (d.ok) {
+    showToast('Registro excluído.', 'success');
+    await carregarComprovantes();
+  } else {
+    showToast(d.erro, 'error');
+  }
 }
 
 </script>
