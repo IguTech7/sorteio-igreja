@@ -166,6 +166,7 @@ def api_comprovantes(request):
         numeros = list(Participante.objects.filter(
             nome__icontains=r.nome_participante
         ).values_list('numero', flat=True).order_by('numero'))
+        print(f"Nome: {r.nome_participante} | Numeros: {numeros}")
                 
         data.append({
             'id': r.id,
@@ -178,6 +179,8 @@ def api_comprovantes(request):
             'numeros': numeros,
         })
     return JsonResponse({'comprovantes': data})
+
+    
 
 
 @csrf_exempt
