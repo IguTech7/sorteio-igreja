@@ -1277,15 +1277,21 @@ async function validarComprovanteOCR() {
     console.log('Texto OCR:', texto);
 
     // PAGADOR
-    let nomePagador = '';
-    const matchPagador = texto.match(/origem[\s\S]*?nome\s+([^\n]+)/i);
+   let nomePagador = '';
+    const matchPagador = 
+      texto.match(/origem[\s\S]*?nome\s+([^\n]+)/i) ||
+      texto.match(/pagador\s*\n+([^\n]+)/i) ||
+      texto.match(/pagador\s+([a-záàâãéèêíïóôõöúçñ\s]+)/i);
     if (matchPagador) nomePagador = matchPagador[1].trim();
 
     // DATA/HORA
     let dataHoraComprovante = '';
-   const matchDataHora = texto.match(/(\d{2}\s+\w+\s+\d{4}\s*-\s*\d{2}:\d{2}:\d{2})/i)
-  || texto.match(/([o0]\d\s+\w+\s+\d{4}\s*-\s*\d{2}:\d{2}:\d{2})/i);
-    if (matchDataHora) dataHoraComprovante = matchDataHora[1];
+      const matchDataHora = 
+        texto.match(/(\d{2}\s+\w+\s+\d{4}\s*-\s*\d{2}:\d{2}:\d{2})/i) ||
+        texto.match(/([o0]\d\s+\w+\s+\d{4}\s*-\s*\d{2}:\d{2}:\d{2})/i) ||
+        texto.match(/(\d{2}\/\d{2}\/\d{4}\s+as\s+\d{2}:\d{2}:\d{2})/i) ||
+        texto.match(/(\d{2}\/\d{2}\/\d{4}\s+as\s+\d{2}:\d{2})/i);
+      if (matchDataHora) dataHoraComprovante = matchDataHora[1].trim();
 
     console.log('Pagador:', nomePagador);
     console.log('Data/Hora:', dataHoraComprovante);
