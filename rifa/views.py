@@ -10,6 +10,7 @@ import json
 
 from .models import Participante, Configuracao, Sorteio, RegistroComprovante
 from django.utils import timezone
+from zoneinfo import ZoneInfo
 
 
 def index(request):
@@ -234,7 +235,7 @@ def api_comprovantes(request):
         'data_hora_pix': r.data_hora_pix,
         'valor': float(r.valor),
         'nome_participante': r.nome_participante,
-        'criado_em': r.criado_em.strftime('%d/%m/%Y %H:%M'),
+        'criado_em': r.criado_em.astimezone(ZoneInfo('America/Recife')).strftime('%d/%m/%Y %H:%M'),
         'imagem_url': r.imagem.url if r.imagem else None,
     } for r in registros]
     return JsonResponse({'comprovantes': data})
