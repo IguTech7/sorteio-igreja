@@ -56,6 +56,7 @@ class RegistroComprovante(models.Model):
     texto_ocr = models.TextField(blank=True)
     imagem = models.ImageField(upload_to='comprovantes/', blank=True, null=True)
     criado_em = models.DateTimeField(auto_now_add=True)
+    numero = models.IntegerField(null=True, blank=True)
 
     class Meta:
         verbose_name = "Registro de Comprovante"
