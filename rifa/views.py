@@ -200,6 +200,17 @@ def api_registrar_comprovante(request):
         texto_ocr = request.POST.get('texto_ocr', '').strip()
         imagem = request.FILES.get('imagem')
 
+        # VERIFICAR DUPLICATA
+        if pagador and data_hora_pix:
+            duplicata = RegistroComprovante.objects.filter(
+                pagador__iexact=pagador,
+                data_hora_pix__iexact=data_hora_pix,
+                valor=valor
+            ).exists()
+
+            if duplicata:
+                return JsonResponse({'ok': False, 'erro': 'Comprovante já utilizado.'})
+
         RegistroComprovante.objects.create(
             nome_participante=nome_participante,
             pagador=pagador,
@@ -211,7 +222,6 @@ def api_registrar_comprovante(request):
         return JsonResponse({'ok': True})
     except Exception as e:
         return JsonResponse({'ok': False, 'erro': str(e)}, status=400)
-
 
 @require_GET
 def api_comprovantes(request):

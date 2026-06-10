@@ -823,10 +823,18 @@ formData.append('valor', valorEncontrado);
 formData.append('texto_ocr', dadosComprovante?.texto_ocr || '');
 if (comprovanteArquivo) formData.append('imagem', comprovanteArquivo);
 
-await fetch('/api/registrar-comprovante/', {
+const respostaComprovante = await fetch('/api/registrar-comprovante/', {
   method: 'POST',
   body: formData
 });
+
+const dadosResposta = await respostaComprovante.json();
+
+if (!dadosResposta.ok) {
+  showToast(dadosResposta.erro || 'Comprovante inválido.', 'error');
+  showLoading(false);
+  return;
+}
 
     const d = await api('/api/participar/', 'POST', {
       numeros: selectedNums,
