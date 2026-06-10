@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 
 from .models import Participante, Configuracao, Sorteio, RegistroComprovante
+from django.utils import timezone
 
 
 def index(request):
@@ -134,13 +135,20 @@ def api_excluir(request):
 @require_POST
 def api_registrar_comprovante(request):
     try:
-        data = json.loads(request.body)
+        nome_participante = request.POST.get('nome_participante', '').strip()
+        pagador = request.POST.get('pagador', '').strip()
+        data_hora_pix = request.POST.get('data_hora_pix', '').strip()
+        valor = request.POST.get('valor', 0)
+        texto_ocr = request.POST.get('texto_ocr', '').strip()
+        imagem = request.FILES.get('imagem')
+
         RegistroComprovante.objects.create(
-            nome_participante=data.get('nome_participante', '').strip(),
-            pagador=data.get('pagador', '').strip(),
-            data_hora_pix=data.get('data_hora_pix', '').strip(),
-            valor=data.get('valor', 0),
-            texto_ocr=data.get('texto_ocr', '').strip(),
+            nome_participante=nome_participante,
+            pagador=pagador,
+            data_hora_pix=data_hora_pix,
+            valor=valor,
+            texto_ocr=texto_ocr,
+            imagem=imagem
         )
         return JsonResponse({'ok': True})
     except Exception as e:
@@ -157,7 +165,8 @@ def api_comprovantes(request):
         'data_hora_pix': r.data_hora_pix,
         'valor': float(r.valor),
         'nome_participante': r.nome_participante,
-        'criado_em': r.criado_em.strftime('%d/%m/%Y %H:%M'),
+        'criado_em': r.criado_em.astimezone().strftime('%d/%m/%Y %H:%M'),
+        'imagem_url': r.imagem.url if r.imagem else None,
     } for r in registros]
     return JsonResponse({'comprovantes': data})
 
@@ -178,3 +187,44 @@ def api_excluir_comprovante(request):
         return JsonResponse({'ok': True})
     except RegistroComprovante.DoesNotExist:
         return JsonResponse({'ok': False, 'erro': 'Registro não encontrado.'}, status=404)
+
+
+@csrf_exempt
+@require_POST
+def api_registrar_comprovante(request):
+    try:
+        nome_participante = request.POST.get('nome_participante', '').strip()
+        pagador = request.POST.get('pagador', '').strip()
+        data_hora_pix = request.POST.get('data_hora_pix', '').strip()
+        valor = request.POST.get('valor', 0)
+        texto_ocr = request.POST.get('texto_ocr', '').strip()
+        imagem = request.FILES.get('imagem')
+
+        RegistroComprovante.objects.create(
+            nome_participante=nome_participante,
+            pagador=pagador,
+            data_hora_pix=data_hora_pix,
+            valor=valor,
+            texto_ocr=texto_ocr,
+            imagem=imagem
+        )
+        return JsonResponse({'ok': True})
+    except Exception as e:
+        return JsonResponse({'ok': False, 'erro': str(e)}, status=400)
+
+
+@require_GET
+def api_comprovantes(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'ok': False, 'erro': 'Não autorizado.'}, status=401)
+    registros = RegistroComprovante.objects.all().order_by('-criado_em')
+    data = [{
+        'id': r.id,
+        'pagador': r.pagador,
+        'data_hora_pix': r.data_hora_pix,
+        'valor': float(r.valor),
+        'nome_participante': r.nome_participante,
+        'criado_em': r.criado_em.strftime('%d/%m/%Y %H:%M'),
+        'imagem_url': r.imagem.url if r.imagem else None,
+    } for r in registros]
+    return JsonResponse({'comprovantes': data})

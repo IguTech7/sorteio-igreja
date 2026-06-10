@@ -668,8 +668,9 @@
       <table id="tabela-comprovantes" style="width:100%;border-collapse:collapse;font-size:0.85rem;">
         <thead>
           <tr style="border-bottom:1px solid rgba(201,148,42,0.3);">
+            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Imagem</th>
             <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Pagador</th>
-            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Data/Hora</th>
+            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Data/Hora PIX</th>
             <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Valor</th>
             <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Participante</th>
             <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Enviado em</th>
@@ -814,14 +815,18 @@ function updateConfirmBtn() {
   showLoading(true);
 
   try {
-    // Salva registro do comprovante para auditoria do admin
-    await api('/api/registrar-comprovante/', 'POST', {
-      nome_participante: nome,
-      pagador: dadosComprovante?.pagador || '',
-      data_hora_pix: dadosComprovante?.data_hora || '',
-      valor: valorEncontrado,
-      texto_ocr: dadosComprovante?.texto_ocr || ''
-    });
+    const formData = new FormData();
+formData.append('nome_participante', nome);
+formData.append('pagador', dadosComprovante?.pagador || '');
+formData.append('data_hora_pix', dadosComprovante?.data_hora || '');
+formData.append('valor', valorEncontrado);
+formData.append('texto_ocr', dadosComprovante?.texto_ocr || '');
+if (comprovanteArquivo) formData.append('imagem', comprovanteArquivo);
+
+await fetch('/api/registrar-comprovante/', {
+  method: 'POST',
+  body: formData
+});
 
     const d = await api('/api/participar/', 'POST', {
       numeros: selectedNums,
@@ -1517,12 +1522,17 @@ async function carregarComprovantes() {
   const tbody = document.getElementById('comprovantes-body');
 
   if (!d.comprovantes || !d.comprovantes.length) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;">Nenhum comprovante registrado.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;">Nenhum comprovante registrado.</td></tr>';
     return;
   }
 
   tbody.innerHTML = d.comprovantes.map(c => `
     <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+      <td style="padding:0.6rem 0.5rem;">
+        ${c.imagem_url
+          ? `<img src="${c.imagem_url}" onclick="verImagem('${c.imagem_url}')" style="width:48px;height:48px;object-fit:cover;border-radius:6px;border:1px solid rgba(201,148,42,0.3);cursor:pointer;">`
+          : '<span style="color:rgba(255,255,255,0.2);font-size:0.75rem;">sem imagem</span>'}
+      </td>
       <td style="padding:0.6rem 0.5rem;color:white;">${c.pagador || '—'}</td>
       <td style="padding:0.6rem 0.5rem;color:rgba(255,255,255,0.6);">${c.data_hora_pix || '—'}</td>
       <td style="padding:0.6rem 0.5rem;color:var(--gold);font-weight:700;">R$ ${c.valor.toFixed(2).replace('.', ',')}</td>
@@ -1546,6 +1556,14 @@ async function excluirComprovante(id) {
   } else {
     showToast(d.erro, 'error');
   }
+}
+
+function verImagem(url) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:2000;display:flex;align-items:center;justify-content:center;cursor:pointer;';
+  overlay.innerHTML = `<img src="${url}" style="max-width:90vw;max-height:90vh;border-radius:12px;border:2px solid rgba(201,148,42,0.4);">`;
+  overlay.onclick = () => overlay.remove();
+  document.body.appendChild(overlay);
 }
 
 </script>

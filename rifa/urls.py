@@ -1,6 +1,9 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -16,4 +19,5 @@ urlpatterns = [
     path('api/registrar-comprovante/', views.api_registrar_comprovante, name='api_registrar_comprovante'),
     path('api/comprovantes/', views.api_comprovantes, name='api_comprovantes'),
     path('api/excluir-comprovante/', views.api_excluir_comprovante, name='api_excluir_comprovante'),
+    + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 ]
