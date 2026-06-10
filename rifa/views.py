@@ -160,15 +160,23 @@ def api_comprovantes(request):
     if not request.user.is_authenticated:
         return JsonResponse({'ok': False, 'erro': 'Não autorizado.'}, status=401)
     registros = RegistroComprovante.objects.all().order_by('-criado_em')
-    data = [{
-        'id': r.id,
-        'pagador': r.pagador,
-        'data_hora_pix': r.data_hora_pix,
-        'valor': float(r.valor),
-        'nome_participante': r.nome_participante,
-        'criado_em': r.criado_em.astimezone().strftime('%d/%m/%Y %H:%M'),
-        'imagem_url': r.imagem.url if r.imagem else None,
-    } for r in registros]
+    data = []
+    for r in registros:
+        # Busca os números do participante pelo nome
+        numeros = list(Participante.objects.filter(
+            nome__iexact=r.nome_participante
+        ).values_list('numero', flat=True).order_by('numero'))
+        
+        data.append({
+            'id': r.id,
+            'pagador': r.pagador,
+            'data_hora_pix': r.data_hora_pix,
+            'valor': float(r.valor),
+            'nome_participante': r.nome_participante,
+            'criado_em': r.criado_em.astimezone(ZoneInfo('America/Recife')).strftime('%d/%m/%Y %H:%M'),
+            'imagem_url': r.imagem.url if r.imagem else None,
+            'numeros': numeros,
+        })
     return JsonResponse({'comprovantes': data})
 
 
