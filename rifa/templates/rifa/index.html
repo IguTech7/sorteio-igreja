@@ -902,155 +902,65 @@ function mostrarComprovante(nome, numero) {
         box-shadow:0 8px 40px rgba(201,148,42,0.3);
       "
     >
-
       <div style="font-size:2rem;margin-bottom:0.5rem;">✝</div>
 
-      <div
-        style="
-          font-family:'Cinzel',serif;
-          font-size:0.7rem;
-          color:#C9942A;
-          letter-spacing:0.2em;
-          text-transform:uppercase;
-          margin-bottom:0.25rem;
-        "
-      >
+      <div style="font-family:'Cinzel',serif;font-size:0.7rem;color:#C9942A;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.25rem;">
         Comprovante de Participação
       </div>
 
-      <div
-        style="
-          font-family:'Cinzel',serif;
-          font-size:1rem;
-          color:white;
-          font-weight:600;
-          margin-bottom:1.5rem;
-        "
-      >
+      <div style="font-family:'Cinzel',serif;font-size:1rem;color:white;font-weight:600;margin-bottom:1.5rem;">
         Igreja Batista Missionária
       </div>
 
-      <div
-        style="
-          background:rgba(201,148,42,0.1);
-          border:1px solid rgba(201,148,42,0.3);
-          border-radius:10px;
-          padding:1.25rem;
-          margin-bottom:1.25rem;
-        "
-      >
-
-        <div
-          style="
-            font-size:0.72rem;
-            color:rgba(255,255,255,0.4);
-            font-weight:700;
-            letter-spacing:0.1em;
-            text-transform:uppercase;
-            margin-bottom:0.25rem;
-          "
-        >
+      <div style="background:rgba(201,148,42,0.1);border:1px solid rgba(201,148,42,0.3);border-radius:10px;padding:1.25rem;margin-bottom:1.25rem;">
+        <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.25rem;">
           Número
         </div>
-
-        <div
-          style="
-            font-family:'Cinzel',serif;
-            font-size:3.5rem;
-            font-weight:700;
-            color:#C9942A;
-            line-height:1;
-          "
-        >
+        <div style="font-family:'Cinzel',serif;font-size:3.5rem;font-weight:700;color:#C9942A;line-height:1;">
           ${String(numero).padStart(2,'0')}
         </div>
-
       </div>
 
       <div style="margin-bottom:1.25rem;">
-
-        <div
-          style="
-            font-size:0.72rem;
-            color:rgba(255,255,255,0.4);
-            font-weight:700;
-            letter-spacing:0.1em;
-            text-transform:uppercase;
-            margin-bottom:0.25rem;
-          "
-        >
+        <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.25rem;">
           Participante
         </div>
-
-        <div
-          style="
-            font-family:'Cinzel',serif;
-            font-size:1.2rem;
-            color:white;
-            font-weight:600;
-          "
-        >
+        <div style="font-family:'Cinzel',serif;font-size:1.2rem;color:white;font-weight:600;">
           ${nome}
         </div>
-
       </div>
 
-      <div
+      <div style="display:flex;justify-content:center;gap:2rem;margin-bottom:1.5rem;">
+        <div>
+          <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;">Data</div>
+          <div style="font-size:0.85rem;color:rgba(255,255,255,0.7);margin-top:0.1rem;">${data}</div>
+        </div>
+        <div>
+          <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;">Hora</div>
+          <div style="font-size:0.85rem;color:rgba(255,255,255,0.7);margin-top:0.1rem;">${hora}</div>
+        </div>
+      </div>
+
+      <button
+        onclick="salvarComprovante()"
         style="
-          display:flex;
-          justify-content:center;
-          gap:2rem;
-          margin-bottom:1.5rem;
+          width:100%;
+          padding:0.9rem;
+          background:transparent;
+          border:2px solid #C9942A;
+          border-radius:8px;
+          color:#C9942A;
+          font-family:'Cinzel',serif;
+          font-size:0.9rem;
+          font-weight:700;
+          cursor:pointer;
+          letter-spacing:0.06em;
+          text-transform:uppercase;
+          margin-bottom:0.75rem;
         "
       >
-
-        <div>
-          <div
-            style="
-              font-size:0.65rem;
-              color:rgba(255,255,255,0.3);
-              text-transform:uppercase;
-              letter-spacing:0.1em;
-            "
-          >
-            Data
-          </div>
-
-          <div
-            style="
-              font-size:0.85rem;
-              color:rgba(255,255,255,0.7);
-              margin-top:0.1rem;
-            "
-          >
-            ${data}
-          </div>
-        </div>
-
-        <div>
-          <div
-            style="
-              font-size:0.65rem;
-              color:rgba(255,255,255,0.3);
-              text-transform:uppercase;
-              letter-spacing:0.1em;
-            "
-          >
-            Hora
-          </div>
-
-          <div
-            style="
-              font-size:0.85rem;
-              color:rgba(255,255,255,0.7);
-              margin-top:0.1rem;
-            "
-          >
-            ${hora}
-          </div>
-        </div>
-
-      </div>
+        ⬇ Salvar Comprovante
+      </button>
 
       <button
         onclick="fecharComprovante()"
