@@ -164,9 +164,9 @@ def api_comprovantes(request):
     for r in registros:
         # Busca os números do participante pelo nome
         numeros = list(Participante.objects.filter(
-            nome__iexact=r.nome_participante
+            nome__icontains=r.nome_participante
         ).values_list('numero', flat=True).order_by('numero'))
-        
+                
         data.append({
             'id': r.id,
             'pagador': r.pagador,
