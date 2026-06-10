@@ -239,3 +239,22 @@ def api_comprovantes(request):
         'imagem_url': r.imagem.url if r.imagem else None,
     } for r in registros]
     return JsonResponse({'comprovantes': data})
+
+@csrf_exempt
+@require_POST
+def api_editar_comprovante(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'ok': False, 'erro': 'Não autorizado.'}, status=401)
+    try:
+        data = json.loads(request.body)
+        reg_id = int(data.get('id', 0))
+        r = RegistroComprovante.objects.get(id=reg_id)
+        r.pagador = data.get('pagador', r.pagador).strip()
+        r.data_hora_pix = data.get('data_hora_pix', r.data_hora_pix).strip()
+        r.nome_participante = data.get('nome_participante', r.nome_participante).strip()
+        r.save()
+        return JsonResponse({'ok': True})
+    except RegistroComprovante.DoesNotExist:
+        return JsonResponse({'ok': False, 'erro': 'Registro não encontrado.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'ok': False, 'erro': str(e)}, status=400)

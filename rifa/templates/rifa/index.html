@@ -995,14 +995,20 @@ function fecharComprovante() {
 }
 
 async function salvarComprovante() {
-  const card = document.getElementById('comprovante-card');
   try {
-    const canvas = await html2canvas(card, { backgroundColor: '#1A1A1A', scale: 2 });
+    const canvas = await html2canvas(document.getElementById('comprovante-card'), {
+      backgroundColor: '#1A1A1A',
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      logging: false
+    });
     const link = document.createElement('a');
     link.download = 'comprovante-rifa.png';
-    link.href = canvas.toDataURL();
+    link.href = canvas.toDataURL('image/png');
     link.click();
   } catch(e) {
+    console.error(e);
     showToast('Tire um print para salvar o comprovante.', '');
   }
 }
@@ -1458,6 +1464,7 @@ async function carregarComprovantes() {
       <td style="padding:0.6rem 0.5rem;color:rgba(255,255,255,0.4);font-size:0.78rem;">${c.criado_em}</td>
       <td style="padding:0.6rem 0.5rem;">
         <button onclick="excluirComprovante(${c.id})" style="padding:0.3rem 0.7rem;background:rgba(139,26,26,0.4);border:1px solid rgba(248,180,180,0.3);border-radius:5px;color:rgba(248,180,180,0.8);font-size:0.75rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Excluir</button>
+        <button onclick="editarComprovante(${c.id}, '${c.pagador}', '${c.data_hora_pix}', '${c.nome_participante}')" style="padding:0.3rem 0.7rem;background:rgba(42,80,140,0.4);border:1px solid rgba(100,160,255,0.3);border-radius:5px;color:rgba(100,160,255,0.8);font-size:0.75rem;font-weight:700;cursor:pointer;text-transform:uppercase;margin-right:0.4rem;">Editar</button>
       </td>
     </tr>
   `).join('');
@@ -1482,6 +1489,63 @@ function verImagem(url) {
   overlay.innerHTML = `<img src="${url}" style="max-width:90vw;max-height:90vh;border-radius:12px;border:2px solid rgba(201,148,42,0.4);">`;
   overlay.onclick = () => overlay.remove();
   document.body.appendChild(overlay);
+}
+
+function editarComprovante(id, pagador, dataHora, participante) {
+  const overlay = document.createElement('div');
+  overlay.id = 'editar-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:2000;display:flex;align-items:center;justify-content:center;padding:1rem;';
+
+  overlay.innerHTML = `
+    <div style="background:#1A1A1A;border:2px solid rgba(201,148,42,0.4);border-radius:14px;padding:2rem;max-width:420px;width:100%;">
+      <div style="font-family:'Cinzel',serif;font-size:0.85rem;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:1.5rem;">✦ Editar Comprovante</div>
+
+      <div style="margin-bottom:1rem;">
+        <label style="display:block;font-size:0.75rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Pagador</label>
+        <input id="edit-pagador" value="${pagador}" style="width:100%;padding:0.6rem 0.8rem;border-radius:7px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:white;font-size:0.9rem;">
+      </div>
+
+      <div style="margin-bottom:1rem;">
+        <label style="display:block;font-size:0.75rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Data/Hora PIX</label>
+        <input id="edit-datahora" value="${dataHora}" style="width:100%;padding:0.6rem 0.8rem;border-radius:7px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:white;font-size:0.9rem;" placeholder="ex: 09 jun 2026 - 14:30:00">
+      </div>
+
+      <div style="margin-bottom:1.5rem;">
+        <label style="display:block;font-size:0.75rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Participante</label>
+        <input id="edit-participante" value="${participante}" style="width:100%;padding:0.6rem 0.8rem;border-radius:7px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:white;font-size:0.9rem;">
+      </div>
+
+      <div style="display:flex;gap:0.75rem;">
+        <button onclick="salvarEdicao(${id})" style="flex:1;padding:0.8rem;background:var(--gold);border:none;border-radius:8px;color:#111;font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Salvar</button>
+        <button onclick="document.getElementById('editar-overlay').remove()" style="flex:1;padding:0.8rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.5);font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Cancelar</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+}
+
+async function salvarEdicao(id) {
+  const pagador = document.getElementById('edit-pagador').value.trim();
+  const dataHora = document.getElementById('edit-datahora').value.trim();
+  const participante = document.getElementById('edit-participante').value.trim();
+
+  showLoading(true);
+  const d = await api('/api/editar-comprovante/', 'POST', {
+    id,
+    pagador,
+    data_hora_pix: dataHora,
+    nome_participante: participante
+  });
+  showLoading(false);
+
+  if (d.ok) {
+    document.getElementById('editar-overlay').remove();
+    showToast('Comprovante atualizado!', 'success');
+    await carregarComprovantes();
+  } else {
+    showToast(d.erro, 'error');
+  }
 }
 
 </script>
