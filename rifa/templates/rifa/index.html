@@ -108,7 +108,6 @@
     font-size: 2.8rem;
     font-weight: 700;
     margin-top: 0;
-
 }
   .hero-subtitle { font-family: 'Cinzel', serif; font-size: clamp(0.9rem, 2.5vw, 1.1rem); color: rgba(240,200,90,0.7); font-weight: 400; margin-top: 0.4rem; letter-spacing: 0.12em; text-transform: uppercase; }
 
@@ -175,7 +174,6 @@
   .btn-confirm:hover { transform: translateY(-1px); box-shadow: 0 5px 20px rgba(201,148,42,0.5); }
   .btn-confirm:disabled { opacity: 0.45; cursor: not-allowed; transform: none; background: #ccc; box-shadow: none; }
 
-
   .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--navy); color: var(--gold-light); border: 1px solid rgba(201,148,42,0.4); border-radius: 10px; padding: 0.75rem 1.5rem; font-size: 0.9rem; font-weight: 700; z-index: 999; transition: transform 0.3s ease; white-space: nowrap; max-width: 90vw; text-align: center; }
   .toast.show { transform: translateX(-50%) translateY(0); }
   .toast.success { border-color: rgba(42,122,74,0.6); color: #6FCF97; }
@@ -189,10 +187,8 @@
   .sold-chip-name { font-size: 0.62rem; color: rgba(240,200,90,0.55); display: block; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .empty-msg { text-align: center; color: rgba(240,200,90,0.4); font-size: 0.9rem; padding: 2rem; font-style: italic; }
   .btn-sorteio { display: block; width: 100%; max-width: 360px; margin: 0 auto 1.5rem; padding: 1.1rem; background: transparent; border: 2px solid var(--gold); color: white; font-family: 'Cinzel', serif; font-size: 1rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
-.btn-sorteio:hover { background: var(--gold); color: #111; }
-.btn-sorteio:disabled { opacity: 0.35; cursor: not-allowed; background: transparent; }
-
-.winner-card { background: #1A1A1A; border-radius: 14px; padding: 2rem; text-align: center; border: 2px solid var(--gold); box-shadow: 0 4px 30px rgba(201,148,42,0.25); display: none; animation: winnerReveal 0.5s ease; margin-bottom: 1.5rem; }
+  .btn-sorteio:hover { background: var(--gold); color: #111; }
+  .btn-sorteio:disabled { opacity: 0.35; cursor: not-allowed; background: transparent; }
 
   .winner-card { background: var(--cream); border-radius: 14px; padding: 2rem; text-align: center; border: 2px solid var(--gold); box-shadow: 0 4px 30px rgba(201,148,42,0.25); display: none; animation: winnerReveal 0.5s ease; margin-bottom: 1.5rem; }
   .winner-card.show { display: block; }
@@ -213,29 +209,12 @@
   .loading-spinner { width: 40px; height: 40px; border: 3px solid rgba(201,148,42,0.2); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .loading-overlay {
-    display: none;
-}
+  .toast { display: none; }
+  .toast.show { display: block; }
 
-.loading-overlay.show {
-    display: flex;
-}
+  .hero-logo { width: 130px; height: auto; margin-bottom: 20px; }
 
-.toast {
-    display: none;
-}
-
-.toast.show {
-    display: block;
-}
-
-  .hero-logo {
-    width: 130px;
-    height: auto;
-    margin-bottom: 20px;
-}
-
-.nome-igreja {
+  .nome-igreja {
     font-family: 'Cinzel', serif;
     color: #ffffff;
     text-align: center;
@@ -243,166 +222,50 @@
     margin-bottom: 20px;
     font-size: 1.4rem;
     letter-spacing: 1px;
-}
-
-    @media (max-width: 768px){
-
-  .btn-comprovante{
-    min-width: 220px;
-    padding: 10px 18px;
-    font-size: 14px;
   }
 
-  .status-comprovante{
-    font-size: 13px;
-    padding: 0 15px;
+  @media (max-width: 768px){
+    .btn-comprovante { min-width: 220px; padding: 10px 18px; font-size: 14px; }
+    .status-comprovante { font-size: 13px; padding: 0 15px; }
   }
 
-}
-.btn-comprovante {
-  width: fit-content;
-  min-width: 260px;
-  margin: 0 auto 20px;
-  display: block;
-  padding: 12px 24px;
-}
+  .btn-comprovante { width: fit-content; min-width: 260px; margin: 0 auto 20px; display: block; padding: 12px 24px; }
 
-#resumo-compra {
-  width: 100%;
-  text-align: center;
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(201,148,42,0.2);
-  color: var(--gold-light);
-  font-size: 0.95rem;
-  font-weight: 600;
-}
-
-.pix-box{
-  display:flex !important;
-  align-items:center;
-  gap:25px;
-  margin:20px 0;
-}
-
-.pix-qrcode{
-  width:170px;
-  background:#fff;
-  padding:8px;
-  border-radius:12px;
-  border:3px solid var(--gold);
-  flex-shrink:0;
-}
-
-.pix-info{
-  flex:1;
-}
-
-.pix-info h3{
-  margin:0 0 8px;
-  color:var(--navy);
-  font-family:'Cinzel', serif;
-}
-
-.pix-info p{
-  margin-bottom:10px;
-  color:#555;
-}
-
-.pix-chave-area{
-  display:flex;
-  gap:10px;
-  align-items:center;
-  flex-wrap:wrap;
-  margin:12px 0;
-}
-
-.pix-chave{
-  padding:8px 12px;
-  border:1px solid rgba(201,148,42,.4);
-  border-radius:8px;
-  background:#f5f5f5;
-  color:#333;
-}
-
-.valor-pix{
-  font-size:2rem;
-  font-weight:700;
-  color:var(--gold);
-}
-
-#resumo-compra{
-  display:flex;
-  justify-content:center;
-  gap:40px;
-  margin-bottom:20px;
-  padding:12px;
-  border-radius:8px;
-  background:rgba(201,148,42,.08);
-  border:1px solid rgba(201,148,42,.2);
-}
-
-#resumo-compra div{
-  text-align:center;
-}
-
-#resumo-compra span{
-  display:block;
-  font-size:.75rem;
-  text-transform:uppercase;
-  color:#888;
-  font-weight:700;
-}
-
-#resumo-compra strong{
-  display:block;
-  font-family:'Cinzel', serif;
-  font-size:1.3rem;
-  color:var(--gold);
-}
-
-#status-comprovante{
-  text-align:center;
-  margin:10px 0;
-  font-weight:600;
-}
-
-.btn-copiar-pix {
-  width: auto !important;
-  padding: 8px 18px !important;
-  font-size: 0.8rem !important;
-  white-space: nowrap;
-}
-
-@media (max-width: 480px) {
-  .pix-box {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .pix-qrcode {
-    width: 140px;
-  }
-
-  .pix-chave-area {
+  #resumo-compra {
+    display: flex;
     justify-content: center;
+    gap: 40px;
+    margin-bottom: 20px;
+    padding: 12px;
+    border-radius: 8px;
+    background: rgba(201,148,42,.08);
+    border: 1px solid rgba(201,148,42,.2);
   }
+  #resumo-compra div { text-align: center; }
+  #resumo-compra span { display: block; font-size: .75rem; text-transform: uppercase; color: #888; font-weight: 700; }
+  #resumo-compra strong { display: block; font-family: 'Cinzel', serif; font-size: 1.3rem; color: var(--gold); }
 
-  .pix-info h3 {
-    font-size: 1rem;
+  .pix-box { display: flex !important; align-items: center; gap: 25px; margin: 20px 0; }
+  .pix-qrcode { width: 170px; background: #fff; padding: 8px; border-radius: 12px; border: 3px solid var(--gold); flex-shrink: 0; }
+  .pix-info { flex: 1; }
+  .pix-info h3 { margin: 0 0 8px; color: var(--navy); font-family: 'Cinzel', serif; }
+  .pix-info p { margin-bottom: 10px; color: #555; }
+  .pix-chave-area { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 12px 0; }
+  .pix-chave { padding: 8px 12px; border: 1px solid rgba(201,148,42,.4); border-radius: 8px; background: #f5f5f5; color: #333; }
+  .valor-pix { font-size: 2rem; font-weight: 700; color: var(--gold); }
+
+  #status-comprovante { text-align: center; margin: 10px 0; font-weight: 600; }
+
+  .btn-copiar-pix { width: auto !important; padding: 8px 18px !important; font-size: 0.8rem !important; white-space: nowrap; }
+
+  @media (max-width: 480px) {
+    .pix-box { flex-direction: column; align-items: center; text-align: center; }
+    .pix-qrcode { width: 140px; }
+    .pix-chave-area { justify-content: center; }
+    .pix-info h3 { font-size: 1rem; }
+    .pix-info p { font-size: 0.85rem; }
+    .pix-chave { font-size: 0.75rem; word-break: break-all; }
   }
-
-  .pix-info p {
-    font-size: 0.85rem;
-  }
-
-  .pix-chave {
-    font-size: 0.75rem;
-    word-break: break-all;
-  }
-}
-
 </style>
 </head>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
@@ -415,13 +278,13 @@
       <img src="{% static 'rifa/logo_nav.png' %}" alt="Logo" style="height:85px;width:auto;margin:-18px 0;">
     </div>
     <div class="nav-tabs">
-  <button class="nav-tab active" onclick="showPage('home')">Início</button>
-  <button class="nav-tab" onclick="showPage('rifa')">Números</button>
-  {% if request.user.is_authenticated %}
-  <button class="nav-tab" onclick="showPage('sorteio')">Sorteio</button>
-  <button class="nav-tab" onclick="showPage('comprovantes')">Comprovantes</button>
-  {% endif %}
-</div>
+      <button class="nav-tab active" onclick="showPage('home')">Início</button>
+      <button class="nav-tab" onclick="showPage('rifa')">Números</button>
+      {% if request.user.is_authenticated %}
+      <button class="nav-tab" onclick="showPage('sorteio')">Sorteio</button>
+      <button class="nav-tab" onclick="showPage('comprovantes')">Comprovantes</button>
+      {% endif %}
+    </div>
   </div>
 </nav>
 
@@ -430,9 +293,7 @@
   <div class="page-inner">
     <div class="hero">
       <img src="{% static 'rifa/logo.png' %}" alt="Logo Igreja" style="max-width:260px;width:80%;height:auto;margin-bottom:1rem;">
-      <h2 class="nome-igreja">
-    Igreja Batista Missionária Jardim Guararapes
-</h2>
+      <h2 class="nome-igreja">Igreja Batista Missionária Jardim Guararapes</h2>
       <h1 class="hero-title">{{ config.nome_campanha }}</h1>
       <p class="hero-subtitle">{{ config.subtitulo }}</p>
     </div>
@@ -445,12 +306,12 @@
       </div>
     </div>
     <div class="stats-bar" style="grid-template-columns: repeat({% if request.user.is_authenticated %}3{% else %}2{% endif %}, 1fr);">
-  <div class="stat-item"><div class="stat-number" id="stat-vendidos">—</div><div class="stat-label">Vendidos</div></div>
-  <div class="stat-item"><div class="stat-number" id="stat-disponiveis">—</div><div class="stat-label">Disponíveis</div></div>
-  {% if request.user.is_authenticated %}
-<div class="stat-item"><div class="stat-number" id="stat-arrecadado">—</div><div class="stat-label">Arrecadado</div></div>
-{% endif %}
-</div>
+      <div class="stat-item"><div class="stat-number" id="stat-vendidos">—</div><div class="stat-label">Vendidos</div></div>
+      <div class="stat-item"><div class="stat-number" id="stat-disponiveis">—</div><div class="stat-label">Disponíveis</div></div>
+      {% if request.user.is_authenticated %}
+      <div class="stat-item"><div class="stat-number" id="stat-arrecadado">—</div><div class="stat-label">Arrecadado</div></div>
+      {% endif %}
+    </div>
     <div class="info-grid">
       <div class="info-item"><div class="info-item-icon">🎟️</div><div class="info-item-label">Total de Números</div><div class="info-item-value">{{ config.total_numeros }}</div></div>
       <div class="info-item"><div class="info-item-icon">📅</div><div class="info-item-label">Data do Sorteio</div><div class="info-item-value">{% if config.data_sorteio %}{{ config.data_sorteio|date:"d/m/Y" }}{% else %}A definir{% endif %}</div></div>
@@ -475,15 +336,13 @@
       </div>
     </div>
     <div style="border-radius:14px;overflow:hidden;margin:0 auto 1.25rem;box-shadow:0 8px 40px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.08);max-width:340px;">
-  <div style="background:#111;padding:1rem 1.25rem;text-align:center;border-bottom:1px solid rgba(255,255,255,0.06);">
-    <div style="font-family:'Cinzel',serif;font-size:0.75rem;color:var(--gold);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.25rem;">🏆 Prêmio</div>
-    <div style="font-family:'Cinzel',serif;font-size:1.1rem;color:white;font-weight:600;">Terreno — Lagoa dos Vinhedos</div>
-  </div>
-  <img src="{% static 'rifa/terreno.jpg' %}" alt="Terreno Lagoa dos Vinhedos" style="width:100%;height:auto;display:block;">
-</div>
-   <button class="btn-primary" onclick="showPage('rifa')">
-  ✦ Participar do Sorteio ✦
-</button>
+      <div style="background:#111;padding:1rem 1.25rem;text-align:center;border-bottom:1px solid rgba(255,255,255,0.06);">
+        <div style="font-family:'Cinzel',serif;font-size:0.75rem;color:var(--gold);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.25rem;">🏆 Prêmio</div>
+        <div style="font-family:'Cinzel',serif;font-size:1.1rem;color:white;font-weight:600;">Terreno — Lagoa dos Vinhedos</div>
+      </div>
+      <img src="{% static 'rifa/terreno.jpg' %}" alt="Terreno Lagoa dos Vinhedos" style="width:100%;height:auto;display:block;">
+    </div>
+    <button class="btn-primary" onclick="showPage('rifa')">✦ Participar do Sorteio ✦</button>
     <p style="text-align:center;margin-top:1rem;font-size:0.8rem;color:rgba(240,200,90,0.4);font-style:italic;">"Cada oferta é uma semente de fé plantada para a glória de Deus."</p>
   </div>
 </div>
@@ -509,124 +368,54 @@
     <div class="numbers-grid" id="numbers-grid"></div>
 
     <div class="form-card" style="margin-top:2rem;">
+      <div class="card-title">✦ Confirmar Participação</div>
 
-  <div class="card-title">
-    ✦ Confirmar Participação
-  </div>
+      <div class="selected-badge">
+        <span class="selected-badge-text">Números selecionados</span>
+        <span class="selected-badge-num" id="selected-num-display">—</span>
+      </div>
 
-  <div class="selected-badge">
-    <span class="selected-badge-text">
-      Números selecionados
-    </span>
+      <div id="resumo-compra">
+        <div><span>Quantidade</span><strong id="resumo-qtd">0</strong></div>
+        <div><span>Total</span><strong id="resumo-total">R$ 0,00</strong></div>
+      </div>
 
-    <span class="selected-badge-num" id="selected-num-display">
-      —
-    </span>
-  </div>
-
-  <div id="resumo-compra">
-    <div>
-      <span>Quantidade</span>
-      <strong id="resumo-qtd">0</strong>
-    </div>
-
-    <div>
-      <span>Total</span>
-      <strong id="resumo-total">R$ 0,00</strong>
-    </div>
-  </div>
-
-  <div class="pix-box">
-
-    <img
-      src="{% static 'rifa/qrcode_pix.png' %}"
-      alt="QR Code PIX"
-      class="pix-qrcode">
-
-    <div class="pix-info">
-
-      <h3>REALIZE SUA OFERTA</h3>
-
-      <p>
-        Escaneie o QR Code ou use a chave PIX:
-      </p>
-
-      <div class="pix-chave-area">
-
-        <div class="pix-chave">
-          {{ config.pix_chave }}
+      <div class="pix-box">
+        <img src="{% static 'rifa/qrcode_pix.png' %}" alt="QR Code PIX" class="pix-qrcode">
+        <div class="pix-info">
+          <h3>REALIZE SUA OFERTA</h3>
+          <p>Escaneie o QR Code ou use a chave PIX:</p>
+          <div class="pix-chave-area">
+            <div class="pix-chave">{{ config.pix_chave }}</div>
+            <button onclick="copiarPix()" class="btn-primary btn-copiar-pix">COPIAR</button>
+          </div>
+          <div class="valor-pix">R$ {{ config.valor }}</div>
+          <small>por número</small>
         </div>
-
-        <button onclick="copiarPix()" class="btn-primary btn-copiar-pix">
-  COPIAR
-</button>
-
       </div>
 
-      <div class="valor-pix">
-        R$ {{ config.valor }}
+      <div class="form-group">
+        <label class="form-label" for="nome-input">Seu Nome Completo</label>
+        <input type="text" id="nome-input" class="form-input" placeholder="Ex: Maria das Graças Silva" maxlength="60" autocomplete="name">
       </div>
 
-      <small>por número</small>
+      <div class="form-group">
+        <label class="form-label" for="tel-input">Telefone (opcional)</label>
+        <input type="tel" id="tel-input" class="form-input" placeholder="(87) 99999-9999" maxlength="20">
+      </div>
 
+      <button class="btn-primary btn-comprovante" onclick="abrirComprovante()">ENVIAR COMPROVANTE PIX</button>
+
+      <div id="status-comprovante">❌ Comprovante não enviado</div>
+
+      <button class="btn-confirm" id="btn-confirm" onclick="confirmarParticipacao()" disabled>✦ Confirmar Participação</button>
     </div>
-
   </div>
-
-  <div class="form-group">
-    <label class="form-label" for="nome-input">
-      Seu Nome Completo
-    </label>
-
-    <input
-      type="text"
-      id="nome-input"
-      class="form-input"
-      placeholder="Ex: Maria das Graças Silva"
-      maxlength="60"
-      autocomplete="name">
-  </div>
-
-  <div class="form-group">
-    <label class="form-label" for="tel-input">
-      Telefone (opcional)
-    </label>
-
-    <input
-      type="tel"
-      id="tel-input"
-      class="form-input"
-      placeholder="(87) 99999-9999"
-      maxlength="20">
-  </div>
-
-  <button
-    class="btn-primary btn-comprovante"
-    onclick="abrirComprovante()">
-    ENVIAR COMPROVANTE PIX
-  </button>
-
-  <div id="status-comprovante">
-    ❌ Comprovante não enviado
-  </div>
-
-  <button
-    class="btn-confirm"
-    id="btn-confirm"
-    onclick="confirmarParticipacao()"
-    disabled>
-    ✦ Confirmar Participação
-  </button>
-
 </div>
-  </div>
-  </div>
-
 
 <!-- SORTEIO -->
 <div id="page-sorteio" class="page">
   <div class="page-inner">
-
     <div class="sorteio-header"><h2>Sorteio</h2></div>
     <div class="winner-card" id="winner-card">
       <div class="winner-icon">🏆</div>
@@ -680,7 +469,7 @@
           </tr>
         </thead>
         <tbody id="comprovantes-body">
-          <tr><td colspan="6" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;">Carregando...</td></tr>
+          <tr><td colspan="8" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;">Carregando...</td></tr>
         </tbody>
       </table>
     </div>
@@ -694,10 +483,12 @@ let selectedNums = [];
 let spinning = false;
 let comprovanteEnviado = false;
 let comprovanteArquivo = null;
-let nomePagador = '';
-let dataHoraComprovante = '';
-let idTransacao = null;
+let valorEncontrado = 0;
+let quantidadePermitida = 0;
 let dadosComprovante = {};
+// Camadas anti-fraude
+let hashImagemAtual = null;
+let assinaturaAtual = null;
 
 async function api(url, method='GET', body=null) {
   const opts = { method, headers: {'Content-Type': 'application/json'} };
@@ -711,15 +502,11 @@ function showLoading(v) {
 }
 
 function showPage(id) {
-
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-
   document.getElementById('page-' + id).classList.add('active');
-
   const names = ['home', 'rifa', 'sorteio', 'comprovantes'];
   document.querySelectorAll('.nav-tab')[names.indexOf(id)].classList.add('active');
-
   if (id === 'home') carregarStatus();
   if (id === 'rifa') carregarRifa();
   if (id === 'sorteio') carregarSorteio();
@@ -729,17 +516,12 @@ function showPage(id) {
 async function carregarStatus() {
   const d = await api('/api/status/');
   ocupados = d.ocupados;
-
   document.getElementById('stat-vendidos').textContent = d.vendidos;
   document.getElementById('stat-disponiveis').textContent = d.disponiveis;
-
   const arrecadado = document.getElementById('stat-arrecadado');
-  if (arrecadado) {
-    arrecadado.textContent = 'R$' + d.arrecadado.toFixed(0);
-  }
+  if (arrecadado) arrecadado.textContent = 'R$' + d.arrecadado.toFixed(0);
 }
 
-  
 async function carregarRifa() {
   const d = await api('/api/status/');
   ocupados = d.ocupados;
@@ -752,10 +534,8 @@ const POR_PAGINA = 100;
 function renderGrid() {
   const grid = document.getElementById('numbers-grid');
   grid.innerHTML = '';
-
   const inicio = (paginaAtual - 1) * POR_PAGINA + 1;
   const fim = Math.min(paginaAtual * POR_PAGINA, TOTAL);
-
   for (let i = inicio; i <= fim; i++) {
     const btn = document.createElement('button');
     btn.className = 'num-btn';
@@ -772,7 +552,6 @@ function renderGrid() {
     }
     grid.appendChild(btn);
   }
-
   renderPaginacao();
   updateConfirmBtn();
 }
@@ -786,32 +565,23 @@ function renderPaginacao() {
     pag.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-top:1rem;flex-wrap:wrap;';
     document.getElementById('numbers-grid').after(pag);
   }
-
   pag.innerHTML = '';
-
-  // Botão anterior
   const btnAnterior = document.createElement('button');
   btnAnterior.textContent = '← Anterior';
   btnAnterior.disabled = paginaAtual === 1;
   btnAnterior.style.cssText = 'padding:0.5rem 1rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:white;cursor:pointer;font-size:0.8rem;font-weight:700;';
   btnAnterior.onclick = () => { paginaAtual--; renderGrid(); window.scrollTo({top: document.getElementById('numbers-grid').offsetTop - 100, behavior:'smooth'}); };
   pag.appendChild(btnAnterior);
-
-  // Info da página
   const info = document.createElement('span');
   info.style.cssText = 'color:rgba(255,255,255,0.6);font-size:0.85rem;font-family:"Cinzel",serif;padding:0 0.5rem;';
   info.textContent = `Página ${paginaAtual} de ${totalPaginas}`;
   pag.appendChild(info);
-
-  // Botão próximo
   const btnProximo = document.createElement('button');
   btnProximo.textContent = 'Próxima →';
   btnProximo.disabled = paginaAtual === totalPaginas;
   btnProximo.style.cssText = 'padding:0.5rem 1rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:white;cursor:pointer;font-size:0.8rem;font-weight:700;';
   btnProximo.onclick = () => { paginaAtual++; renderGrid(); window.scrollTo({top: document.getElementById('numbers-grid').offsetTop - 100, behavior:'smooth'}); };
   pag.appendChild(btnProximo);
-
-  // Seletor de página
   const select = document.createElement('select');
   select.style.cssText = 'padding:0.5rem;background:#111;border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:white;font-size:0.8rem;cursor:pointer;';
   for (let i = 1; i <= totalPaginas; i++) {
@@ -827,34 +597,35 @@ function renderPaginacao() {
 
 function selectNums(n) {
   if (ocupados[n]) return;
-
   if (selectedNums.includes(n)) {
     selectedNums = selectedNums.filter(num => num !== n);
   } else {
     selectedNums.push(n);
   }
-
   renderGrid();
-
-  document.getElementById('selected-num-display').textContent =
-    selectedNums.length ? selectedNums.join(', ') : '—';
-
+  document.getElementById('selected-num-display').textContent = selectedNums.length ? selectedNums.join(', ') : '—';
   const quantidade = selectedNums.length;
   const total = quantidade * 50;
-
   document.getElementById('resumo-qtd').textContent = quantidade;
   document.getElementById('resumo-total').textContent = 'R$ ' + total.toFixed(2).replace('.', ',');
-
   updateConfirmBtn();
 }
 
 function updateConfirmBtn() {
   const nome = document.getElementById('nome-input').value.trim();
- document.getElementById('btn-confirm').disabled =
-  selectedNums.length === 0 || !nome;
+  document.getElementById('btn-confirm').disabled = selectedNums.length === 0 || !nome;
 }
 
-  async function confirmarParticipacao() {
+// ─── Gerar hash SHA-256 da imagem ───────────────────────────────────────────
+async function gerarHashImagem(arquivo) {
+  const buffer = await arquivo.arrayBuffer();
+  const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// ─── Confirmar participação ──────────────────────────────────────────────────
+async function confirmarParticipacao() {
   if (!comprovanteEnviado) {
     showToast('Envie o comprovante PIX para confirmar a participação.', 'error');
     return;
@@ -874,31 +645,35 @@ function updateConfirmBtn() {
   showLoading(true);
 
   try {
+    // 1) Registrar comprovante
     const formData = new FormData();
-formData.append('nome_participante', nome);
-formData.append('pagador', dadosComprovante?.pagador || '');
-formData.append('data_hora_pix', dadosComprovante?.data_hora || '');
-formData.append('valor', valorEncontrado);
-formData.append('texto_ocr', dadosComprovante?.texto_ocr || '');
-if (comprovanteArquivo) formData.append('imagem', comprovanteArquivo);
+    formData.append('nome_participante', nome);
+    formData.append('pagador', dadosComprovante?.pagador || '');
+    formData.append('data_hora_pix', dadosComprovante?.data_hora || '');
+    formData.append('valor', valorEncontrado);
+    formData.append('texto_ocr', dadosComprovante?.texto_ocr || '');
+    if (comprovanteArquivo) formData.append('imagem', comprovanteArquivo);
 
-const respostaComprovante = await fetch('/api/registrar-comprovante/', {
-  method: 'POST',
-  body: formData
-});
+    const respostaComprovante = await fetch('/api/registrar-comprovante/', {
+      method: 'POST',
+      body: formData
+    });
+    const dadosResposta = await respostaComprovante.json();
 
-const dadosResposta = await respostaComprovante.json();
+    if (!dadosResposta.ok) {
+      showToast(dadosResposta.erro || 'Comprovante inválido.', 'error');
+      showLoading(false);
+      return;
+    }
 
-if (!dadosResposta.ok) {
-  showToast(dadosResposta.erro || 'Comprovante inválido.', 'error');
-  showLoading(false);
-  return;
-}
-
+    // 2) Registrar participação (envia hash e assinatura para marcar comprovante como usado)
     const d = await api('/api/participar/', 'POST', {
       numeros: selectedNums,
       nome,
-      telefone
+      telefone,
+      id_transacao: '',
+      hash_imagem: hashImagemAtual || '',
+      assinatura: assinaturaAtual || ''
     });
 
     if (d.ok) {
@@ -910,6 +685,8 @@ if (!dadosResposta.ok) {
       selectedNums = [];
       dadosComprovante = null;
       valorEncontrado = 0;
+      hashImagemAtual = null;
+      assinaturaAtual = null;
 
       await carregarRifa();
       mostrarComprovante(nome, num);
@@ -918,77 +695,36 @@ if (!dadosResposta.ok) {
       document.getElementById('status-comprovante').innerHTML = '❌ Envie um novo comprovante';
 
       showToast(d.mensagem || 'Participação confirmada!', 'success');
-
     } else {
       showToast(d.erro, 'error');
       selectedNums = [];
       await carregarRifa();
     }
 
-    } finally {
-      showLoading(false);
-    }
+  } finally {
+    showLoading(false);
   }
-
+}
 
 function mostrarComprovante(nome, numero) {
-
   const data = new Date().toLocaleDateString('pt-BR');
-
-  const hora = new Date().toLocaleTimeString('pt-BR', {
-    hour: '2-digit',
-    minute: '2-digit'
-  });
-
+  const hora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   const overlay = document.createElement('div');
-
   overlay.id = 'comprovante-overlay';
-
-  overlay.style.cssText =
-    'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;';
-
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;';
   overlay.innerHTML = `
-    <div
-      id="comprovante-card"
-      style="
-        background:#1A1A1A;
-        border:2px solid #C9942A;
-        border-radius:16px;
-        padding:2rem;
-        max-width:380px;
-        width:100%;
-        text-align:center;
-        box-shadow:0 8px 40px rgba(201,148,42,0.3);
-      "
-    >
+    <div id="comprovante-card" style="background:#1A1A1A;border:2px solid #C9942A;border-radius:16px;padding:2rem;max-width:380px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(201,148,42,0.3);">
       <div style="font-size:2rem;margin-bottom:0.5rem;">✝</div>
-
-      <div style="font-family:'Cinzel',serif;font-size:0.7rem;color:#C9942A;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.25rem;">
-        Comprovante de Participação
-      </div>
-
-      <div style="font-family:'Cinzel',serif;font-size:1rem;color:white;font-weight:600;margin-bottom:1.5rem;">
-        Igreja Batista Missionária
-      </div>
-
+      <div style="font-family:'Cinzel',serif;font-size:0.7rem;color:#C9942A;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.25rem;">Comprovante de Participação</div>
+      <div style="font-family:'Cinzel',serif;font-size:1rem;color:white;font-weight:600;margin-bottom:1.5rem;">Igreja Batista Missionária</div>
       <div style="background:rgba(201,148,42,0.1);border:1px solid rgba(201,148,42,0.3);border-radius:10px;padding:1.25rem;margin-bottom:1.25rem;">
-        <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.25rem;">
-          Número
-        </div>
-        <div style="font-family:'Cinzel',serif;font-size:3.5rem;font-weight:700;color:#C9942A;line-height:1;">
-          ${String(numero).padStart(2,'0')}
-        </div>
+        <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.25rem;">Número</div>
+        <div style="font-family:'Cinzel',serif;font-size:3.5rem;font-weight:700;color:#C9942A;line-height:1;">${String(numero).padStart(2,'0')}</div>
       </div>
-
       <div style="margin-bottom:1.25rem;">
-        <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.25rem;">
-          Participante
-        </div>
-        <div style="font-family:'Cinzel',serif;font-size:1.2rem;color:white;font-weight:600;">
-          ${nome}
-        </div>
+        <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.25rem;">Participante</div>
+        <div style="font-family:'Cinzel',serif;font-size:1.2rem;color:white;font-weight:600;">${nome}</div>
       </div>
-
       <div style="display:flex;justify-content:center;gap:2rem;margin-bottom:1.5rem;">
         <div>
           <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;">Data</div>
@@ -999,53 +735,11 @@ function mostrarComprovante(nome, numero) {
           <div style="font-size:0.85rem;color:rgba(255,255,255,0.7);margin-top:0.1rem;">${hora}</div>
         </div>
       </div>
-
-      <button
-        onclick="salvarComprovante()"
-        style="
-          width:100%;
-          padding:0.9rem;
-          background:transparent;
-          border:2px solid #C9942A;
-          border-radius:8px;
-          color:#C9942A;
-          font-family:'Cinzel',serif;
-          font-size:0.9rem;
-          font-weight:700;
-          cursor:pointer;
-          letter-spacing:0.06em;
-          text-transform:uppercase;
-          margin-bottom:0.75rem;
-        "
-      >
-        ⬇ Salvar Comprovante
-      </button>
-
-      <button
-        onclick="fecharComprovante()"
-        style="
-          width:100%;
-          padding:0.9rem;
-          background:#C9942A;
-          border:none;
-          border-radius:8px;
-          color:#111;
-          font-family:'Cinzel',serif;
-          font-size:0.9rem;
-          font-weight:700;
-          cursor:pointer;
-          letter-spacing:0.06em;
-          text-transform:uppercase;
-        "
-      >
-        ✓ Concluir
-      </button>
-
+      <button onclick="salvarComprovante()" style="width:100%;padding:0.9rem;background:transparent;border:2px solid #C9942A;border-radius:8px;color:#C9942A;font-family:'Cinzel',serif;font-size:0.9rem;font-weight:700;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.75rem;">⬇ Salvar Comprovante</button>
+      <button onclick="fecharComprovante()" style="width:100%;padding:0.9rem;background:#C9942A;border:none;border-radius:8px;color:#111;font-family:'Cinzel',serif;font-size:0.9rem;font-weight:700;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;">✓ Concluir</button>
     </div>
   `;
-
   document.body.appendChild(overlay);
-
 }
 
 function fecharComprovante() {
@@ -1056,11 +750,7 @@ function fecharComprovante() {
 async function salvarComprovante() {
   try {
     const canvas = await html2canvas(document.getElementById('comprovante-card'), {
-      backgroundColor: '#1A1A1A',
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      logging: false
+      backgroundColor: '#1A1A1A', scale: 2, useCORS: true, allowTaint: true, logging: false
     });
     const link = document.createElement('a');
     link.download = 'comprovante-rifa.png';
@@ -1076,64 +766,19 @@ async function carregarSorteio() {
   const d = await api('/api/vendidos/');
   const grid = document.getElementById('sold-grid');
   const btn = document.getElementById('btn-sorteio');
-
   if (!d.vendidos || !d.vendidos.length) {
     grid.innerHTML = '<div class="empty-msg">Nenhum número vendido ainda.</div>';
     btn.disabled = true;
     return;
   }
-
   btn.disabled = false;
   grid.innerHTML = '';
-
   d.vendidos.forEach(p => {
     const chip = document.createElement('div');
     chip.className = 'sold-chip';
-    chip.innerHTML = `
-      <span class="sold-chip-num">${String(p.numero).padStart(2,'0')}</span>
-      <span class="sold-chip-name">${p.nome}</span>
-    `;
+    chip.innerHTML = `<span class="sold-chip-num">${String(p.numero).padStart(2,'0')}</span><span class="sold-chip-name">${p.nome}</span>`;
     grid.appendChild(chip);
   });
-}
-
-async function realizarSorteio() {
-  if (spinning) return;
-  spinning = true;
-  const btn = document.getElementById('btn-sorteio');
-  btn.disabled = true;
-
-  const vendidos = await api('/api/vendidos/');
-  if (!vendidos.vendidos.length) { spinning = false; btn.disabled = false; return; }
-
-  const nums = vendidos.vendidos.map(p => p.numero);
-  const wc = document.getElementById('winner-card');
-  const wn = document.getElementById('winner-number');
-  const wnm = document.getElementById('winner-name');
-  wc.style.display = 'block';
-  wc.classList.remove('show');
-  wn.textContent = '??'; wnm.textContent = '...';
-
-  let count = 0;
-  const interval = setInterval(async () => {
-    wn.textContent = String(nums[Math.floor(Math.random()*nums.length)]).padStart(2,'0');
-    count++;
-    if (count >= 25) {
-      clearInterval(interval);
-      const result = await api('/api/sortear/', 'POST');
-      if (result.ok) {
-        wn.textContent = String(result.numero).padStart(2,'0');
-        wnm.textContent = result.nome;
-        wc.classList.add('show');
-      } else if (result.erro === 'Não autorizado.') {
-        wc.style.display = 'none';
-        showToast('Faça login para realizar o sorteio.', 'error');
-        setTimeout(() => window.location.href = '/login/', 1500);
-      }
-      spinning = false;
-      btn.disabled = false;
-    }
-  }, 80);
 }
 
 async function resetarRifa() {
@@ -1153,33 +798,16 @@ async function resetarRifa() {
 }
 
 function copiarPix() {
-  const chave = document.getElementById('pix-key-text').textContent.trim();
-  const btn = document.getElementById('btn-copiar');
-  const el = document.createElement('input');
-  el.value = chave;
-  el.style.position = 'fixed';
-  el.style.top = '0';
-  el.style.left = '0';
-  el.style.opacity = '0';
-  document.body.appendChild(el);
-  el.focus();
-  el.setSelectionRange(0, 99999);
-  document.execCommand('copy');
-  document.body.removeChild(el);
-  btn.textContent = '✓ Copiado!';
-  btn.style.background = '#2A7A4A';
-  btn.style.color = 'white';
-  setTimeout(() => {
-    btn.textContent = 'Copiar';
-    btn.style.background = 'var(--gold)';
-    btn.style.color = 'var(--navy)';
-  }, 2000);
+  navigator.clipboard.writeText('ibmjardimguararapes@gmail.com');
+  showToast('Chave PIX copiada!', 'success');
 }
 
 function showToast(msg, type) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.className = 'toast ' + (type||'');
-  void t.offsetWidth; t.classList.add('show');
+  t.textContent = msg;
+  t.className = 'toast ' + (type||'');
+  void t.offsetWidth;
+  t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 10000);
 }
 
@@ -1190,18 +818,14 @@ async function buscarParticipante() {
   const termo = document.getElementById('busca-excluir').value.trim().toLowerCase();
   const resultado = document.getElementById('resultado-busca');
   if (!termo) { resultado.innerHTML = ''; return; }
-
   const d = await api('/api/vendidos/');
   const encontrados = d.vendidos.filter(p =>
-    p.nome.toLowerCase().includes(termo) ||
-    String(p.numero) === termo
+    p.nome.toLowerCase().includes(termo) || String(p.numero) === termo
   );
-
   if (!encontrados.length) {
     resultado.innerHTML = '<div style="color:rgba(255,255,255,0.4);font-size:0.85rem;">Nenhum participante encontrado.</div>';
     return;
   }
-
   resultado.innerHTML = encontrados.map(p => `
     <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:0.5rem 0.75rem;margin-bottom:0.4rem;">
       <span style="color:white;font-size:0.85rem;"><strong style="color:var(--gold);">#${String(p.numero).padStart(2,'0')}</strong> — ${p.nome}</span>
@@ -1229,26 +853,21 @@ function modoApresentacao() {
   const overlay = document.createElement('div');
   overlay.id = 'apresentacao-overlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:#000;z-index:2000;display:flex;flex-direction:column;align-items:center;justify-content:center;';
-
   overlay.innerHTML = `
     <div style="text-align:center;padding:2rem;">
       <div style="font-size:3rem;margin-bottom:1rem;">✝</div>
       <div style="font-family:'Cinzel',serif;font-size:1rem;color:rgba(255,255,255,0.4);letter-spacing:0.3em;text-transform:uppercase;margin-bottom:0.5rem;">Igreja Batista Missionária</div>
       <div style="font-family:'Cinzel',serif;font-size:1.4rem;color:#C9942A;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:3rem;">Sorteio Beneficente</div>
-
       <div id="apres-numero" style="font-family:'Cinzel',serif;font-size:clamp(6rem,20vw,14rem);font-weight:700;color:#C9942A;line-height:1;text-shadow:0 0 60px rgba(201,148,42,0.4);">—</div>
       <div id="apres-nome" style="font-family:'Cinzel',serif;font-size:clamp(1.5rem,4vw,2.5rem);color:white;margin-top:1rem;min-height:3rem;"></div>
       <div id="apres-status" style="font-size:1rem;color:rgba(255,255,255,0.3);margin-top:0.5rem;font-style:italic;"></div>
-
       <div style="display:flex;gap:1rem;justify-content:center;margin-top:3rem;flex-wrap:wrap;">
         <button onclick="iniciarSorteioApresentacao()" id="btn-apres-sortear" style="padding:1rem 2.5rem;background:linear-gradient(135deg,#C9942A,#E8A820);border:none;border-radius:10px;color:#111;font-family:'Cinzel',serif;font-size:1rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;box-shadow:0 4px 20px rgba(201,148,42,0.4);">✦ Sortear ✦</button>
         <button onclick="fecharApresentacao()" style="padding:1rem 2rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:10px;color:rgba(255,255,255,0.5);font-family:'Cinzel',serif;font-size:0.9rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">Fechar</button>
       </div>
     </div>
   `;
-
   document.body.appendChild(overlay);
-
   if (overlay.requestFullscreen) overlay.requestFullscreen();
   else if (overlay.webkitRequestFullscreen) overlay.webkitRequestFullscreen();
 }
@@ -1258,21 +877,17 @@ async function iniciarSorteioApresentacao() {
   const numEl = document.getElementById('apres-numero');
   const nomeEl = document.getElementById('apres-nome');
   const statusEl = document.getElementById('apres-status');
-
   btn.disabled = true;
   statusEl.textContent = 'Sorteando...';
   nomeEl.textContent = '';
-
   const vendidos = await api('/api/vendidos/');
   if (!vendidos.vendidos.length) {
     statusEl.textContent = 'Nenhum número vendido.';
     btn.disabled = false;
     return;
   }
-
   const nums = vendidos.vendidos.map(p => p.numero);
   let count = 0;
-
   const interval = setInterval(async () => {
     numEl.textContent = String(nums[Math.floor(Math.random()*nums.length)]).padStart(2,'0');
     count++;
@@ -1300,34 +915,24 @@ function fecharApresentacao() {
   if (overlay) overlay.remove();
 }
 
+// ─── Abrir seleção de arquivo e disparar OCR ─────────────────────────────────
 async function abrirComprovante() {
-
   const arquivo = document.createElement('input');
-
   arquivo.type = 'file';
   arquivo.accept = 'image/*';
-
   arquivo.onchange = async () => {
-
     if (!arquivo.files.length) return;
-
     comprovanteArquivo = arquivo.files[0];
-
-    showToast(
-      'Analisando comprovante...',
-      'success'
-    );
-
+    showToast('Analisando comprovante...', 'success');
     await validarComprovanteOCR();
   };
-
   arquivo.click();
 }
 
+// ─── OCR + validação + anti-fraude ──────────────────────────────────────────
 async function validarComprovanteOCR() {
   try {
     const resultado = await Tesseract.recognize(comprovanteArquivo, 'por');
-
     const texto = resultado.data.text
       .toLowerCase()
       .normalize('NFD')
@@ -1336,8 +941,8 @@ async function validarComprovanteOCR() {
     console.log('Texto OCR:', texto);
 
     // PAGADOR
-   let nomePagador = '';
-    const matchPagador = 
+    let nomePagador = '';
+    const matchPagador =
       texto.match(/origem[\s\S]*?nome\s+([^\n]+)/i) ||
       texto.match(/pagador\s*\n+([^\n]+)/i) ||
       texto.match(/pagador\s+([a-záàâãéèêíïóôõöúçñ\s]+)/i);
@@ -1345,12 +950,12 @@ async function validarComprovanteOCR() {
 
     // DATA/HORA
     let dataHoraComprovante = '';
-      const matchDataHora = 
-        texto.match(/(\d{2}\s+\w+\s+\d{4}\s*-\s*\d{2}:\d{2}:\d{2})/i) ||
-        texto.match(/([o0]\d\s+\w+\s+\d{4}\s*-\s*\d{2}:\d{2}:\d{2})/i) ||
-        texto.match(/(\d{2}\/\d{2}\/\d{4}\s+as\s+\d{2}:\d{2}:\d{2})/i) ||
-        texto.match(/(\d{2}\/\d{2}\/\d{4}\s+as\s+\d{2}:\d{2})/i);
-      if (matchDataHora) dataHoraComprovante = matchDataHora[1].trim();
+    const matchDataHora =
+      texto.match(/(\d{2}\s+\w+\s+\d{4}\s*-\s*\d{2}:\d{2}:\d{2})/i) ||
+      texto.match(/([o0]\d\s+\w+\s+\d{4}\s*-\s*\d{2}:\d{2}:\d{2})/i) ||
+      texto.match(/(\d{2}\/\d{2}\/\d{4}\s+as\s+\d{2}:\d{2}:\d{2})/i) ||
+      texto.match(/(\d{2}\/\d{2}\/\d{4}\s+as\s+\d{2}:\d{2})/i);
+    if (matchDataHora) dataHoraComprovante = matchDataHora[1].trim();
 
     console.log('Pagador:', nomePagador);
     console.log('Data/Hora:', dataHoraComprovante);
@@ -1422,14 +1027,7 @@ async function validarComprovanteOCR() {
       valorEncontrado = parseFloat(matchValor[1].replace(/\./g, '').replace(',', '.'));
     }
 
-    console.log('temPix:', temPix);
-    console.log('temIgreja:', temIgreja);
-    console.log('temCNPJ:', temCNPJ);
-    console.log('temChavePix:', temChavePix);
-    console.log('valorEncontrado:', valorEncontrado);
-    console.log('dataValida:', dataValida);
-
-    // APROVAÇÃO POR SCORE
+    // SCORE
     let score = 0;
     if (temPix) score += 30;
     if (temIgreja) score += 20;
@@ -1443,7 +1041,31 @@ async function validarComprovanteOCR() {
     if (score >= 70) {
       console.log('APROVADO');
 
+      // Gerar hash e assinatura
+      const hashImagem = await gerarHashImagem(comprovanteArquivo);
+      const assinatura = `${nomePagador}|${dataHoraComprovante}|${valorEncontrado.toFixed(2)}`.toLowerCase();
+      console.log('Hash:', hashImagem);
+      console.log('Assinatura:', assinatura);
+
+      // Verificar duplicata no servidor ANTES de liberar
+      showToast('Verificando comprovante...', '');
+      const verificacao = await api('/api/verificar-comprovante/', 'POST', {
+        id_transacao: '',
+        hash_imagem: hashImagem,
+        assinatura: assinatura
+      });
+
+      if (!verificacao.ok) {
+        showToast(verificacao.erro || 'Comprovante já utilizado.', 'error');
+        comprovanteEnviado = false;
+        document.getElementById('status-comprovante').innerHTML = '❌ Comprovante já utilizado';
+        return;
+      }
+
+      // Tudo ok — salvar estado
       comprovanteEnviado = true;
+      hashImagemAtual = hashImagem;
+      assinaturaAtual = assinatura;
       dadosComprovante = {
         pagador: nomePagador,
         data_hora: dataHoraComprovante,
@@ -1464,7 +1086,6 @@ async function validarComprovanteOCR() {
       if (valorEncontrado < 50) erros.push('Valor menor que R$ 50');
       if (!dataValida) erros.push('Data inválida');
       if (!temIgreja && !temCNPJ && !temChavePix) erros.push('Destinatário não identificado');
-      console.log('Erros encontrados:', erros);
       showToast(erros.length ? erros.join(' | ') : 'Comprovante inválido.', 'error');
     }
 
@@ -1476,10 +1097,7 @@ async function validarComprovanteOCR() {
 
 function buscarNumero() {
   const n = parseInt(document.getElementById('busca-numero').value);
-  if (!n || n < 1 || n > TOTAL) {
-    showToast('Número inválido.', 'error');
-    return;
-  }
+  if (!n || n < 1 || n > TOTAL) { showToast('Número inválido.', 'error'); return; }
   paginaAtual = Math.ceil(n / POR_PAGINA);
   renderGrid();
   setTimeout(() => {
@@ -1494,28 +1112,13 @@ function buscarNumero() {
   }, 100);
 }
 
-function copiarPix() {
-
-  navigator.clipboard.writeText(
-    'ibmjardimguararapes@gmail.com'
-  );
-
-  showToast(
-    'Chave PIX copiada!',
-    'success'
-  );
-
-}
-
 async function carregarComprovantes() {
   const d = await api('/api/comprovantes/');
   const tbody = document.getElementById('comprovantes-body');
-
   if (!d.comprovantes || !d.comprovantes.length) {
     tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;">Nenhum comprovante registrado.</td></tr>';
     return;
   }
-
   tbody.innerHTML = d.comprovantes.map(c => `
     <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
       <td style="padding:0.6rem 0.5rem;">
@@ -1534,8 +1137,8 @@ async function carregarComprovantes() {
       </td>
       <td style="padding:0.6rem 0.5rem;color:rgba(255,255,255,0.4);font-size:0.78rem;">${c.criado_em}</td>
       <td style="padding:0.6rem 0.5rem;">
-        <button onclick="excluirComprovante(${c.id})" style="padding:0.3rem 0.7rem;background:rgba(139,26,26,0.4);border:1px solid rgba(248,180,180,0.3);border-radius:5px;color:rgba(248,180,180,0.8);font-size:0.75rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Excluir</button>
         <button onclick="editarComprovante(${c.id}, '${c.pagador}', '${c.data_hora_pix}', '${c.nome_participante}')" style="padding:0.3rem 0.7rem;background:rgba(42,80,140,0.4);border:1px solid rgba(100,160,255,0.3);border-radius:5px;color:rgba(100,160,255,0.8);font-size:0.75rem;font-weight:700;cursor:pointer;text-transform:uppercase;margin-right:0.4rem;">Editar</button>
+        <button onclick="excluirComprovante(${c.id})" style="padding:0.3rem 0.7rem;background:rgba(139,26,26,0.4);border:1px solid rgba(248,180,180,0.3);border-radius:5px;color:rgba(248,180,180,0.8);font-size:0.75rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Excluir</button>
       </td>
     </tr>
   `).join('');
@@ -1566,33 +1169,27 @@ function editarComprovante(id, pagador, dataHora, participante) {
   const overlay = document.createElement('div');
   overlay.id = 'editar-overlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:2000;display:flex;align-items:center;justify-content:center;padding:1rem;';
-
   overlay.innerHTML = `
     <div style="background:#1A1A1A;border:2px solid rgba(201,148,42,0.4);border-radius:14px;padding:2rem;max-width:420px;width:100%;">
       <div style="font-family:'Cinzel',serif;font-size:0.85rem;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:1.5rem;">✦ Editar Comprovante</div>
-
       <div style="margin-bottom:1rem;">
         <label style="display:block;font-size:0.75rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Pagador</label>
         <input id="edit-pagador" value="${pagador}" style="width:100%;padding:0.6rem 0.8rem;border-radius:7px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:white;font-size:0.9rem;">
       </div>
-
       <div style="margin-bottom:1rem;">
         <label style="display:block;font-size:0.75rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Data/Hora PIX</label>
         <input id="edit-datahora" value="${dataHora}" style="width:100%;padding:0.6rem 0.8rem;border-radius:7px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:white;font-size:0.9rem;" placeholder="ex: 09 jun 2026 - 14:30:00">
       </div>
-
       <div style="margin-bottom:1.5rem;">
         <label style="display:block;font-size:0.75rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Participante</label>
         <input id="edit-participante" value="${participante}" style="width:100%;padding:0.6rem 0.8rem;border-radius:7px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:white;font-size:0.9rem;">
       </div>
-
       <div style="display:flex;gap:0.75rem;">
         <button onclick="salvarEdicao(${id})" style="flex:1;padding:0.8rem;background:var(--gold);border:none;border-radius:8px;color:#111;font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Salvar</button>
         <button onclick="document.getElementById('editar-overlay').remove()" style="flex:1;padding:0.8rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.5);font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Cancelar</button>
       </div>
     </div>
   `;
-
   document.body.appendChild(overlay);
 }
 
@@ -1600,16 +1197,11 @@ async function salvarEdicao(id) {
   const pagador = document.getElementById('edit-pagador').value.trim();
   const dataHora = document.getElementById('edit-datahora').value.trim();
   const participante = document.getElementById('edit-participante').value.trim();
-
   showLoading(true);
   const d = await api('/api/editar-comprovante/', 'POST', {
-    id,
-    pagador,
-    data_hora_pix: dataHora,
-    nome_participante: participante
+    id, pagador, data_hora_pix: dataHora, nome_participante: participante
   });
   showLoading(false);
-
   if (d.ok) {
     document.getElementById('editar-overlay').remove();
     showToast('Comprovante atualizado!', 'success');
@@ -1618,11 +1210,9 @@ async function salvarEdicao(id) {
     showToast(d.erro, 'error');
   }
 }
-
 </script>
 
 <div class="loading-overlay" id="loading"><div class="loading-spinner"></div></div>
 <div class="toast" id="toast"></div>
-</body>
 </body>
 </html>

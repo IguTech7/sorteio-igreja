@@ -64,3 +64,15 @@ class RegistroComprovante(models.Model):
 
     def __str__(self):
         return f"{self.pagador} — R${self.valor} — {self.data_hora_pix}"
+
+class ComprovanteUsado(models.Model):
+    id_transacao = models.CharField(max_length=200, blank=True)
+    hash_imagem = models.CharField(max_length=64, blank=True, unique=False)
+    assinatura = models.CharField(max_length=200, blank=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Comprovante Usado"
+
+    def __str__(self):
+        return self.id_transacao or self.assinatura or self.hash_imagem
