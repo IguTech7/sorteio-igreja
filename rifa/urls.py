@@ -17,4 +17,5 @@ urlpatterns = [
     path('api/comprovantes/', views.api_comprovantes, name='api_comprovantes'),
     path('api/excluir-comprovante/', views.api_excluir_comprovante, name='api_excluir_comprovante'),
     path('api/editar-comprovante/', views.api_editar_comprovante, name='api_editar_comprovante'),
+    path('api/verificar-comprovante/', views.api_verificar_comprovante),
 ]

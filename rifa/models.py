@@ -48,6 +48,7 @@ class Sorteio(models.Model):
     def __str__(self):
         return f"Sorteio: #{self.numero_vencedor} - {self.nome_vencedor}"
 
+
 class RegistroComprovante(models.Model):
     nome_participante = models.CharField(max_length=100, blank=True)
     pagador = models.CharField(max_length=200, blank=True)
@@ -55,8 +56,9 @@ class RegistroComprovante(models.Model):
     valor = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     texto_ocr = models.TextField(blank=True)
     imagem = models.ImageField(upload_to='comprovantes/', blank=True, null=True)
+    hash_imagem = models.CharField(max_length=64, blank=True)
+    assinatura = models.CharField(max_length=300, blank=True)
     criado_em = models.DateTimeField(auto_now_add=True)
-    numero = models.IntegerField(null=True, blank=True)
 
     class Meta:
         verbose_name = "Registro de Comprovante"
@@ -64,15 +66,3 @@ class RegistroComprovante(models.Model):
 
     def __str__(self):
         return f"{self.pagador} — R${self.valor} — {self.data_hora_pix}"
-
-class ComprovanteUsado(models.Model):
-    id_transacao = models.CharField(max_length=200, blank=True)
-    hash_imagem = models.CharField(max_length=64, blank=True, unique=False)
-    assinatura = models.CharField(max_length=200, blank=True)
-    criado_em = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name = "Comprovante Usado"
-
-    def __str__(self):
-        return self.id_transacao or self.assinatura or self.hash_imagem

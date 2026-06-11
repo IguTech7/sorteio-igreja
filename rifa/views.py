@@ -7,10 +7,9 @@ from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_POST, require_GET
 from django.views.decorators.csrf import csrf_exempt
 import json
-
-from .models import Participante, Configuracao, Sorteio, RegistroComprovante, ComprovanteUsado
-from django.utils import timezone
 from zoneinfo import ZoneInfo
+
+from .models import Participante, Configuracao, Sorteio, RegistroComprovante
 
 
 def index(request):
@@ -42,9 +41,6 @@ def api_participar(request):
         numeros = data.get('numeros', [])
         nome = data.get('nome', '').strip()
         telefone = data.get('telefone', '').strip()
-        id_transacao = data.get('id_transacao', '').strip().lower()[:20]
-        hash_imagem = data.get('hash_imagem', '').strip()
-        assinatura = data.get('assinatura', '').strip()
     except:
         return JsonResponse({'ok': False, 'erro': 'Dados inválidos.'}, status=400)
 
@@ -52,7 +48,6 @@ def api_participar(request):
 
     if not nome:
         return JsonResponse({'ok': False, 'erro': 'Nome é obrigatório.'}, status=400)
-
     if not numeros:
         return JsonResponse({'ok': False, 'erro': 'Selecione ao menos um número.'}, status=400)
 
@@ -64,22 +59,10 @@ def api_participar(request):
                     return JsonResponse({'ok': False, 'erro': f'Número {numero} inválido.'}, status=400)
                 if Participante.objects.filter(numero=numero).exists():
                     return JsonResponse({'ok': False, 'erro': f'O número {numero} já está ocupado.'}, status=409)
-
             for numero in numeros:
                 Participante.objects.create(numero=numero, nome=nome, telefone=telefone)
-
     except IntegrityError:
         return JsonResponse({'ok': False, 'erro': 'Um ou mais números já foram reservados.'}, status=409)
-
-    # Salvar o comprovante usado para evitar reutilização futura
-    if id_transacao or hash_imagem or assinatura:
-        ComprovanteUsado.objects.get_or_create(
-            hash_imagem=hash_imagem,
-            defaults={
-                'id_transacao': id_transacao,
-                'assinatura': assinatura,
-            }
-        )
 
     return JsonResponse({'ok': True, 'mensagem': f'{len(numeros)} número(s) confirmado(s) para {nome}!'})
 
@@ -135,7 +118,6 @@ def api_excluir(request):
         numero = int(data.get('numero', 0))
     except (ValueError, KeyError):
         return JsonResponse({'ok': False, 'erro': 'Dados inválidos.'}, status=400)
-
     try:
         p = Participante.objects.get(numero=numero)
         nome = p.nome
@@ -147,6 +129,25 @@ def api_excluir(request):
 
 @csrf_exempt
 @require_POST
+def api_verificar_comprovante(request):
+    try:
+        data = json.loads(request.body)
+        hash_imagem = data.get('hash_imagem', '').strip()
+        assinatura = data.get('assinatura', '').strip()
+    except:
+        return JsonResponse({'ok': False, 'erro': 'Dados inválidos.'}, status=400)
+
+    if hash_imagem and RegistroComprovante.objects.filter(hash_imagem=hash_imagem).exists():
+        return JsonResponse({'ok': False, 'erro': 'Comprovante já utilizado.'})
+
+    if assinatura and RegistroComprovante.objects.filter(assinatura=assinatura).exists():
+        return JsonResponse({'ok': False, 'erro': 'Comprovante já utilizado.'})
+
+    return JsonResponse({'ok': True})
+
+
+@csrf_exempt
+@require_POST
 def api_registrar_comprovante(request):
     try:
         nome_participante = request.POST.get('nome_participante', '').strip()
@@ -154,18 +155,9 @@ def api_registrar_comprovante(request):
         data_hora_pix = request.POST.get('data_hora_pix', '').strip()
         valor = request.POST.get('valor', 0)
         texto_ocr = request.POST.get('texto_ocr', '').strip()
+        hash_imagem = request.POST.get('hash_imagem', '').strip()
+        assinatura = request.POST.get('assinatura', '').strip()
         imagem = request.FILES.get('imagem')
-
-        # Verificar duplicata pela combinação pagador + data/hora + valor
-        if pagador and data_hora_pix:
-            duplicata = RegistroComprovante.objects.filter(
-                pagador__iexact=pagador,
-                data_hora_pix__iexact=data_hora_pix,
-                valor=valor
-            ).exists()
-
-            if duplicata:
-                return JsonResponse({'ok': False, 'erro': 'Comprovante já utilizado.'})
 
         RegistroComprovante.objects.create(
             nome_participante=nome_participante,
@@ -173,7 +165,9 @@ def api_registrar_comprovante(request):
             data_hora_pix=data_hora_pix,
             valor=valor,
             texto_ocr=texto_ocr,
-            imagem=imagem
+            imagem=imagem,
+            hash_imagem=hash_imagem,
+            assinatura=assinatura,
         )
         return JsonResponse({'ok': True})
     except Exception as e:
@@ -190,7 +184,6 @@ def api_comprovantes(request):
         numeros = list(Participante.objects.filter(
             nome__icontains=r.nome_participante
         ).values_list('numero', flat=True).order_by('numero'))
-
         data.append({
             'id': r.id,
             'pagador': r.pagador,
@@ -200,6 +193,7 @@ def api_comprovantes(request):
             'criado_em': r.criado_em.astimezone(ZoneInfo('America/Recife')).strftime('%d/%m/%Y %H:%M'),
             'imagem_url': r.imagem.url if r.imagem else None,
             'numeros': numeros,
+            'hash_imagem': r.hash_imagem,
         })
     return JsonResponse({'comprovantes': data})
 
@@ -240,25 +234,3 @@ def api_editar_comprovante(request):
         return JsonResponse({'ok': False, 'erro': 'Registro não encontrado.'}, status=404)
     except Exception as e:
         return JsonResponse({'ok': False, 'erro': str(e)}, status=400)
-
-
-@csrf_exempt
-@require_POST
-def api_verificar_comprovante(request):
-    try:
-        data = json.loads(request.body)
-        id_transacao = data.get('id_transacao', '').strip().lower()[:20]
-        hash_imagem = data.get('hash_imagem', '').strip()
-        assinatura = data.get('assinatura', '').strip()
-    except:
-        return JsonResponse({'ok': False, 'erro': 'Dados inválidos.'}, status=400)
-
-    # Verifica hash da imagem (camada mais forte — bytes idênticos)
-    if hash_imagem and ComprovanteUsado.objects.filter(hash_imagem=hash_imagem).exists():
-        return JsonResponse({'ok': False, 'erro': 'Comprovante já utilizado.'})
-
-    # Verifica assinatura (pagador + data/hora + valor)
-    if assinatura and ComprovanteUsado.objects.filter(assinatura=assinatura).exists():
-        return JsonResponse({'ok': False, 'erro': 'Comprovante já utilizado.'})
-
-    return JsonResponse({'ok': True})

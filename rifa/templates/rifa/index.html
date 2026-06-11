@@ -465,6 +465,7 @@
             <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Participante</th>
             <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Números</th>
             <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Enviado em</th>
+            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Hash</th>
             <th style="padding:0.6rem 0.5rem;"></th>
           </tr>
         </thead>
@@ -645,13 +646,15 @@ async function confirmarParticipacao() {
   showLoading(true);
 
   try {
-    // 1) Registrar comprovante
+    // 1) Registrar comprovante com hash e assinatura
     const formData = new FormData();
     formData.append('nome_participante', nome);
     formData.append('pagador', dadosComprovante?.pagador || '');
     formData.append('data_hora_pix', dadosComprovante?.data_hora || '');
     formData.append('valor', valorEncontrado);
     formData.append('texto_ocr', dadosComprovante?.texto_ocr || '');
+    formData.append('hash_imagem', hashImagemAtual || '');
+    formData.append('assinatura', assinaturaAtual || '');
     if (comprovanteArquivo) formData.append('imagem', comprovanteArquivo);
 
     const respostaComprovante = await fetch('/api/registrar-comprovante/', {
@@ -666,14 +669,11 @@ async function confirmarParticipacao() {
       return;
     }
 
-    // 2) Registrar participação (envia hash e assinatura para marcar comprovante como usado)
+    // 2) Confirmar participação
     const d = await api('/api/participar/', 'POST', {
       numeros: selectedNums,
       nome,
-      telefone,
-      id_transacao: '',
-      hash_imagem: hashImagemAtual || '',
-      assinatura: assinaturaAtual || ''
+      telefone
     });
 
     if (d.ok) {
@@ -693,7 +693,6 @@ async function confirmarParticipacao() {
 
       comprovanteEnviado = false;
       document.getElementById('status-comprovante').innerHTML = '❌ Envie um novo comprovante';
-
       showToast(d.mensagem || 'Participação confirmada!', 'success');
     } else {
       showToast(d.erro, 'error');
@@ -1055,6 +1054,10 @@ async function validarComprovanteOCR() {
         assinatura: assinatura
       });
 
+      console.log("OK:", verificacao.ok);
+      console.log("ERRO:", verificacao.erro);
+      console.log("OBJETO:", verificacao);
+
       if (!verificacao.ok) {
         showToast(verificacao.erro || 'Comprovante já utilizado.', 'error');
         comprovanteEnviado = false;
@@ -1115,10 +1118,12 @@ function buscarNumero() {
 async function carregarComprovantes() {
   const d = await api('/api/comprovantes/');
   const tbody = document.getElementById('comprovantes-body');
+
   if (!d.comprovantes || !d.comprovantes.length) {
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;">Nenhum comprovante registrado.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;">Nenhum comprovante registrado.</td></tr>';
     return;
   }
+
   tbody.innerHTML = d.comprovantes.map(c => `
     <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
       <td style="padding:0.6rem 0.5rem;">
@@ -1132,10 +1137,11 @@ async function carregarComprovantes() {
       <td style="padding:0.6rem 0.5rem;color:rgba(255,255,255,0.8);">${c.nome_participante || '—'}</td>
       <td style="padding:0.6rem 0.5rem;">
         ${c.numeros && c.numeros.length
-          ? c.numeros.map(n => `<span style="display:inline-block;background:rgba(201,148,42,0.15);border:1px solid rgba(201,148,42,0.3);border-radius:5px;padding:0.2rem 0.5rem;margin:0.1rem;font-family:'Cinzel',serif;font-size:0.8rem;color:var(--gold);">${String(n).padStart(2,'0')}</span>`).join('')
+          ? c.numeros.map(n => `<span style="display:inline-block;background:rgba(201,148,42,0.15);border:1px solid rgba(201,148,42,0.3);border-radius:5px;padding:0.2rem 0.5rem;margin:0.1rem;font-family:'Cinzel',serif;font-size:0.8rem;color:var(--gold);">${String(n).padStart(2,'00')}</span>`).join('')
           : '<span style="color:rgba(255,255,255,0.2);font-size:0.75rem;">—</span>'}
       </td>
       <td style="padding:0.6rem 0.5rem;color:rgba(255,255,255,0.4);font-size:0.78rem;">${c.criado_em}</td>
+      <td style="padding:0.6rem 0.5rem;color:rgba(255,255,255,0.3);font-size:0.7rem;font-family:monospace;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${c.hash_imagem || ''}">${c.hash_imagem ? c.hash_imagem.substring(0,8)+'...' : '—'}</td>
       <td style="padding:0.6rem 0.5rem;">
         <button onclick="editarComprovante(${c.id}, '${c.pagador}', '${c.data_hora_pix}', '${c.nome_participante}')" style="padding:0.3rem 0.7rem;background:rgba(42,80,140,0.4);border:1px solid rgba(100,160,255,0.3);border-radius:5px;color:rgba(100,160,255,0.8);font-size:0.75rem;font-weight:700;cursor:pointer;text-transform:uppercase;margin-right:0.4rem;">Editar</button>
         <button onclick="excluirComprovante(${c.id})" style="padding:0.3rem 0.7rem;background:rgba(139,26,26,0.4);border:1px solid rgba(248,180,180,0.3);border-radius:5px;color:rgba(248,180,180,0.8);font-size:0.75rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Excluir</button>
