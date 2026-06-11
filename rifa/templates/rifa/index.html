@@ -508,7 +508,7 @@
 
     <div class="numbers-grid" id="numbers-grid"></div>
 
-    <div class="form-card">
+    <div class="form-card" style="margin-top:2rem;">
 
   <div class="card-title">
     ✦ Confirmar Participação
@@ -746,10 +746,17 @@ async function carregarRifa() {
   renderGrid();
 }
 
+let paginaAtual = 1;
+const POR_PAGINA = 100;
+
 function renderGrid() {
   const grid = document.getElementById('numbers-grid');
   grid.innerHTML = '';
-  for (let i = 1; i <= TOTAL; i++) {
+
+  const inicio = (paginaAtual - 1) * POR_PAGINA + 1;
+  const fim = Math.min(paginaAtual * POR_PAGINA, TOTAL);
+
+  for (let i = inicio; i <= fim; i++) {
     const btn = document.createElement('button');
     btn.className = 'num-btn';
     btn.textContent = i;
@@ -758,14 +765,64 @@ function renderGrid() {
       btn.title = 'Ocupado: ' + ocupados[i];
       btn.disabled = true;
     } else if (selectedNums.includes(i)) {
-  btn.classList.add('selected');
-  btn.onclick = () => selectNums(i);
-} else {
+      btn.classList.add('selected');
+      btn.onclick = () => selectNums(i);
+    } else {
       btn.onclick = () => selectNums(i);
     }
     grid.appendChild(btn);
   }
+
+  renderPaginacao();
   updateConfirmBtn();
+}
+
+function renderPaginacao() {
+  const totalPaginas = Math.ceil(TOTAL / POR_PAGINA);
+  let pag = document.getElementById('paginacao');
+  if (!pag) {
+    pag = document.createElement('div');
+    pag.id = 'paginacao';
+    pag.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-top:1rem;flex-wrap:wrap;';
+    document.getElementById('numbers-grid').after(pag);
+  }
+
+  pag.innerHTML = '';
+
+  // Botão anterior
+  const btnAnterior = document.createElement('button');
+  btnAnterior.textContent = '← Anterior';
+  btnAnterior.disabled = paginaAtual === 1;
+  btnAnterior.style.cssText = 'padding:0.5rem 1rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:white;cursor:pointer;font-size:0.8rem;font-weight:700;';
+  btnAnterior.onclick = () => { paginaAtual--; renderGrid(); window.scrollTo({top: document.getElementById('numbers-grid').offsetTop - 100, behavior:'smooth'}); };
+  pag.appendChild(btnAnterior);
+
+  // Info da página
+  const info = document.createElement('span');
+  info.style.cssText = 'color:rgba(255,255,255,0.6);font-size:0.85rem;font-family:"Cinzel",serif;padding:0 0.5rem;';
+  info.textContent = `Página ${paginaAtual} de ${totalPaginas}`;
+  pag.appendChild(info);
+
+  // Botão próximo
+  const btnProximo = document.createElement('button');
+  btnProximo.textContent = 'Próxima →';
+  btnProximo.disabled = paginaAtual === totalPaginas;
+  btnProximo.style.cssText = 'padding:0.5rem 1rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:white;cursor:pointer;font-size:0.8rem;font-weight:700;';
+  btnProximo.onclick = () => { paginaAtual++; renderGrid(); window.scrollTo({top: document.getElementById('numbers-grid').offsetTop - 100, behavior:'smooth'}); };
+  pag.appendChild(btnProximo);
+
+  // Seletor de página
+  const select = document.createElement('select');
+  select.style.cssText = 'padding:0.5rem;background:#111;border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:white;font-size:0.8rem;cursor:pointer;';
+  for (let i = 1; i <= totalPaginas; i++) {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = `${(i-1)*POR_PAGINA+1}–${Math.min(i*POR_PAGINA, TOTAL)}`;
+    if (i === paginaAtual) opt.selected = true;
+    select.appendChild(opt);
+  }
+  select.onchange = () => { paginaAtual = parseInt(select.value); renderGrid(); };
+  pag.appendChild(select);
 }
 
 function selectNums(n) {
@@ -1423,17 +1480,18 @@ function buscarNumero() {
     showToast('Número inválido.', 'error');
     return;
   }
-  const btns = document.querySelectorAll('.num-btn');
-  btns.forEach(btn => btn.style.outline = '');
-  const btn = btns[n - 1];
-  if (!btn) return;
-  btn.style.outline = '3px solid white';
-  btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  if (!btn.classList.contains('taken')) {
-    selectNums(n);
-  } else {
-    showToast(`Número ${n} já está ocupado.`, 'error');
-  }
+  paginaAtual = Math.ceil(n / POR_PAGINA);
+  renderGrid();
+  setTimeout(() => {
+    const btns = document.querySelectorAll('.num-btn');
+    const idx = n - (paginaAtual - 1) * POR_PAGINA - 1;
+    const btn = btns[idx];
+    if (!btn) return;
+    btn.style.outline = '3px solid white';
+    btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (!btn.classList.contains('taken')) selectNums(n);
+    else showToast(`Número ${n} já está ocupado.`, 'error');
+  }, 100);
 }
 
 function copiarPix() {
