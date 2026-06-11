@@ -7,10 +7,9 @@ from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_POST, require_GET
 from django.views.decorators.csrf import csrf_exempt
 import json
+from zoneinfo import ZoneInfo
 
 from .models import Participante, Configuracao, Sorteio, RegistroComprovante
-from django.utils import timezone
-from zoneinfo import ZoneInfo
 
 
 def index(request):
@@ -49,7 +48,6 @@ def api_participar(request):
 
     if not nome:
         return JsonResponse({'ok': False, 'erro': 'Nome é obrigatório.'}, status=400)
-
     if not numeros:
         return JsonResponse({'ok': False, 'erro': 'Selecione ao menos um número.'}, status=400)
 
@@ -61,10 +59,8 @@ def api_participar(request):
                     return JsonResponse({'ok': False, 'erro': f'Número {numero} inválido.'}, status=400)
                 if Participante.objects.filter(numero=numero).exists():
                     return JsonResponse({'ok': False, 'erro': f'O número {numero} já está ocupado.'}, status=409)
-
             for numero in numeros:
                 Participante.objects.create(numero=numero, nome=nome, telefone=telefone)
-
     except IntegrityError:
         return JsonResponse({'ok': False, 'erro': 'Um ou mais números já foram reservados.'}, status=409)
 
@@ -122,7 +118,6 @@ def api_excluir(request):
         numero = int(data.get('numero', 0))
     except (ValueError, KeyError):
         return JsonResponse({'ok': False, 'erro': 'Dados inválidos.'}, status=400)
-
     try:
         p = Participante.objects.get(numero=numero)
         nome = p.nome
@@ -143,6 +138,15 @@ def api_registrar_comprovante(request):
         texto_ocr = request.POST.get('texto_ocr', '').strip()
         imagem = request.FILES.get('imagem')
 
+        if pagador and data_hora_pix:
+            duplicata = RegistroComprovante.objects.filter(
+                pagador__iexact=pagador,
+                data_hora_pix__iexact=data_hora_pix,
+                valor=valor
+            ).exists()
+            if duplicata:
+                return JsonResponse({'ok': False, 'erro': 'Comprovante já utilizado.'})
+
         RegistroComprovante.objects.create(
             nome_participante=nome_participante,
             pagador=pagador,
@@ -155,6 +159,7 @@ def api_registrar_comprovante(request):
     except Exception as e:
         return JsonResponse({'ok': False, 'erro': str(e)}, status=400)
 
+
 @require_GET
 def api_comprovantes(request):
     if not request.user.is_authenticated:
@@ -162,12 +167,9 @@ def api_comprovantes(request):
     registros = RegistroComprovante.objects.all().order_by('-criado_em')
     data = []
     for r in registros:
-        # Busca os números do participante pelo nome
         numeros = list(Participante.objects.filter(
             nome__icontains=r.nome_participante
         ).values_list('numero', flat=True).order_by('numero'))
-        print(f"Nome: {r.nome_participante} | Numeros: {numeros}")
-                
         data.append({
             'id': r.id,
             'pagador': r.pagador,
@@ -179,8 +181,6 @@ def api_comprovantes(request):
             'numeros': numeros,
         })
     return JsonResponse({'comprovantes': data})
-
-    
 
 
 @csrf_exempt
@@ -200,56 +200,6 @@ def api_excluir_comprovante(request):
     except RegistroComprovante.DoesNotExist:
         return JsonResponse({'ok': False, 'erro': 'Registro não encontrado.'}, status=404)
 
-
-@csrf_exempt
-@require_POST
-def api_registrar_comprovante(request):
-    try:
-        nome_participante = request.POST.get('nome_participante', '').strip()
-        pagador = request.POST.get('pagador', '').strip()
-        data_hora_pix = request.POST.get('data_hora_pix', '').strip()
-        valor = request.POST.get('valor', 0)
-        texto_ocr = request.POST.get('texto_ocr', '').strip()
-        imagem = request.FILES.get('imagem')
-
-        # VERIFICAR DUPLICATA
-        if pagador and data_hora_pix:
-            duplicata = RegistroComprovante.objects.filter(
-                pagador__iexact=pagador,
-                data_hora_pix__iexact=data_hora_pix,
-                valor=valor
-            ).exists()
-
-            if duplicata:
-                return JsonResponse({'ok': False, 'erro': 'Comprovante já utilizado.'})
-
-        RegistroComprovante.objects.create(
-            nome_participante=nome_participante,
-            pagador=pagador,
-            data_hora_pix=data_hora_pix,
-            valor=valor,
-            texto_ocr=texto_ocr,
-            imagem=imagem
-        )
-        return JsonResponse({'ok': True})
-    except Exception as e:
-        return JsonResponse({'ok': False, 'erro': str(e)}, status=400)
-
-@require_GET
-def api_comprovantes(request):
-    if not request.user.is_authenticated:
-        return JsonResponse({'ok': False, 'erro': 'Não autorizado.'}, status=401)
-    registros = RegistroComprovante.objects.all().order_by('-criado_em')
-    data = [{
-        'id': r.id,
-        'pagador': r.pagador,
-        'data_hora_pix': r.data_hora_pix,
-        'valor': float(r.valor),
-        'nome_participante': r.nome_participante,
-        'criado_em': r.criado_em.astimezone(ZoneInfo('America/Recife')).strftime('%d/%m/%Y %H:%M'),
-        'imagem_url': r.imagem.url if r.imagem else None,
-    } for r in registros]
-    return JsonResponse({'comprovantes': data})
 
 @csrf_exempt
 @require_POST
