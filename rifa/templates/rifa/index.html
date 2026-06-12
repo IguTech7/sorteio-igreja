@@ -645,7 +645,9 @@ async function confirmarParticipacao() {
 
   const numerosPermitidos = Math.floor(valorEncontrado / 50);
 if (selectedNums.length < numerosPermitidos) {
-  const continuar = confirm(`Você pagou R$ ${valorEncontrado.toFixed(2)} e tem direito a ${numerosPermitidos} número(s), mas selecionou apenas ${selectedNums.length}. Deseja confirmar assim mesmo?`);
+  const continuar = await confirmarAviso(
+    `Você pagou <strong style="color:var(--gold);">R$ ${valorEncontrado.toFixed(2)}</strong> e tem direito a <strong style="color:var(--gold);">${numerosPermitidos} número(s)</strong>, mas selecionou apenas <strong style="color:var(--gold);">${selectedNums.length}</strong>. Deseja confirmar assim mesmo?`
+  );
   if (!continuar) return;
 }
 
@@ -1222,6 +1224,28 @@ async function salvarEdicao(id) {
     showToast(d.erro, 'error');
   }
 }
+
+function confirmarAviso(mensagem) {
+  return new Promise((resolve) => {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;';
+    overlay.innerHTML = `
+      <div style="background:#1A1A1A;border:2px solid rgba(201,148,42,0.4);border-radius:16px;padding:2rem;max-width:360px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(201,148,42,0.2);">
+        <div style="font-size:2rem;margin-bottom:1rem;">⚠️</div>
+        <div style="font-family:'Cinzel',serif;font-size:0.8rem;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.75rem;">Atenção</div>
+        <div style="font-size:0.95rem;color:rgba(255,255,255,0.8);line-height:1.6;margin-bottom:1.75rem;">${mensagem}</div>
+        <div style="display:flex;gap:0.75rem;">
+          <button id="aviso-cancelar" style="flex:1;padding:0.85rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.6);font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Voltar</button>
+          <button id="aviso-confirmar" style="flex:1;padding:0.85rem;background:linear-gradient(135deg,var(--gold),#E8A820);border:none;border-radius:8px;color:#111;font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Confirmar</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    document.getElementById('aviso-confirmar').onclick = () => { overlay.remove(); resolve(true); };
+    document.getElementById('aviso-cancelar').onclick = () => { overlay.remove(); resolve(false); };
+  });
+}
+
 </script>
 
 <div class="loading-overlay" id="loading"><div class="loading-spinner"></div></div>
