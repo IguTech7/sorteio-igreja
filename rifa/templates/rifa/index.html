@@ -643,6 +643,12 @@ async function confirmarParticipacao() {
     return;
   }
 
+  const numerosPermitidos = Math.floor(valorEncontrado / 50);
+if (selectedNums.length < numerosPermitidos) {
+  const continuar = confirm(`Você pagou R$ ${valorEncontrado.toFixed(2)} e tem direito a ${numerosPermitidos} número(s), mas selecionou apenas ${selectedNums.length}. Deseja confirmar assim mesmo?`);
+  if (!continuar) return;
+}
+
   showLoading(true);
 
   try {
