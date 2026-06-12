@@ -1,3 +1,4 @@
+import os
 import random
 import io
 import qrcode
@@ -10,6 +11,21 @@ import json
 from zoneinfo import ZoneInfo
 
 from .models import Participante, Configuracao, Sorteio, RegistroComprovante
+
+import requests as req_http
+
+def enviar_telegram(mensagem):
+    token = os.environ.get('TELEGRAM_TOKEN')
+    chat_id = os.environ.get('TELEGRAM_CHAT_ID')
+    if not token or not chat_id:
+        return
+    try:
+        req_http.post(
+            f'https://api.telegram.org/bot{token}/sendMessage',
+            json={'chat_id': chat_id, 'text': mensagem, 'parse_mode': 'HTML'}
+        )
+    except:
+        pass
 
 
 def index(request):
@@ -63,6 +79,9 @@ def api_participar(request):
                 Participante.objects.create(numero=numero, nome=nome, telefone=telefone)
     except IntegrityError:
         return JsonResponse({'ok': False, 'erro': 'Um ou mais números já foram reservados.'}, status=409)
+    
+    mensagem = f"🎟 <b>Nova participação!</b>\n\n👤 <b>Nome:</b> {nome}\n📱 <b>Telefone:</b> {telefone or '—'}\n🔢 <b>Números:</b> {', '.join(str(n) for n in numeros)}\n💰 <b>Total:</b> R$ {len(numeros) * 50:.2f}"
+    enviar_telegram(mensagem)
 
     return JsonResponse({'ok': True, 'mensagem': f'{len(numeros)} número(s) confirmado(s) para {nome}!'})
 
@@ -242,3 +261,4 @@ def api_editar_comprovante(request):
         return JsonResponse({'ok': False, 'erro': 'Registro não encontrado.'}, status=404)
     except Exception as e:
         return JsonResponse({'ok': False, 'erro': str(e)}, status=400)
+
