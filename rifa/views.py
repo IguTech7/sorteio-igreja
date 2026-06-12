@@ -201,6 +201,7 @@ def api_comprovantes(request):
             'criado_em': r.criado_em.astimezone(ZoneInfo('America/Recife')).strftime('%d/%m/%Y %H:%M'),
             'imagem_url': r.imagem.url if r.imagem else None,
             'numeros': numeros,
+            'hash_imagem': r.hash_imagem,
         })
     return JsonResponse({'comprovantes': data})
 
