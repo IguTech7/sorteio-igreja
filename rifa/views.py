@@ -159,6 +159,14 @@ def api_registrar_comprovante(request):
         assinatura = request.POST.get('assinatura', '').strip()
         imagem = request.FILES.get('imagem')
 
+        # Verificar duplicata por hash (mais forte)
+        if hash_imagem and RegistroComprovante.objects.filter(hash_imagem=hash_imagem).exists():
+            return JsonResponse({'ok': False, 'erro': 'Comprovante já utilizado.'})
+
+        # Verificar duplicata por assinatura (pagador+data+valor)
+        if assinatura and RegistroComprovante.objects.filter(assinatura=assinatura).exists():
+            return JsonResponse({'ok': False, 'erro': 'Comprovante já utilizado.'})
+
         RegistroComprovante.objects.create(
             nome_participante=nome_participante,
             pagador=pagador,
@@ -193,7 +201,6 @@ def api_comprovantes(request):
             'criado_em': r.criado_em.astimezone(ZoneInfo('America/Recife')).strftime('%d/%m/%Y %H:%M'),
             'imagem_url': r.imagem.url if r.imagem else None,
             'numeros': numeros,
-            'hash_imagem': r.hash_imagem,
         })
     return JsonResponse({'comprovantes': data})
 
