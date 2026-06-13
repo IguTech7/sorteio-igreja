@@ -364,6 +364,7 @@
     <div style="display:flex;gap:0.5rem;margin-bottom:1rem;margin-top:1rem;">
       <input type="number" id="busca-numero" min="1" max="{{ config.total_numeros }}" placeholder="Buscar número..." style="flex:1;padding:0.7rem 0.9rem;border-radius:7px;border:1.5px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:white;font-size:1rem;font-family:'Lato',sans-serif;">
       <button onclick="buscarNumero()" style="padding:0.7rem 1.2rem;background:var(--gold);border:none;border-radius:7px;color:#111;font-size:0.85rem;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;">Buscar</button>
+      <button onclick="escolherPorMim()" style="padding:0.7rem 1.2rem;background:linear-gradient(135deg,var(--gold),#E8A820);border:none;border-radius:7px;color:#111;font-size:0.85rem;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;">🎲 Escolher pra mim</button>
     </div>
 
     <div class="numbers-grid" id="numbers-grid"></div>
@@ -1462,6 +1463,35 @@ function exportarCSV() {
   link.href = URL.createObjectURL(blob);
   link.download = `comprovantes_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.csv`;
   link.click();
+}
+
+function escolherPorMim() {
+  const disponiveis = [];
+  for (let i = 1; i <= TOTAL; i++) {
+    if (!ocupados[i] && !selectedNums.includes(i)) {
+      disponiveis.push(i);
+    }
+  }
+
+  if (!disponiveis.length) {
+    showToast('Não há números disponíveis.', 'error');
+    return;
+  }
+
+  const aleatorio = disponiveis[Math.floor(Math.random() * disponiveis.length)];
+  selectNums(aleatorio);
+
+  // Vai pra página do número sorteado
+  paginaAtual = Math.ceil(aleatorio / POR_PAGINA);
+  renderGrid();
+  setTimeout(() => {
+    const btns = document.querySelectorAll('.num-btn');
+    const idx = aleatorio - (paginaAtual - 1) * POR_PAGINA - 1;
+    const btn = btns[idx];
+    if (btn) btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 100);
+
+  showToast(`Número ${aleatorio} selecionado para você! 🎲`, 'success');
 }
 
 </script>
