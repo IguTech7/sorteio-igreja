@@ -455,8 +455,9 @@
 <div id="page-comprovantes" class="page">
   <div class="page-inner">
     <div class="sorteio-header"><h2>Comprovantes</h2></div>
-    <div class="admin-card" style="overflow-x:auto;">
-      <table id="tabela-comprovantes" style="width:100%;border-collapse:collapse;font-size:0.85rem;">
+    <div id="comprovantes-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:1rem;">
+  <div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;grid-column:1/-1;">Carregando...</div>
+</div>
         <thead>
           <tr style="border-bottom:1px solid rgba(201,148,42,0.3);">
             <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Imagem</th>
@@ -1191,37 +1192,75 @@ async function carregarTentativas() {
 
 async function carregarComprovantes() {
   const d = await api('/api/comprovantes/');
-  const tbody = document.getElementById('comprovantes-body');
+  const grid = document.getElementById('comprovantes-grid');
 
   if (!d.comprovantes || !d.comprovantes.length) {
-    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;">Nenhum comprovante registrado.</td></tr>';
+    grid.innerHTML = '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;grid-column:1/-1;">Nenhum comprovante registrado.</div>';
     return;
   }
 
-  tbody.innerHTML = d.comprovantes.map(c => `
-    <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-      <td style="padding:0.6rem 0.5rem;">
-        ${c.imagem_url
-          ? `<img src="${c.imagem_url}" onclick="verImagem('${c.imagem_url}')" style="width:48px;height:48px;object-fit:cover;border-radius:6px;border:1px solid rgba(201,148,42,0.3);cursor:pointer;">`
-          : '<span style="color:rgba(255,255,255,0.2);font-size:0.75rem;">sem imagem</span>'}
-      </td>
-      <td style="padding:0.6rem 0.5rem;color:white;">${c.pagador || '—'}</td>
-      <td style="padding:0.6rem 0.5rem;color:rgba(255,255,255,0.6);">${c.data_hora_pix || '—'}</td>
-      <td style="padding:0.6rem 0.5rem;color:var(--gold);font-weight:700;">R$ ${c.valor.toFixed(2).replace('.', ',')}</td>
-      <td style="padding:0.6rem 0.5rem;color:rgba(255,255,255,0.8);">${c.nome_participante || '—'}</td>
-      <td style="padding:0.6rem 0.5rem;">
-        ${c.numeros && c.numeros.length
-          ? c.numeros.map(n => `<span style="display:inline-block;background:rgba(201,148,42,0.15);border:1px solid rgba(201,148,42,0.3);border-radius:5px;padding:0.2rem 0.5rem;margin:0.1rem;font-family:'Cinzel',serif;font-size:0.8rem;color:var(--gold);">${String(n).padStart(2,'00')}</span>`).join('')
-          : '<span style="color:rgba(255,255,255,0.2);font-size:0.75rem;">—</span>'}
-      </td>
-      <td style="padding:0.6rem 0.5rem;color:rgba(255,255,255,0.4);font-size:0.78rem;">${c.criado_em}</td>
-      <td style="padding:0.6rem 0.5rem;color:rgba(255,255,255,0.3);font-size:0.7rem;font-family:monospace;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${c.hash_imagem || ''}">${c.hash_imagem ? c.hash_imagem.substring(0,8)+'...' : '—'}</td>
-      <td style="padding:0.6rem 0.5rem;">
-        <button onclick="editarComprovante(${c.id}, '${c.pagador}', '${c.data_hora_pix}', '${c.nome_participante}')" style="padding:0.3rem 0.7rem;background:rgba(42,80,140,0.4);border:1px solid rgba(100,160,255,0.3);border-radius:5px;color:rgba(100,160,255,0.8);font-size:0.75rem;font-weight:700;cursor:pointer;text-transform:uppercase;margin-right:0.4rem;">Editar</button>
-        <button onclick="excluirComprovante(${c.id})" style="padding:0.3rem 0.7rem;background:rgba(139,26,26,0.4);border:1px solid rgba(248,180,180,0.3);border-radius:5px;color:rgba(248,180,180,0.8);font-size:0.75rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Excluir</button>
-      </td>
-    </tr>
-  `).join('');
+  grid.innerHTML = d.comprovantes.map(c => {
+    const aprovado = true; // todos registrados aqui foram aprovados
+    const corBorda = aprovado ? '#2A7A4A' : '#8B1A1A';
+    const corBadge = aprovado ? 'rgba(42,122,74,0.2)' : 'rgba(139,26,26,0.2)';
+    const corTexto = aprovado ? '#6FCF97' : '#F47C7C';
+    const statusLabel = aprovado ? '🟢 APROVADO' : '🔴 RECUSADO';
+
+    return `
+    <div style="background:#1A1A1A;border:1px solid ${corBorda}40;border-left:4px solid ${corBorda};border-radius:12px;padding:1.25rem;display:flex;flex-direction:column;gap:0.75rem;">
+
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="background:${corBadge};color:${corTexto};font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:0.25rem 0.6rem;border-radius:999px;">${statusLabel}</span>
+        <span style="color:rgba(255,255,255,0.3);font-size:0.72rem;">#${c.id}</span>
+      </div>
+
+      ${c.imagem_url
+        ? `<img src="${c.imagem_url}" onclick="verImagem('${c.imagem_url}')" style="width:100%;height:140px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,0.08);cursor:pointer;">`
+        : `<div style="width:100%;height:80px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.03);border-radius:8px;color:rgba(255,255,255,0.2);font-size:0.78rem;">sem imagem</div>`
+      }
+
+      <div>
+        <div style="font-size:0.7rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Pagador</div>
+        <div style="color:white;font-size:0.95rem;font-weight:600;">${c.pagador || '—'}</div>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;">
+        <div>
+          <div style="font-size:0.7rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Valor</div>
+          <div style="color:var(--gold);font-family:'Cinzel',serif;font-size:1.2rem;font-weight:700;">R$ ${c.valor.toFixed(2).replace('.', ',')}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:0.7rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Data PIX</div>
+          <div style="color:rgba(255,255,255,0.7);font-size:0.82rem;">${c.data_hora_pix || '—'}</div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:0.7rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Participante</div>
+        <div style="color:rgba(255,255,255,0.85);font-size:0.9rem;">${c.nome_participante || '—'}</div>
+      </div>
+
+      <div>
+        <div style="font-size:0.7rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin-bottom:0.3rem;">Números</div>
+        <div>
+          ${c.numeros && c.numeros.length
+            ? c.numeros.map(n => `<span style="display:inline-block;background:rgba(201,148,42,0.15);border:1px solid rgba(201,148,42,0.3);border-radius:5px;padding:0.2rem 0.5rem;margin:0.1rem;font-family:'Cinzel',serif;font-size:0.8rem;color:var(--gold);">${String(n).padStart(2,'00')}</span>`).join('')
+            : '<span style="color:rgba(255,255,255,0.2);font-size:0.75rem;">—</span>'}
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,0.06);padding-top:0.6rem;margin-top:0.25rem;">
+        <span style="color:rgba(255,255,255,0.3);font-size:0.72rem;">${c.criado_em}</span>
+        <span style="color:rgba(255,255,255,0.25);font-size:0.68rem;font-family:monospace;" title="${c.hash_imagem || ''}">${c.hash_imagem ? '🔐 '+c.hash_imagem.substring(0,8) : ''}</span>
+      </div>
+
+      <div style="display:flex;gap:0.5rem;">
+        <button onclick="editarComprovante(${c.id}, '${c.pagador}', '${c.data_hora_pix}', '${c.nome_participante}')" style="flex:1;padding:0.5rem;background:rgba(42,80,140,0.4);border:1px solid rgba(100,160,255,0.3);border-radius:6px;color:rgba(100,160,255,0.9);font-size:0.75rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Editar</button>
+        <button onclick="excluirComprovante(${c.id})" style="flex:1;padding:0.5rem;background:rgba(139,26,26,0.4);border:1px solid rgba(248,180,180,0.3);border-radius:6px;color:rgba(248,180,180,0.9);font-size:0.75rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Excluir</button>
+      </div>
+    </div>
+    `;
+  }).join('');
 }
 
 async function excluirComprovante(id) {
