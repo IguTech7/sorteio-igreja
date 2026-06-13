@@ -455,6 +455,16 @@
 <div id="page-comprovantes" class="page">
   <div class="page-inner">
     <div class="sorteio-header"><h2>Comprovantes</h2></div>
+    <div style="display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+  <input 
+    type="text" 
+    id="busca-comprovante" 
+    placeholder="Buscar por nome, pagador ou número..." 
+    oninput="filtrarComprovantes()"
+    style="flex:1;min-width:200px;padding:0.7rem 0.9rem;border-radius:7px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:white;font-size:0.9rem;font-family:'Lato',sans-serif;">
+  <button onclick="document.getElementById('busca-comprovante').value='';filtrarComprovantes()" style="padding:0.7rem 1rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:7px;color:rgba(255,255,255,0.5);font-size:0.8rem;font-weight:700;cursor:pointer;">Limpar</button>
+  <button onclick="exportarCSV()" style="padding:0.7rem 1.2rem;background:rgba(42,122,74,0.3);border:1px solid rgba(42,122,74,0.5);border-radius:7px;color:#6FCF97;font-size:0.8rem;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;">⬇ Exportar CSV</button>
+</div>
     <div id="comprovantes-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:1rem;">
       <div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;grid-column:1/-1;">Carregando...</div>
     </div>
@@ -1333,6 +1343,125 @@ function confirmarAviso(mensagem) {
     document.getElementById('aviso-confirmar').onclick = () => { overlay.remove(); resolve(true); };
     document.getElementById('aviso-cancelar').onclick = () => { overlay.remove(); resolve(false); };
   });
+}
+
+let todosComprovantes = [];
+
+async function carregarComprovantes() {
+  const d = await api('/api/comprovantes/');
+  const grid = document.getElementById('comprovantes-grid');
+
+  if (!d.comprovantes || !d.comprovantes.length) {
+    grid.innerHTML = '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;grid-column:1/-1;">Nenhum comprovante registrado.</div>';
+    return;
+  }
+
+  todosComprovantes = d.comprovantes;
+  renderizarComprovantes(todosComprovantes);
+}
+
+function filtrarComprovantes() {
+  const termo = document.getElementById('busca-comprovante').value.toLowerCase().trim();
+  if (!termo) {
+    renderizarComprovantes(todosComprovantes);
+    return;
+  }
+
+  const filtrados = todosComprovantes.filter(c =>
+    (c.pagador || '').toLowerCase().includes(termo) ||
+    (c.nome_participante || '').toLowerCase().includes(termo) ||
+    (c.numeros || []).some(n => String(n).includes(termo))
+  );
+
+  renderizarComprovantes(filtrados);
+}
+
+function renderizarComprovantes(lista) {
+  const grid = document.getElementById('comprovantes-grid');
+
+  if (!lista.length) {
+    grid.innerHTML = '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;grid-column:1/-1;">Nenhum resultado encontrado.</div>';
+    return;
+  }
+
+  grid.innerHTML = lista.map(c => {
+    const corBorda = '#2A7A4A';
+    const corBadge = 'rgba(42,122,74,0.2)';
+    const corTexto = '#6FCF97';
+    const statusLabel = '🟢 APROVADO';
+
+    return `
+    <div style="background:#1A1A1A;border:1px solid ${corBorda}40;border-left:4px solid ${corBorda};border-radius:12px;padding:1.25rem;display:flex;flex-direction:column;gap:0.75rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="background:${corBadge};color:${corTexto};font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:0.25rem 0.6rem;border-radius:999px;">${statusLabel}</span>
+        <span style="color:rgba(255,255,255,0.3);font-size:0.72rem;">#${c.id}</span>
+      </div>
+      ${c.imagem_url
+        ? `<img src="${c.imagem_url}" onclick="verImagem('${c.imagem_url}')" style="width:100%;height:140px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,0.08);cursor:pointer;">`
+        : `<div style="width:100%;height:80px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.03);border-radius:8px;color:rgba(255,255,255,0.2);font-size:0.78rem;">sem imagem</div>`}
+      <div>
+        <div style="font-size:0.7rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Pagador</div>
+        <div style="color:white;font-size:0.95rem;font-weight:600;">${c.pagador || '—'}</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;">
+        <div>
+          <div style="font-size:0.7rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Valor</div>
+          <div style="color:var(--gold);font-family:'Cinzel',serif;font-size:1.2rem;font-weight:700;">R$ ${c.valor.toFixed(2).replace('.', ',')}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:0.7rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Data PIX</div>
+          <div style="color:rgba(255,255,255,0.7);font-size:0.82rem;">${c.data_hora_pix || '—'}</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:0.7rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Participante</div>
+        <div style="color:rgba(255,255,255,0.85);font-size:0.9rem;">${c.nome_participante || '—'}</div>
+      </div>
+      <div>
+        <div style="font-size:0.7rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin-bottom:0.3rem;">Números</div>
+        <div>
+          ${c.numeros && c.numeros.length
+            ? c.numeros.map(n => `<span style="display:inline-block;background:rgba(201,148,42,0.15);border:1px solid rgba(201,148,42,0.3);border-radius:5px;padding:0.2rem 0.5rem;margin:0.1rem;font-family:'Cinzel',serif;font-size:0.8rem;color:var(--gold);">${String(n).padStart(2,'0')}</span>`).join('')
+            : '<span style="color:rgba(255,255,255,0.2);font-size:0.75rem;">—</span>'}
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,0.06);padding-top:0.6rem;margin-top:0.25rem;">
+        <span style="color:rgba(255,255,255,0.3);font-size:0.72rem;">${c.criado_em}</span>
+        <span style="color:rgba(255,255,255,0.25);font-size:0.68rem;font-family:monospace;" title="${c.hash_imagem || ''}">${c.hash_imagem ? '🔐 '+c.hash_imagem.substring(0,8) : ''}</span>
+      </div>
+      <div style="display:flex;gap:0.5rem;">
+        <button onclick="editarComprovante(${c.id}, '${c.pagador}', '${c.data_hora_pix}', '${c.nome_participante}')" style="flex:1;padding:0.5rem;background:rgba(42,80,140,0.4);border:1px solid rgba(100,160,255,0.3);border-radius:6px;color:rgba(100,160,255,0.9);font-size:0.75rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Editar</button>
+        <button onclick="excluirComprovante(${c.id})" style="flex:1;padding:0.5rem;background:rgba(139,26,26,0.4);border:1px solid rgba(248,180,180,0.3);border-radius:6px;color:rgba(248,180,180,0.9);font-size:0.75rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Excluir</button>
+      </div>
+    </div>
+    `;
+  }).join('');
+}
+
+function exportarCSV() {
+  if (!todosComprovantes.length) {
+    showToast('Nenhum comprovante para exportar.', 'error');
+    return;
+  }
+
+  const cabecalho = ['ID', 'Pagador', 'Participante', 'Valor', 'Data PIX', 'Números', 'Enviado em'];
+  
+  const linhas = todosComprovantes.map(c => [
+    c.id,
+    `"${(c.pagador || '').replace(/"/g, '""')}"`,
+    `"${(c.nome_participante || '').replace(/"/g, '""')}"`,
+    c.valor.toFixed(2).replace('.', ','),
+    `"${c.data_hora_pix || ''}"`,
+    `"${(c.numeros || []).join(', ')}"`,
+    `"${c.criado_em}"`
+  ]);
+
+  const csv = [cabecalho, ...linhas].map(l => l.join(';')).join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `comprovantes_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.csv`;
+  link.click();
 }
 
 </script>
