@@ -540,6 +540,7 @@ async function carregarStatus() {
   document.getElementById('stat-disponiveis').textContent = d.disponiveis;
   const arrecadado = document.getElementById('stat-arrecadado');
   if (arrecadado) arrecadado.textContent = 'R$' + d.arrecadado.toFixed(0);
+  mostrarTutorial(); // ← adiciona aqui
 }
 
 async function carregarRifa() {
@@ -762,6 +763,7 @@ function mostrarComprovante(nome, numero) {
         </div>
       </div>
       <button onclick="salvarComprovante()" style="width:100%;padding:0.9rem;background:transparent;border:2px solid #C9942A;border-radius:8px;color:#C9942A;font-family:'Cinzel',serif;font-size:0.9rem;font-weight:700;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.75rem;">⬇ Salvar Comprovante</button>
+      <button onclick="compartilharWhatsApp('${nome}', ${JSON.stringify(numero)})" style="width:100%;padding:0.9rem;background:#25D366;border:none;border-radius:8px;color:white;font-family:'Cinzel',serif;font-size:0.9rem;font-weight:700;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.75rem;">📲 Compartilhar no WhatsApp</button>
       <button onclick="fecharComprovante()" style="width:100%;padding:0.9rem;background:#C9942A;border:none;border-radius:8px;color:#111;font-family:'Cinzel',serif;font-size:0.9rem;font-weight:700;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;">✓ Concluir</button>
     </div>
   `;
@@ -837,8 +839,6 @@ function showToast(msg, type) {
   setTimeout(() => t.classList.remove('show'), 10000);
 }
 
-document.getElementById('nome-input').addEventListener('input', updateConfirmBtn);
-carregarStatus();
 
 async function buscarParticipante() {
   const termo = document.getElementById('busca-excluir').value.trim().toLowerCase();
@@ -1185,79 +1185,6 @@ async function carregarTentativas() {
   `).join('');
 }
 
-async function carregarComprovantes() {
-  const d = await api('/api/comprovantes/');
-  const grid = document.getElementById('comprovantes-grid');
-
-  if (!d.comprovantes || !d.comprovantes.length) {
-    grid.innerHTML = '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;grid-column:1/-1;">Nenhum comprovante registrado.</div>';
-    return;
-  }
-
-  grid.innerHTML = d.comprovantes.map(c => {
-    const aprovado = true; // todos registrados aqui foram aprovados
-    const corBorda = aprovado ? '#2A7A4A' : '#8B1A1A';
-    const corBadge = aprovado ? 'rgba(42,122,74,0.2)' : 'rgba(139,26,26,0.2)';
-    const corTexto = aprovado ? '#6FCF97' : '#F47C7C';
-    const statusLabel = aprovado ? '🟢 APROVADO' : '🔴 RECUSADO';
-
-    return `
-    <div style="background:#1A1A1A;border:1px solid ${corBorda}40;border-left:4px solid ${corBorda};border-radius:12px;padding:1.25rem;display:flex;flex-direction:column;gap:0.75rem;">
-
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <span style="background:${corBadge};color:${corTexto};font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:0.25rem 0.6rem;border-radius:999px;">${statusLabel}</span>
-        <span style="color:rgba(255,255,255,0.3);font-size:0.72rem;">#${c.id}</span>
-      </div>
-
-      ${c.imagem_url
-        ? `<img src="${c.imagem_url}" onclick="verImagem('${c.imagem_url}')" style="width:100%;height:140px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,0.08);cursor:pointer;">`
-        : `<div style="width:100%;height:80px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.03);border-radius:8px;color:rgba(255,255,255,0.2);font-size:0.78rem;">sem imagem</div>`
-      }
-
-      <div>
-        <div style="font-size:0.7rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Pagador</div>
-        <div style="color:white;font-size:0.95rem;font-weight:600;">${c.pagador || '—'}</div>
-      </div>
-
-      <div style="display:flex;justify-content:space-between;">
-        <div>
-          <div style="font-size:0.7rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Valor</div>
-          <div style="color:var(--gold);font-family:'Cinzel',serif;font-size:1.2rem;font-weight:700;">R$ ${c.valor.toFixed(2).replace('.', ',')}</div>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-size:0.7rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Data PIX</div>
-          <div style="color:rgba(255,255,255,0.7);font-size:0.82rem;">${c.data_hora_pix || '—'}</div>
-        </div>
-      </div>
-
-      <div>
-        <div style="font-size:0.7rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Participante</div>
-        <div style="color:rgba(255,255,255,0.85);font-size:0.9rem;">${c.nome_participante || '—'}</div>
-      </div>
-
-      <div>
-        <div style="font-size:0.7rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin-bottom:0.3rem;">Números</div>
-        <div>
-          ${c.numeros && c.numeros.length
-            ? c.numeros.map(n => `<span style="display:inline-block;background:rgba(201,148,42,0.15);border:1px solid rgba(201,148,42,0.3);border-radius:5px;padding:0.2rem 0.5rem;margin:0.1rem;font-family:'Cinzel',serif;font-size:0.8rem;color:var(--gold);">${String(n).padStart(2,'00')}</span>`).join('')
-            : '<span style="color:rgba(255,255,255,0.2);font-size:0.75rem;">—</span>'}
-        </div>
-      </div>
-
-      <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,0.06);padding-top:0.6rem;margin-top:0.25rem;">
-        <span style="color:rgba(255,255,255,0.3);font-size:0.72rem;">${c.criado_em}</span>
-        <span style="color:rgba(255,255,255,0.25);font-size:0.68rem;font-family:monospace;" title="${c.hash_imagem || ''}">${c.hash_imagem ? '🔐 '+c.hash_imagem.substring(0,8) : ''}</span>
-      </div>
-
-      <div style="display:flex;gap:0.5rem;">
-        <button onclick="editarComprovante(${c.id}, '${c.pagador}', '${c.data_hora_pix}', '${c.nome_participante}')" style="flex:1;padding:0.5rem;background:rgba(42,80,140,0.4);border:1px solid rgba(100,160,255,0.3);border-radius:6px;color:rgba(100,160,255,0.9);font-size:0.75rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Editar</button>
-        <button onclick="excluirComprovante(${c.id})" style="flex:1;padding:0.5rem;background:rgba(139,26,26,0.4);border:1px solid rgba(248,180,180,0.3);border-radius:6px;color:rgba(248,180,180,0.9);font-size:0.75rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Excluir</button>
-      </div>
-    </div>
-    `;
-  }).join('');
-}
-
 async function excluirComprovante(id) {
   if (!confirm('Excluir este registro de comprovante?')) return;
   showLoading(true);
@@ -1492,6 +1419,82 @@ function escolherPorMim() {
   }, 100);
 
   showToast(`Número ${aleatorio} selecionado para você! 🎲`, 'success');
+}
+
+function mostrarTutorial() {
+  if (localStorage.getItem('tutorial_visto')) return;
+
+  const overlay = document.createElement('div');
+  overlay.id = 'tutorial-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:3000;display:flex;align-items:center;justify-content:center;padding:1rem;';
+  document.body.appendChild(overlay);
+
+  const passos = [
+    { icone: '🎟️', titulo: 'Escolha seu número', desc: 'Navegue pela grade e clique em um número disponível. Você pode escolher mais de um!' },
+    { icone: '💰', titulo: 'Faça o PIX', desc: 'Escaneie o QR Code ou copie a chave PIX e faça a transferência no valor correspondente.' },
+    { icone: '📄', titulo: 'Envie o comprovante', desc: 'Clique em "Enviar Comprovante PIX" e selecione a foto do comprovante. O sistema valida automaticamente.' },
+    { icone: '✅', titulo: 'Confirme sua participação', desc: 'Preencha seu nome e clique em "Confirmar Participação". Salve seu comprovante!' },
+  ];
+
+  let passoAtual = 0;
+
+  function renderPasso() {
+    const p = passos[passoAtual];
+    overlay.innerHTML = `
+      <div style="background:#1A1A1A;border:2px solid rgba(201,148,42,0.4);border-radius:16px;padding:2rem;max-width:380px;width:100%;text-align:center;">
+        <div style="font-size:3rem;margin-bottom:1rem;">${p.icone}</div>
+        <div style="font-family:'Cinzel',serif;font-size:0.7rem;color:var(--gold);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.5rem;">Passo ${passoAtual + 1} de ${passos.length}</div>
+        <div style="font-family:'Cinzel',serif;font-size:1.2rem;color:white;font-weight:600;margin-bottom:1rem;">${p.titulo}</div>
+        <div style="font-size:0.95rem;color:rgba(255,255,255,0.7);line-height:1.6;margin-bottom:2rem;">${p.desc}</div>
+        <div style="display:flex;gap:0.5rem;justify-content:center;margin-bottom:1.5rem;">
+          ${passos.map((_, i) => `<div style="width:8px;height:8px;border-radius:50%;background:${i === passoAtual ? 'var(--gold)' : 'rgba(255,255,255,0.2)'}"></div>`).join('')}
+        </div>
+        <div style="display:flex;gap:0.75rem;">
+          ${passoAtual > 0 ? `<button id="btn-anterior-tutorial" style="flex:1;padding:0.85rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.6);font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;cursor:pointer;text-transform:uppercase;">← Anterior</button>` : ''}
+          <button id="btn-proximo-tutorial" style="flex:1;padding:0.85rem;background:linear-gradient(135deg,var(--gold),#E8A820);border:none;border-radius:8px;color:#111;font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;cursor:pointer;text-transform:uppercase;">${passoAtual < passos.length - 1 ? 'Próximo →' : '✦ Começar!'}</button>
+        </div>
+        <button onclick="fecharTutorial()" style="margin-top:1rem;background:transparent;border:none;color:rgba(255,255,255,0.3);font-size:0.8rem;cursor:pointer;text-decoration:underline;">Pular tutorial</button>
+      </div>
+    `;
+
+    setTimeout(() => {
+      const btnProximo = document.getElementById('btn-proximo-tutorial');
+      const btnAnterior = document.getElementById('btn-anterior-tutorial');
+
+      if (btnProximo) {
+        btnProximo.onclick = () => {
+          if (passoAtual < passos.length - 1) {
+            passoAtual++;
+            renderPasso();
+          } else {
+            fecharTutorial();
+          }
+        };
+      }
+
+      if (btnAnterior) {
+        btnAnterior.onclick = () => {
+          passoAtual--;
+          renderPasso();
+        };
+      }
+    }, 0);
+  }
+
+  renderPasso();
+}
+
+function fecharTutorial() {
+  localStorage.setItem('tutorial_visto', 'true');
+  const overlay = document.getElementById('tutorial-overlay');
+  if (overlay) overlay.remove();
+}
+
+function compartilharWhatsApp(nome, numeros) {
+  const lista = Array.isArray(numeros) ? numeros.join(', ') : numeros;
+  const msg = `✝ *Comprovante de Participação*\n\n*Igreja Batista Missionária Jardim Guararapes*\n\n👤 *Participante:* ${nome}\n🔢 *Número(s):* ${lista}\n\n🙏 Que Deus abençoe!`;
+  const url = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
 }
 
 </script>
