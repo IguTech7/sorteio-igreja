@@ -456,31 +456,13 @@
   <div class="page-inner">
     <div class="sorteio-header"><h2>Comprovantes</h2></div>
     <div id="comprovantes-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:1rem;">
-  <div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;grid-column:1/-1;">Carregando...</div>
-</div>
-        <thead>
-          <tr style="border-bottom:1px solid rgba(201,148,42,0.3);">
-            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Imagem</th>
-            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Pagador</th>
-            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Data/Hora PIX</th>
-            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Valor</th>
-            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Participante</th>
-            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Números</th>
-            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Enviado em</th>
-            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Hash</th>
-            <th style="padding:0.6rem 0.5rem;"></th>
-          </tr>
-        </thead>
-        <tbody id="comprovantes-body">
-          <tr><td colspan="8" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;">Carregando...</td></tr>
-        </tbody>
-      </table>
+      <div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;grid-column:1/-1;">Carregando...</div>
     </div>
   </div>
 </div>
 
 <!-- TENTATIVAS -->
-<div id="page-tentativas" class="page">
+<div id="page-tentativas" class="page" style="color:white;">
   <div class="page-inner">
     <div class="sorteio-header"><h2>Histórico de Tentativas</h2></div>
     <div class="admin-card" style="overflow-x:auto;">
@@ -1171,19 +1153,21 @@ function buscarNumero() {
 async function carregarTentativas() {
   const d = await api('/api/tentativas/');
   const tbody = document.getElementById('tentativas-body');
+
   if (!d.tentativas || !d.tentativas.length) {
     tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;">Nenhuma tentativa registrada.</td></tr>';
     return;
   }
+
   tbody.innerHTML = d.tentativas.map(t => `
-    <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+    <tr style="border-bottom:1px solid rgba(255,255,255,0.06);background:${t.aprovado ? 'rgba(42,122,74,0.08)' : 'rgba(139,26,26,0.08)'};">
       <td style="padding:0.6rem 0.5rem;font-size:1.1rem;">${t.aprovado ? '✅' : '❌'}</td>
       <td style="padding:0.6rem 0.5rem;color:rgba(255,255,255,0.4);font-size:0.78rem;">${t.data_hora}</td>
-      <td style="padding:0.6rem 0.5rem;color:${t.aprovado ? '#6FCF97' : '#F47C7C'};">${t.motivo}</td>
+      <td style="padding:0.6rem 0.5rem;color:${t.aprovado ? '#6FCF97' : '#F47C7C'};">${t.motivo || '—'}</td>
       <td style="padding:0.6rem 0.5rem;color:var(--gold);font-weight:700;">${t.score}</td>
       <td style="padding:0.6rem 0.5rem;">
         ${t.imagem_url
-          ? `<img src="${t.imagem_url}" onclick="verImagem('${t.imagem_url}')" style="width:48px;height:48px;object-fit:cover;border-radius:6px;border:1px solid rgba(201,148,42,0.3);cursor:pointer;">`
+          ? `<img src="${t.imagem_url}" onclick="verImagem('${t.imagem_url}')" style="width:48px;height:48px;object-fit:cover;border-radius:6px;border:1px solid rgba(201,148,42,0.3);cursor:pointer;" onerror="this.style.display='none'">`
           : '<span style="color:rgba(255,255,255,0.2);font-size:0.75rem;">—</span>'}
       </td>
     </tr>
