@@ -67,3 +67,18 @@ class RegistroComprovante(models.Model):
 
     def __str__(self):
         return f"{self.pagador} — R${self.valor} — {self.data_hora_pix}"
+
+class TentativaComprovante(models.Model):
+    data_hora = models.DateTimeField(auto_now_add=True)
+    motivo = models.CharField(max_length=200, blank=True)
+    score = models.IntegerField(default=0)
+    aprovado = models.BooleanField(default=False)
+    imagem = models.ImageField(upload_to='tentativas/', blank=True, null=True)
+    texto_ocr = models.TextField(blank=True)
+
+    class Meta:
+        verbose_name = "Tentativa de Comprovante"
+        ordering = ['-data_hora']
+
+    def __str__(self):
+        return f"{'✅' if self.aprovado else '❌'} — {self.data_hora} — {self.motivo}"

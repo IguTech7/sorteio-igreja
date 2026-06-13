@@ -283,6 +283,7 @@
       {% if request.user.is_authenticated %}
       <button class="nav-tab" onclick="showPage('sorteio')">Sorteio</button>
       <button class="nav-tab" onclick="showPage('comprovantes')">Comprovantes</button>
+      <button class="nav-tab" onclick="showPage('tentativas')">Tentativas</button>
       {% endif %}
     </div>
   </div>
@@ -477,6 +478,29 @@
   </div>
 </div>
 
+<!-- TENTATIVAS -->
+<div id="page-tentativas" class="page">
+  <div class="page-inner">
+    <div class="sorteio-header"><h2>Histórico de Tentativas</h2></div>
+    <div class="admin-card" style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
+        <thead>
+          <tr style="border-bottom:1px solid rgba(201,148,42,0.3);">
+            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Status</th>
+            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Data/Hora</th>
+            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Motivo</th>
+            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Score</th>
+            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Imagem</th>
+          </tr>
+        </thead>
+        <tbody id="tentativas-body">
+          <tr><td colspan="5" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;">Carregando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <script>
 const TOTAL = {{ config.total_numeros }};
 let ocupados = {};
@@ -506,12 +530,13 @@ function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('page-' + id).classList.add('active');
-  const names = ['home', 'rifa', 'sorteio', 'comprovantes'];
+  const names = ['home', 'rifa', 'sorteio', 'comprovantes', 'tentativas'];
   document.querySelectorAll('.nav-tab')[names.indexOf(id)].classList.add('active');
   if (id === 'home') carregarStatus();
   if (id === 'rifa') carregarRifa();
   if (id === 'sorteio') carregarSorteio();
   if (id === 'comprovantes') carregarComprovantes();
+  if (id === 'tentativas') carregarTentativas();
 }
 
 async function carregarStatus() {
@@ -1046,59 +1071,78 @@ async function validarComprovanteOCR() {
     console.log('Score OCR:', score);
 
     if (score >= 70) {
-      console.log('APROVADO');
+  console.log('APROVADO');
 
-      // Gerar hash e assinatura
-      const hashImagem = await gerarHashImagem(comprovanteArquivo);
-      const assinatura = `${nomePagador}|${dataHoraComprovante}|${valorEncontrado.toFixed(2)}`.toLowerCase();
-      console.log('Hash:', hashImagem);
-      console.log('Assinatura:', assinatura);
+  const hashImagem = await gerarHashImagem(comprovanteArquivo);
+  const assinatura = `${nomePagador}|${dataHoraComprovante}|${valorEncontrado.toFixed(2)}`.toLowerCase();
 
-      // Verificar duplicata no servidor ANTES de liberar
-      showToast('Verificando comprovante...', '');
-      const verificacao = await api('/api/verificar-comprovante/', 'POST', {
-        id_transacao: '',
-        hash_imagem: hashImagem,
-        assinatura: assinatura
-      });
+  showToast('Verificando comprovante...', '');
+  const verificacao = await api('/api/verificar-comprovante/', 'POST', {
+    id_transacao: '',
+    hash_imagem: hashImagem,
+    assinatura: assinatura
+  });
 
-      console.log("OK:", verificacao.ok);
-      console.log("ERRO:", verificacao.erro);
-      console.log("OBJETO:", verificacao);
+  if (!verificacao.ok) {
+    // Salvar tentativa reprovada
+    const fd = new FormData();
+    fd.append('motivo', verificacao.erro || 'Comprovante já utilizado');
+    fd.append('score', score);
+    fd.append('aprovado', 'false');
+    fd.append('texto_ocr', texto);
+    if (comprovanteArquivo) fd.append('imagem', comprovanteArquivo);
+    fetch('/api/registrar-tentativa/', { method: 'POST', body: fd });
 
-      if (!verificacao.ok) {
-        showToast(verificacao.erro || 'Comprovante já utilizado.', 'error');
-        comprovanteEnviado = false;
-        document.getElementById('status-comprovante').innerHTML = '❌ Comprovante já utilizado';
-        return;
-      }
+    showToast(verificacao.erro || 'Comprovante já utilizado.', 'error');
+    comprovanteEnviado = false;
+    document.getElementById('status-comprovante').innerHTML = '❌ Comprovante já utilizado';
+    return;
+  }
 
-      // Tudo ok — salvar estado
-      comprovanteEnviado = true;
-      hashImagemAtual = hashImagem;
-      assinaturaAtual = assinatura;
-      dadosComprovante = {
-        pagador: nomePagador,
-        data_hora: dataHoraComprovante,
-        valor: valorEncontrado,
-        texto_ocr: texto
-      };
-      quantidadePermitida = Math.floor(valorEncontrado / 50);
+  // Salvar tentativa aprovada
+  const fd = new FormData();
+  fd.append('motivo', 'Aprovado');
+  fd.append('score', score);
+  fd.append('aprovado', 'true');
+  fd.append('texto_ocr', texto);
+  if (comprovanteArquivo) fd.append('imagem', comprovanteArquivo);
+  fetch('/api/registrar-tentativa/', { method: 'POST', body: fd });
 
-      document.getElementById('status-comprovante').innerHTML =
-        `✅ Comprovante validado • ${quantidadePermitida} número(s) disponível(is)`;
+  comprovanteEnviado = true;
+  hashImagemAtual = hashImagem;
+  assinaturaAtual = assinatura;
+  dadosComprovante = {
+    pagador: nomePagador,
+    data_hora: dataHoraComprovante,
+    valor: valorEncontrado,
+    texto_ocr: texto
+  };
+  quantidadePermitida = Math.floor(valorEncontrado / 50);
+  document.getElementById('status-comprovante').innerHTML =
+    `✅ Comprovante validado • ${quantidadePermitida} número(s) disponível(is)`;
+  showToast('Comprovante validado com sucesso!', 'success');
 
-      showToast('Comprovante validado com sucesso!', 'success');
+} else {
+  console.log('REPROVADO');
+  let erros = [];
+  if (!temPix) erros.push('PIX não identificado');
+  if (valorEncontrado < 50) erros.push('Valor menor que R$ 50');
+  if (!dataValida) erros.push('Data inválida');
+  if (!temIgreja && !temCNPJ && !temChavePix) erros.push('Destinatário não identificado');
 
-    } else {
-      console.log('REPROVADO');
-      let erros = [];
-      if (!temPix) erros.push('PIX não identificado');
-      if (valorEncontrado < 50) erros.push('Valor menor que R$ 50');
-      if (!dataValida) erros.push('Data inválida');
-      if (!temIgreja && !temCNPJ && !temChavePix) erros.push('Destinatário não identificado');
-      showToast(erros.length ? erros.join(' | ') : 'Comprovante inválido.', 'error');
-    }
+  const motivoFinal = erros.length ? erros.join(' | ') : 'Comprovante inválido';
+
+  // Salvar tentativa reprovada
+  const fd = new FormData();
+  fd.append('motivo', motivoFinal);
+  fd.append('score', score);
+  fd.append('aprovado', 'false');
+  fd.append('texto_ocr', texto);
+  if (comprovanteArquivo) fd.append('imagem', comprovanteArquivo);
+  fetch('/api/registrar-tentativa/', { method: 'POST', body: fd });
+
+ showToast(motivoFinal, 'error');
+}
 
   } catch (erro) {
     console.error(erro);
@@ -1121,6 +1165,28 @@ function buscarNumero() {
     if (!btn.classList.contains('taken')) selectNums(n);
     else showToast(`Número ${n} já está ocupado.`, 'error');
   }, 100);
+}
+
+async function carregarTentativas() {
+  const d = await api('/api/tentativas/');
+  const tbody = document.getElementById('tentativas-body');
+  if (!d.tentativas || !d.tentativas.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;">Nenhuma tentativa registrada.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = d.tentativas.map(t => `
+    <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+      <td style="padding:0.6rem 0.5rem;font-size:1.1rem;">${t.aprovado ? '✅' : '❌'}</td>
+      <td style="padding:0.6rem 0.5rem;color:rgba(255,255,255,0.4);font-size:0.78rem;">${t.data_hora}</td>
+      <td style="padding:0.6rem 0.5rem;color:${t.aprovado ? '#6FCF97' : '#F47C7C'};">${t.motivo}</td>
+      <td style="padding:0.6rem 0.5rem;color:var(--gold);font-weight:700;">${t.score}</td>
+      <td style="padding:0.6rem 0.5rem;">
+        ${t.imagem_url
+          ? `<img src="${t.imagem_url}" onclick="verImagem('${t.imagem_url}')" style="width:48px;height:48px;object-fit:cover;border-radius:6px;border:1px solid rgba(201,148,42,0.3);cursor:pointer;">`
+          : '<span style="color:rgba(255,255,255,0.2);font-size:0.75rem;">—</span>'}
+      </td>
+    </tr>
+  `).join('');
 }
 
 async function carregarComprovantes() {

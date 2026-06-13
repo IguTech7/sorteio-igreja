@@ -262,3 +262,41 @@ def api_editar_comprovante(request):
     except Exception as e:
         return JsonResponse({'ok': False, 'erro': str(e)}, status=400)
 
+@csrf_exempt
+@require_POST
+def api_registrar_tentativa(request):
+    try:
+        motivo = request.POST.get('motivo', '').strip()
+        score = request.POST.get('score', 0)
+        aprovado = request.POST.get('aprovado', 'false') == 'true'
+        texto_ocr = request.POST.get('texto_ocr', '').strip()
+        imagem = request.FILES.get('imagem')
+
+        from .models import TentativaComprovante
+        TentativaComprovante.objects.create(
+            motivo=motivo,
+            score=score,
+            aprovado=aprovado,
+            texto_ocr=texto_ocr,
+            imagem=imagem
+        )
+        return JsonResponse({'ok': True})
+    except Exception as e:
+        return JsonResponse({'ok': False, 'erro': str(e)}, status=400)
+
+
+@require_GET
+def api_tentativas(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'ok': False, 'erro': 'Não autorizado.'}, status=401)
+    from .models import TentativaComprovante
+    registros = TentativaComprovante.objects.all().order_by('-data_hora')[:50]
+    data = [{
+        'id': r.id,
+        'data_hora': r.data_hora.astimezone(ZoneInfo('America/Recife')).strftime('%d/%m/%Y %H:%M'),
+        'motivo': r.motivo,
+        'score': r.score,
+        'aprovado': r.aprovado,
+        'imagem_url': r.imagem.url if r.imagem else None,
+    } for r in registros]
+    return JsonResponse({'tentativas': data})
