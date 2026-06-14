@@ -540,7 +540,11 @@ async function carregarStatus() {
   document.getElementById('stat-disponiveis').textContent = d.disponiveis;
   const arrecadado = document.getElementById('stat-arrecadado');
   if (arrecadado) arrecadado.textContent = 'R$' + d.arrecadado.toFixed(0);
-  mostrarTutorial(); // ← adiciona aqui
+  mostrarTutorial();
+  // Atualiza a grid se já foi renderizada
+  if (document.getElementById('numbers-grid').children.length > 0) {
+    renderGrid();
+  }
 }
 
 async function carregarRifa() {
@@ -1422,8 +1426,6 @@ function escolherPorMim() {
 }
 
 function mostrarTutorial() {
-  if (localStorage.getItem('tutorial_visto')) return;
-
   const overlay = document.createElement('div');
   overlay.id = 'tutorial-overlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:3000;display:flex;align-items:center;justify-content:center;padding:1rem;';
@@ -1453,30 +1455,21 @@ function mostrarTutorial() {
           ${passoAtual > 0 ? `<button id="btn-anterior-tutorial" style="flex:1;padding:0.85rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.6);font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;cursor:pointer;text-transform:uppercase;">← Anterior</button>` : ''}
           <button id="btn-proximo-tutorial" style="flex:1;padding:0.85rem;background:linear-gradient(135deg,var(--gold),#E8A820);border:none;border-radius:8px;color:#111;font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;cursor:pointer;text-transform:uppercase;">${passoAtual < passos.length - 1 ? 'Próximo →' : '✦ Começar!'}</button>
         </div>
-        <button onclick="fecharTutorial()" style="margin-top:1rem;background:transparent;border:none;color:rgba(255,255,255,0.3);font-size:0.8rem;cursor:pointer;text-decoration:underline;">Pular tutorial</button>
+        <button onclick="fecharTutorial()" style="margin-top:1rem;background:transparent;border:none;color:rgba(255,255,255,0.3);font-size:0.8rem;cursor:pointer;text-decoration:underline;">Fechar</button>
       </div>
     `;
 
     setTimeout(() => {
       const btnProximo = document.getElementById('btn-proximo-tutorial');
       const btnAnterior = document.getElementById('btn-anterior-tutorial');
-
       if (btnProximo) {
         btnProximo.onclick = () => {
-          if (passoAtual < passos.length - 1) {
-            passoAtual++;
-            renderPasso();
-          } else {
-            fecharTutorial();
-          }
+          if (passoAtual < passos.length - 1) { passoAtual++; renderPasso(); }
+          else { fecharTutorial(); }
         };
       }
-
       if (btnAnterior) {
-        btnAnterior.onclick = () => {
-          passoAtual--;
-          renderPasso();
-        };
+        btnAnterior.onclick = () => { passoAtual--; renderPasso(); };
       }
     }, 0);
   }
@@ -1484,6 +1477,10 @@ function mostrarTutorial() {
   renderPasso();
 }
 
+function fecharTutorial() {
+  const overlay = document.getElementById('tutorial-overlay');
+  if (overlay) overlay.remove();
+}
 function fecharTutorial() {
   localStorage.setItem('tutorial_visto', 'true');
   const overlay = document.getElementById('tutorial-overlay');
@@ -1499,6 +1496,7 @@ function compartilharWhatsApp(nome, numeros) {
 
 </script>
 
+<button onclick="mostrarTutorial()" style="position:fixed;bottom:1.5rem;right:1.5rem;width:48px;height:48px;border-radius:50%;background:var(--gold);border:none;color:#111;font-size:1.3rem;font-weight:700;cursor:pointer;z-index:400;box-shadow:0 4px 16px rgba(201,148,42,0.5);">?</button>
 <div class="loading-overlay" id="loading"><div class="loading-spinner"></div></div>
 <div class="toast" id="toast"></div>
 </body>
