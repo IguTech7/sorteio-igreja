@@ -540,8 +540,6 @@ async function carregarStatus() {
   document.getElementById('stat-disponiveis').textContent = d.disponiveis;
   const arrecadado = document.getElementById('stat-arrecadado');
   if (arrecadado) arrecadado.textContent = 'R$' + d.arrecadado.toFixed(0);
-  mostrarTutorial();
-  // Atualiza a grid se já foi renderizada
   if (document.getElementById('numbers-grid').children.length > 0) {
     renderGrid();
   }
@@ -1481,11 +1479,6 @@ function fecharTutorial() {
   const overlay = document.getElementById('tutorial-overlay');
   if (overlay) overlay.remove();
 }
-function fecharTutorial() {
-  localStorage.setItem('tutorial_visto', 'true');
-  const overlay = document.getElementById('tutorial-overlay');
-  if (overlay) overlay.remove();
-}
 
 function compartilharWhatsApp(nome, numeros) {
   const lista = Array.isArray(numeros) ? numeros.join(', ') : numeros;
@@ -1493,6 +1486,10 @@ function compartilharWhatsApp(nome, numeros) {
   const url = `https://wa.me/?text=${encodeURIComponent(msg)}`;
   window.open(url, '_blank');
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  carregarStatus();
+});
 
 </script>
 
