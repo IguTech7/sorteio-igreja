@@ -299,7 +299,9 @@
       <p class="hero-subtitle">{{ config.subtitulo }}</p>
     </div>
     <div class="ornament">· · ·</div>
-    <div style="border-radius:14px;overflow:hidden;margin:0 auto 1.25rem;box-shadow:0 8px 40px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.08);max-width:340px;">
+    <button class="btn-primary" onclick="showPage('rifa')">✦ Participar do Sorteio ✦</button>
+
+    <div style="border-radius:14px;overflow:hidden;margin:1.25rem auto;box-shadow:0 8px 40px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.08);max-width:280px;">  <!-- ← max-width menor -->
       <img src="{% static 'rifa/reforma.jpg' %}" alt="Igreja Batista Missionária" style="width:100%;height:auto;display:block;">
       <div style="background:#111;padding:1rem 1.25rem;text-align:center;">
         <div style="font-family:'Cinzel',serif;font-size:0.75rem;color:var(--gold);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.25rem;">Nosso Propósito</div>
@@ -343,7 +345,6 @@
       </div>
       <img src="{% static 'rifa/terreno.jpg' %}" alt="Terreno Lagoa dos Vinhedos" style="width:100%;height:auto;display:block;">
     </div>
-    <button class="btn-primary" onclick="showPage('rifa')">✦ Participar do Sorteio ✦</button>
     <p style="text-align:center;margin-top:1rem;font-size:0.8rem;color:rgba(240,200,90,0.4);font-style:italic;">"Cada oferta é uma semente de fé plantada para a glória de Deus."</p>
   </div>
 </div>
@@ -764,7 +765,22 @@ function mostrarComprovante(nome, numero) {
           <div style="font-size:0.85rem;color:rgba(255,255,255,0.7);margin-top:0.1rem;">${hora}</div>
         </div>
       </div>
-      <button onclick="salvarComprovante()" style="width:100%;padding:0.9rem;background:transparent;border:2px solid #C9942A;border-radius:8px;color:#C9942A;font-family:'Cinzel',serif;font-size:0.9rem;font-weight:700;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.75rem;">⬇ Salvar Comprovante</button>
+      <div style="
+    margin: 1rem 0;
+    padding: 0.6rem 0.8rem;
+    background: rgba(201,148,42,0.08);
+    border: 1px solid rgba(201,148,42,0.25);
+    border-radius: 10px;
+    color: rgba(255,255,255,0.85);
+    font-size: 0.75rem;
+    line-height: 1.35;
+    text-align: center;
+">
+    ✅ Participação confirmada!<br>
+    Salve seu comprovante e acompanhe o sorteio.<br>
+    Compartilhe também com amigos pelo WhatsApp.
+</div>
+      <button onclick="salvarComprovante()" style="width:100%;padding:0.9rem;background:transparent;border:2px solid #C9942A;border-radius:8px;color:#C9942A;font-family:'Cinzel',serif;font-size:0.9rem;font-weight:700;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.75rem;">⬇ Baixar Comprovante</button>
       <button onclick="compartilharWhatsApp('${nome}', ${JSON.stringify(numero)})" style="width:100%;padding:0.9rem;background:#25D366;border:none;border-radius:8px;color:white;font-family:'Cinzel',serif;font-size:0.9rem;font-weight:700;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.75rem;">📲 Compartilhar no WhatsApp</button>
       <button onclick="fecharComprovante()" style="width:100%;padding:0.9rem;background:#C9942A;border:none;border-radius:8px;color:#111;font-family:'Cinzel',serif;font-size:0.9rem;font-weight:700;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;">✓ Concluir</button>
     </div>
@@ -1115,8 +1131,11 @@ async function validarComprovanteOCR() {
   };
   quantidadePermitida = Math.floor(valorEncontrado / 50);
   document.getElementById('status-comprovante').innerHTML =
-    `✅ Comprovante validado • ${quantidadePermitida} número(s) disponível(is)`;
-  showToast('Comprovante validado com sucesso!', 'success');
+  `✅ Comprovante validado • ${quantidadePermitida} número(s) disponível(is)<br><span style="font-size:0.85rem;color:var(--gold);">👆 Clique em Confirmar Participação abaixo</span>`;
+
+    updateConfirmBtn();
+
+  showToast('Comprovante validado! Agora clique em ✦ Confirmar Participação ✦', 'success');
 
 } else {
   console.log('REPROVADO');
