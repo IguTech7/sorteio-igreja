@@ -300,3 +300,17 @@ def api_tentativas(request):
         'imagem_url': r.imagem.url if r.imagem else None,
     } for r in registros]
     return JsonResponse({'tentativas': data})
+
+@csrf_exempt
+@require_POST
+def api_excluir_tentativa(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'ok': False, 'erro': 'Não autorizado.'}, status=401)
+    try:
+        data = json.loads(request.body)
+        id = data.get('id')
+        from .models import TentativaComprovante
+        TentativaComprovante.objects.filter(id=id).delete()
+        return JsonResponse({'ok': True})
+    except Exception as e:
+        return JsonResponse({'ok': False, 'erro': str(e)}, status=400)

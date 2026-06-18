@@ -20,4 +20,5 @@ urlpatterns = [
     path('api/verificar-comprovante/', views.api_verificar_comprovante),
     path('api/registrar-tentativa/', views.api_registrar_tentativa, name='api_registrar_tentativa'),
     path('api/tentativas/', views.api_tentativas, name='api_tentativas'),
+    path('api/excluir-tentativa/', views.api_excluir_tentativa, name='api_excluir_tentativa'),
 ]

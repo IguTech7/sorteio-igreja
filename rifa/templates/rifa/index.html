@@ -557,6 +557,7 @@
             <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Motivo</th>
             <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Score</th>
             <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Imagem</th>
+            <th style="padding:0.6rem 0.5rem;"></th>
           </tr>
         </thead>
         <tbody id="tentativas-body">
@@ -1153,7 +1154,8 @@ async function validarComprovanteOCR() {
 
     console.log('Score OCR:', score);
 
-    if (score >= 70) {
+    const temDestinatario = temIgreja || temCNPJ || temChavePix;
+    if (score >= 70 && temDestinatario) {
   console.log('APROVADO');
 
   const hashImagem = await gerarHashImagem(comprovanteArquivo);
@@ -1272,6 +1274,9 @@ async function carregarTentativas() {
         ${t.imagem_url
           ? `<img src="${t.imagem_url}" onclick="verImagem('${t.imagem_url}')" style="width:48px;height:48px;object-fit:cover;border-radius:6px;border:1px solid rgba(201,148,42,0.3);cursor:pointer;" onerror="this.style.display='none'">`
           : '<span style="color:rgba(255,255,255,0.2);font-size:0.75rem;">—</span>'}
+      </td>
+      <td style="padding:0.6rem 0.5rem;">
+        <button onclick="excluirTentativa(${t.id})" style="padding:0.3rem 0.7rem;background:rgba(139,26,26,0.4);border:1px solid rgba(248,180,180,0.3);border-radius:5px;color:rgba(248,180,180,0.8);font-size:0.75rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Excluir</button>
       </td>
     </tr>
   `).join('');
@@ -1580,6 +1585,19 @@ function compartilharWhatsApp(nome, numeros) {
 document.addEventListener('DOMContentLoaded', () => {
   carregarStatus();
 });
+
+async function excluirTentativa(id) {
+  if (!confirm('Excluir esta tentativa?')) return;
+  showLoading(true);
+  const d = await api('/api/excluir-tentativa/', 'POST', { id });
+  showLoading(false);
+  if (d.ok) {
+    showToast('Tentativa excluída.', 'success');
+    await carregarTentativas();
+  } else {
+    showToast(d.erro, 'error');
+  }
+}
 
 </script>
 
