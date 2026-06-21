@@ -21,4 +21,5 @@ urlpatterns = [
     path('api/registrar-tentativa/', views.api_registrar_tentativa, name='api_registrar_tentativa'),
     path('api/tentativas/', views.api_tentativas, name='api_tentativas'),
     path('api/excluir-tentativa/', views.api_excluir_tentativa, name='api_excluir_tentativa'),
+    path('api/participar-admin/', views.api_participar_admin, name='api_participar_admin'),
 ]

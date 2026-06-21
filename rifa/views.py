@@ -314,3 +314,32 @@ def api_excluir_tentativa(request):
         return JsonResponse({'ok': True})
     except Exception as e:
         return JsonResponse({'ok': False, 'erro': str(e)}, status=400)
+
+@csrf_exempt
+@require_POST
+def api_participar_admin(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'ok': False, 'erro': 'Não autorizado.'}, status=401)
+    try:
+        data = json.loads(request.body)
+        numeros = data.get('numeros', [])
+        nome = data.get('nome', '').strip()
+        telefone = data.get('telefone', '').strip()
+    except:
+        return JsonResponse({'ok': False, 'erro': 'Dados inválidos.'}, status=400)
+
+    if not nome or not numeros:
+        return JsonResponse({'ok': False, 'erro': 'Nome e números são obrigatórios.'}, status=400)
+
+    erros = []
+    salvos = []
+    for numero in numeros:
+        if Participante.objects.filter(numero=numero).exists():
+            erros.append(numero)
+        else:
+            Participante.objects.create(numero=numero, nome=nome, telefone=telefone)
+            salvos.append(numero)
+
+    if erros:
+        return JsonResponse({'ok': False, 'erro': f'Números já ocupados: {erros}. Salvos: {salvos}'})
+    return JsonResponse({'ok': True, 'mensagem': f'Números {salvos} cadastrados para {nome}!'})
