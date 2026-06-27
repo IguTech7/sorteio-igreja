@@ -2,5 +2,4 @@
 pip install -r requirements.txt
 python manage.py collectstatic --noinput
 python manage.py migrate
-python manage.py loaddata backup.json || true
-python manage.py createsuperuser --noinput --username igor --email admin@admin.com || true
+python manage.py createsuperuser --noinput --username admin --email admin@admin.com || true
