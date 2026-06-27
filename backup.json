@@ -1,5 +1,155 @@
 [
 {
+  "model": "rifa.participante",
+  "pk": 21,
+  "fields": {
+    "numero": 7,
+    "nome": "Ricardo Rodolfo S. Leal",
+    "telefone": "81996549901",
+    "criado_em": "2026-06-08T21:56:27.311Z"
+  }
+},
+{
+  "model": "rifa.participante",
+  "pk": 22,
+  "fields": {
+    "numero": 33,
+    "nome": "Diego da Silva marinheiro",
+    "telefone": "11948733928",
+    "criado_em": "2026-06-09T00:32:56.827Z"
+  }
+},
+{
+  "model": "rifa.participante",
+  "pk": 24,
+  "fields": {
+    "numero": 777,
+    "nome": "Igor",
+    "telefone": "",
+    "criado_em": "2026-06-09T02:12:48.633Z"
+  }
+},
+{
+  "model": "rifa.participante",
+  "pk": 28,
+  "fields": {
+    "numero": 13,
+    "nome": "Donizete Ribeiro",
+    "telefone": "87998092894",
+    "criado_em": "2026-06-09T14:34:41.177Z"
+  }
+},
+{
+  "model": "rifa.participante",
+  "pk": 29,
+  "fields": {
+    "numero": 41,
+    "nome": "Donizete Ribeiro",
+    "telefone": "87998092894",
+    "criado_em": "2026-06-09T14:34:41.180Z"
+  }
+},
+{
+  "model": "rifa.participante",
+  "pk": 36,
+  "fields": {
+    "numero": 944,
+    "nome": "Roberto Ferreira",
+    "telefone": "87981829510",
+    "criado_em": "2026-06-09T16:56:03.893Z"
+  }
+},
+{
+  "model": "rifa.participante",
+  "pk": 37,
+  "fields": {
+    "numero": 884,
+    "nome": "Roberto Ferreira",
+    "telefone": "87981829510",
+    "criado_em": "2026-06-09T16:56:03.896Z"
+  }
+},
+{
+  "model": "rifa.participante",
+  "pk": 40,
+  "fields": {
+    "numero": 455,
+    "nome": "RANIELE TORRES BELCHIOR",
+    "telefone": "87988064802",
+    "criado_em": "2026-06-09T20:34:23.923Z"
+  }
+},
+{
+  "model": "rifa.participante",
+  "pk": 43,
+  "fields": {
+    "numero": 75,
+    "nome": "Francisco Mario de jesus",
+    "telefone": "87981543505",
+    "criado_em": "2026-06-09T21:43:58.265Z"
+  }
+},
+{
+  "model": "rifa.participante",
+  "pk": 44,
+  "fields": {
+    "numero": 377,
+    "nome": "Francisco Mario de jesus",
+    "telefone": "87981543505",
+    "criado_em": "2026-06-09T21:43:58.267Z"
+  }
+},
+{
+  "model": "rifa.participante",
+  "pk": 84,
+  "fields": {
+    "numero": 77,
+    "nome": "Ricardo Rodolfo",
+    "telefone": "81996549901",
+    "criado_em": "2026-06-15T14:50:09.243Z"
+  }
+},
+{
+  "model": "rifa.participante",
+  "pk": 86,
+  "fields": {
+    "numero": 79,
+    "nome": "Alex Nascimento",
+    "telefone": "71997089016",
+    "criado_em": "2026-06-16T22:56:57.448Z"
+  }
+},
+{
+  "model": "rifa.participante",
+  "pk": 87,
+  "fields": {
+    "numero": 49,
+    "nome": "Odair Nascimento",
+    "telefone": "",
+    "criado_em": "2026-06-17T02:12:17.028Z"
+  }
+},
+{
+  "model": "rifa.participante",
+  "pk": 88,
+  "fields": {
+    "numero": 53,
+    "nome": "Odair Nascimento",
+    "telefone": "",
+    "criado_em": "2026-06-17T02:12:17.033Z"
+  }
+},
+{
+  "model": "rifa.participante",
+  "pk": 89,
+  "fields": {
+    "numero": 78,
+    "nome": "Alexsandro Silva Felix",
+    "telefone": "",
+    "criado_em": "2026-06-17T02:20:18.378Z"
+  }
+},
+{
   "model": "rifa.configuracao",
   "pk": 1,
   "fields": {
@@ -9,292 +159,182 @@
     "data_sorteio": null,
     "premio": "Terreno",
     "causa": "Reforma do Templo",
-    "pix_chave": "contato@igrejaesperanca.com",
+    "pix_chave": "ibmjardimguararapes@gmail.com",
     "pix_emv": "",
-    "total_numeros": 1000
+    "total_numeros": 2000
+  }
+},
+{
+  "model": "rifa.sorteio",
+  "pk": 9,
+  "fields": {
+    "numero_vencedor": 777,
+    "nome_vencedor": "Igor",
+    "realizado_em": "2026-06-09T03:56:32.929Z"
+  }
+},
+{
+  "model": "rifa.sorteio",
+  "pk": 10,
+  "fields": {
+    "numero_vencedor": 13,
+    "nome_vencedor": "Donizete Ribeiro",
+    "realizado_em": "2026-06-10T21:47:58.683Z"
+  }
+},
+{
+  "model": "rifa.sorteio",
+  "pk": 11,
+  "fields": {
+    "numero_vencedor": 75,
+    "nome_vencedor": "Francisco Mario de jesus",
+    "realizado_em": "2026-06-10T21:48:04.518Z"
+  }
+},
+{
+  "model": "rifa.sorteio",
+  "pk": 12,
+  "fields": {
+    "numero_vencedor": 41,
+    "nome_vencedor": "Donizete Ribeiro",
+    "realizado_em": "2026-06-10T21:48:10.547Z"
+  }
+},
+{
+  "model": "rifa.sorteio",
+  "pk": 13,
+  "fields": {
+    "numero_vencedor": 884,
+    "nome_vencedor": "Roberto Ferreira",
+    "realizado_em": "2026-06-10T21:48:15.715Z"
+  }
+},
+{
+  "model": "rifa.sorteio",
+  "pk": 14,
+  "fields": {
+    "numero_vencedor": 53,
+    "nome_vencedor": "Odair Nascimento",
+    "realizado_em": "2026-06-22T00:53:06.649Z"
   }
 },
 {
   "model": "rifa.registrocomprovante",
-  "pk": 14,
+  "pk": 3,
   "fields": {
-    "nome_participante": "joao",
-    "pagador": "roberto carlos ferreira da silva",
-    "data_hora_pix": "09 jun 2026 - 11:47:42",
-    "valor": "100.00",
-    "texto_ocr": "nau\r\n\r\no\r\ncomprovante de\r\ntransferencia\r\n09 jun 2026 - 11:47:42\r\nvalor r$ 100,00\r\ntipo de transferencia pix\r\nid da transacao e182361202026060\r\n\r\ne 91447s06318ec753\r\n\r\ndestino\r\nnome igreja batista missionaria\r\ncnpj 05199886000168\r\ninstituicao cora scfi\r\nchave ibmjardimguararapesqgmail.co\r\npix m\r\norigem\r\nnome roberto carlos ferreira da silva\r\ninstituicao nu pagamentos - ip\r\ncpf 1. 240.026 --\r\nnu pagamentos s.a. - instituicao de\r\npagamento\r\ncnpj 18.236.120/0001-58\r\nid da transacao:\r\ne18236120202606091447s06318ec753\r\nestamos aqui para ajudar se voce tiver alguma\r\nduvida.\r\nme ajuda >\r\nouvidoria: 0800 887 0463 ou demais canais em\r\nnubank.com.br/contatosttouvidoria (atendimento\r\ndas 8h as 18h em dias uteis).",
-    "imagem": "comprovantes/WhatsApp_Image_2026-06-09_at_12_4GJAhLE.23.01.jpeg",
-    "hash_imagem": "628bd42de456e90e5b5d044dbb30b651b31df45f82d62d723de6252de8d5b2ee",
-    "assinatura": "roberto carlos ferreira da silva|09 jun 2026 - 11:47:42|100.00",
-    "criado_em": "2026-06-13T18:39:24.994Z",
+    "nome_participante": "RANIELE TORRES BELCHIOR",
+    "pagador": "RANIELE TORRES BELCHIOR",
+    "data_hora_pix": "09/06/2026 11:52:52",
+    "valor": "50.00",
+    "texto_ocr": "«> santander\r\ncomprovante do pix\r\n09/06/2026 - 11:52:52\r\nvalor pago\r\nr$ 50,00\r\nforma de pagamento\r\nag 4001 cc 1006921-2\r\ndados do recebedor\r\npara\r\nigreja batista missionaria\r\ncnpj\r\n05.***.***/0001-6*\r\nchave\r\niptrmemmemmtros o gmail.com\r\ninstituicao\r\ncora sociedade de cr dito, financiamento e\r\ninvestimento s.a.\r\ndados do pagador\r\nde\r\nraniele torres belchior\r\ncpf\r\n***.208.084-**\r\ninstituicao\r\nbco santander (brasil) s.a.\r\nid/transacao\r\ne9040088820260609145263277688928\r\ndata e hora da transacao\r\n09/06/2026 - 11:52:52\r\ncodigo de autenticacao\r\nb1f42e226f21195b1638832\r\ncomprovante do pix 1/2",
+    "imagem": "",
+    "hash_imagem": "",
+    "assinatura": "",
+    "criado_em": "2026-06-09T20:34:23.482Z",
     "numero": null
   }
 },
 {
   "model": "rifa.registrocomprovante",
-  "pk": 18,
+  "pk": 6,
   "fields": {
-    "nome_participante": "Maria",
+    "nome_participante": "Francisco Mario de jesus",
+    "pagador": "francisco mario de jesus",
+    "data_hora_pix": "09 jun 2026 - 18:37:19",
+    "valor": "100.00",
+    "texto_ocr": "841 qo mo infaz e\nvoce nm 9\n> lj\n< ha 3 minutos o ss 7 º\n09 jun 2026 - 18:37:19\nvalor r$ 100,00\ntipo de transferencia pix\nid da transacao e182361202026060\nc 92137s064d6e492f\ndestino\nnome igreja batista missionaria\ncnpj 05199886000168\ninstituicao cora scfi\nchave pix ibmjardimgeuararapesqgmail.com\norigem\nnome francisco mario de jesus\ninstituicao nu pagamentos - ip\ncpf ... 715.205--\nnu pagamentos s.a. - instituicao de pagamento\ncnpj 18.236.120/0001 -58\nid da transacao:\ne18236120202606092137s064d6e492f\nestamos aqui para ajudar se voce tiver alguma duvida.\n& €7 responder\n< o io!",
+    "imagem": "",
+    "hash_imagem": "",
+    "assinatura": "",
+    "criado_em": "2026-06-09T21:43:57.991Z",
+    "numero": null
+  }
+},
+{
+  "model": "rifa.registrocomprovante",
+  "pk": 40,
+  "fields": {
+    "nome_participante": "Ricardo Rodolfo",
     "pagador": "ricardo rodolfo s leal",
     "data_hora_pix": "07/06/2026 as 18:37:53",
     "valor": "50.00",
     "texto_ocr": ";\r\nz\r\ncomprovante bb\r\nr$ 50,00\r\n07/06/2026 as 18:37:53\r\no pix enviado\r\nrecebedor\r\nigreja batista missionaria\r\ncnpj\r\n5.199.886/0001-68\r\nagencia\r\n0001\r\nconta\r\n15288253\r\ninstituicao\r\n37880206 cora scfi\r\ntipo de conta\r\nconta pagamento\r\nchave pix\r\nibmjardimguararapes&gmail.com\r\npagador\r\nricardo rodolfo s leal\r\ncpf\r\n*ens78314-\r\nagencia\r\nma-6\r\nconta\r\n18828-x\r\ninstituicao\r\n00000000 bco do brasil s.a,\r\ninformacoes adicionais\r\n1d: eooo00000020260607213732969722732\r\ncomprovante emitido em: 07/06/2026 as 18:38:42\r\ndocumento: 000000000060810\r\nautenticacao sisbb: d.7ee.94d,226.d8a.6c1\r\ncentral de relacionamento:\r\n4004 0001 capitais e regioes metropolitanas.\r\n0800 729 0001 demais localidades.\r\nsac: 0800 729 0722\r\nouvidoria: 0800 729 5678\r\natendimento a deficientes auditivos ou de fala: 0800 729\r\n0088\r\ncanal de etica e denuncias;\r\nhttps://canalconfidencial.com.br/bancodobrasil/\r\nesse e o novo comprovante do banco do brasil.\r\nmais clareza nas informacoes, facilitando sua vida.",
-    "imagem": "comprovantes/WhatsApp_Image_2026-06-08_at_15_KfxGGHm.48.34.jpeg",
+    "imagem": "comprovantes/WhatsApp_Image_2026-06-08_at_15_WSOfisP.48.34.jpeg",
     "hash_imagem": "56ef044a77c91a2fd5f2017ab8907c43b7aa59cd95648447f461327bbb5f3b70",
     "assinatura": "ricardo rodolfo s leal|07/06/2026 as 18:37:53|50.00",
-    "criado_em": "2026-06-14T18:25:08.561Z",
+    "criado_em": "2026-06-12T12:37:55.026Z",
     "numero": null
   }
 },
 {
   "model": "rifa.registrocomprovante",
-  "pk": 26,
+  "pk": 43,
   "fields": {
-    "nome_participante": "Adriano",
-    "pagador": "igor leandro dos santos",
-    "data_hora_pix": "o7 jun 2026 - 15:41:36",
+    "nome_participante": "Ricardo Rodolfo",
+    "pagador": "ricardo rodolfo s leal",
+    "data_hora_pix": "15/06/2026 as 11:57:21",
     "valor": "50.00",
-    "texto_ocr": "nu\r\no\r\n\r\ncomprovante de transferencia\r\n\r\no7 jun 2026 - 15:41:36\r\n\r\nvalor r$ 50,00\r\n\r\ntipo de transferencia pix\r\n\r\nid da transacao e182361202026060\r\n71841s18285caa7s\r\n\r\ndestino\r\n\r\nnome igreja batista missionaria\r\n\r\ncnpj o05199886000168\r\n\r\ninstituicao cora scfi\r\n\r\nchave pix ibmjardimguararapes&qgmail.com\r\n\r\norigem\r\n\r\nnome igor leandro dos santos\r\n\r\ninstituicao nu pagamentos - ip\r\n\r\ncpf --.,829,134---\r\n\r\nnu pagamentos s.a. - instituicao de pagamento\r\n\r\ncnpj 18.236.120/0001-58\r\n\r\n1d da transacao: e18236120202606071841s18285caa75\r\n\r\nestamos aqui para ajudar se voce tiver alguma duvida.\r\n\r\nmeajuda >\r\n\r\nouvidoria: 0800 887 0463 ou demais canais em nubank.com.br/\r\n\r\ncontatosftouvidoria (atendimento das 8h as 18h em dias uteis),",
-    "imagem": "comprovantes/WhatsApp_Image_2026-06-07_at_15_Hp68q1N.41.56.jpeg",
-    "hash_imagem": "c55188bfcfeba18c3b60162f4ea70ae50ea4848108d8bee05d201f2814fa31f8",
-    "assinatura": "igor leandro dos santos|o7 jun 2026 - 15:41:36|50.00",
-    "criado_em": "2026-06-15T15:47:01.230Z",
+    "texto_ocr": ";\r\nuz\r\ncomprovante bb\r\nr$ 50,00\r\n15/06/2026 as 11:57:21\r\no pix enviado\r\nrecebedor\r\nigreja batista missionaria\r\ncnpj\r\n5.199.886/0001-68\r\nagencia\r\n0001\r\nconta\r\n15288253\r\ninstituicao\r\n37880206 cora scfi\r\ntipo de conta\r\nconta pagamento\r\nchave pix\r\nibmjardimguararapes&gmail.com\r\npagador\r\nricardo rodolfo s leal\r\ncpf\r\n*es78,314-\"\r\nagencia\r\nma-6\r\nconta\r\n18828-x\r\ninstituicao\r\n00000000 bco do brasil s.a,\r\ninformacoes adicionais\r\n1d: eoo00000020260615143707224347321\r\ncomprovante emitido em: 15/06/2026 as 11:37:33\r\ndocumento: 000000000061501\r\nautenticacao sisbb: 7.c90.b73.88e.8ee.beo\r\ncentral de relacionamento:\r\n4004 0001 capitais e regioes metropolitanas.\r\n00800 729 0001 demais localidades,\r\nsac: 0800 729 0722\r\nouvidoria: 0800 729 5678\r\natendimento a deficientes auditivos ou de fala: 0800 729\r\n0088\r\ncanal de etica e denuncias:\r\nhttps://canalconfidencial.com.br/bancodobrasil/\r\nesse e o novo comprovante do banco do brasil.\r\nmais clareza nas informacoes, facilitando sua vida.",
+    "imagem": "comprovantes/IMG_2484.png",
+    "hash_imagem": "95f765e091f3bd857979ea813dfb2acf35224265a39c0fd65f2d58135e535515",
+    "assinatura": "ricardo rodolfo s leal|15/06/2026 as 11:57:21|50.00",
+    "criado_em": "2026-06-15T14:50:09.027Z",
     "numero": null
   }
 },
 {
-  "model": "rifa.tentativacomprovante",
-  "pk": 7,
+  "model": "rifa.registrocomprovante",
+  "pk": 45,
   "fields": {
-    "data_hora": "2026-06-13T19:22:31.206Z",
-    "motivo": "Aprovado",
-    "score": 150,
-    "aprovado": true,
-    "imagem": "tentativas/WhatsApp_Image_2026-06-07_at_15_Ys40Dka.41.56.jpeg",
-    "texto_ocr": "nu\r\no\r\n\r\ncomprovante de transferencia\r\n\r\no7 jun 2026 - 15:41:36\r\n\r\nvalor r$ 50,00\r\n\r\ntipo de transferencia pix\r\n\r\nid da transacao e182361202026060\r\n71841s18285caa7s\r\n\r\ndestino\r\n\r\nnome igreja batista missionaria\r\n\r\ncnpj o05199886000168\r\n\r\ninstituicao cora scfi\r\n\r\nchave pix ibmjardimguararapes&qgmail.com\r\n\r\norigem\r\n\r\nnome igor leandro dos santos\r\n\r\ninstituicao nu pagamentos - ip\r\n\r\ncpf --.,829,134---\r\n\r\nnu pagamentos s.a. - instituicao de pagamento\r\n\r\ncnpj 18.236.120/0001-58\r\n\r\n1d da transacao: e18236120202606071841s18285caa75\r\n\r\nestamos aqui para ajudar se voce tiver alguma duvida.\r\n\r\nmeajuda >\r\n\r\nouvidoria: 0800 887 0463 ou demais canais em nubank.com.br/\r\n\r\ncontatosftouvidoria (atendimento das 8h as 18h em dias uteis),"
+    "nome_participante": "Alex Nascimento",
+    "pagador": "Alex Nascimento",
+    "data_hora_pix": "16 de junho 19:56",
+    "valor": "50.00",
+    "texto_ocr": "() pronto! seu pagamento foi realizado.\r\ncomprovante do pix\r\nvoce pode consultar o comprovante da sua\r\ntransacao em inicio > pix > extrato pix.\r\nvalor pago\r\nr$ 50,00\r\npara\r\nigreja batista missionaria\r\ncnpj\r\n05.****** /0001-6*\r\ninstituicao\r\ncora sociedade de cr dito, financiamento e\r\ndindin no jogo\r\npremios de e r$ 42 mil na hora ev",
+    "imagem": "comprovantes/1000931908.png",
+    "hash_imagem": "97cb9e6abfa4126506fcf0fa59ca117955a335daae88ae8588da207b2b501afa",
+    "assinatura": "||50.00",
+    "criado_em": "2026-06-16T22:56:57.206Z",
+    "numero": null
   }
 },
 {
-  "model": "rifa.tentativacomprovante",
-  "pk": 8,
+  "model": "rifa.registrocomprovante",
+  "pk": 46,
   "fields": {
-    "data_hora": "2026-06-13T19:23:13.950Z",
-    "motivo": "Aprovado",
-    "score": 150,
-    "aprovado": true,
-    "imagem": "tentativas/WhatsApp_Image_2026-06-07_at_15_jxYTY1w.41.56.jpeg",
-    "texto_ocr": "nu\r\no\r\n\r\ncomprovante de transferencia\r\n\r\no7 jun 2026 - 15:41:36\r\n\r\nvalor r$ 50,00\r\n\r\ntipo de transferencia pix\r\n\r\nid da transacao e182361202026060\r\n71841s18285caa7s\r\n\r\ndestino\r\n\r\nnome igreja batista missionaria\r\n\r\ncnpj o05199886000168\r\n\r\ninstituicao cora scfi\r\n\r\nchave pix ibmjardimguararapes&qgmail.com\r\n\r\norigem\r\n\r\nnome igor leandro dos santos\r\n\r\ninstituicao nu pagamentos - ip\r\n\r\ncpf --.,829,134---\r\n\r\nnu pagamentos s.a. - instituicao de pagamento\r\n\r\ncnpj 18.236.120/0001-58\r\n\r\n1d da transacao: e18236120202606071841s18285caa75\r\n\r\nestamos aqui para ajudar se voce tiver alguma duvida.\r\n\r\nmeajuda >\r\n\r\nouvidoria: 0800 887 0463 ou demais canais em nubank.com.br/\r\n\r\ncontatosftouvidoria (atendimento das 8h as 18h em dias uteis),"
+    "nome_participante": "Odair Nascimento",
+    "pagador": "Odair nascimento",
+    "data_hora_pix": "09 jun 2026 - 11:47:42",
+    "valor": "100.00",
+    "texto_ocr": "nau\r\n\r\no\r\ncomprovante de\r\ntransferencia\r\n09 jun 2026 - 11:47:42\r\nvalor r$ 100,00\r\ntipo de transferencia pix\r\nid da transacao e182361202026060\r\n\r\ne 91447s06318ec753\r\n\r\ndestino\r\nnome igreja batista missionaria\r\ncnpj 05199886000168\r\ninstituicao cora scfi\r\nchave ibmjardimguararapesqgmail.co\r\npix m\r\norigem\r\nnome roberto carlos ferreira da silva\r\ninstituicao nu pagamentos - ip\r\ncpf 1. 240.026 --\r\nnu pagamentos s.a. - instituicao de\r\npagamento\r\ncnpj 18.236.120/0001-58\r\nid da transacao:\r\ne18236120202606091447s06318ec753\r\nestamos aqui para ajudar se voce tiver alguma\r\nduvida.\r\nme ajuda >\r\nouvidoria: 0800 887 0463 ou demais canais em\r\nnubank.com.br/contatosttouvidoria (atendimento\r\ndas 8h as 18h em dias uteis).",
+    "imagem": "comprovantes/32914.jpg",
+    "hash_imagem": "628bd42de456e90e5b5d044dbb30b651b31df45f82d62d723de6252de8d5b2ee",
+    "assinatura": "roberto carlos ferreira da silva|09 jun 2026 - 11:47:42|100.00",
+    "criado_em": "2026-06-17T02:12:16.741Z",
+    "numero": null
   }
 },
 {
-  "model": "rifa.tentativacomprovante",
-  "pk": 9,
+  "model": "rifa.registrocomprovante",
+  "pk": 47,
   "fields": {
-    "data_hora": "2026-06-14T18:01:38.837Z",
-    "motivo": "Aprovado",
-    "score": 150,
-    "aprovado": true,
-    "imagem": "tentativas/WhatsApp_Image_2026-06-07_at_15_PpCNSP8.41.56.jpeg",
-    "texto_ocr": "nu\r\no\r\n\r\ncomprovante de transferencia\r\n\r\no7 jun 2026 - 15:41:36\r\n\r\nvalor r$ 50,00\r\n\r\ntipo de transferencia pix\r\n\r\nid da transacao e182361202026060\r\n71841s18285caa7s\r\n\r\ndestino\r\n\r\nnome igreja batista missionaria\r\n\r\ncnpj o05199886000168\r\n\r\ninstituicao cora scfi\r\n\r\nchave pix ibmjardimguararapes&qgmail.com\r\n\r\norigem\r\n\r\nnome igor leandro dos santos\r\n\r\ninstituicao nu pagamentos - ip\r\n\r\ncpf --.,829,134---\r\n\r\nnu pagamentos s.a. - instituicao de pagamento\r\n\r\ncnpj 18.236.120/0001-58\r\n\r\n1d da transacao: e18236120202606071841s18285caa75\r\n\r\nestamos aqui para ajudar se voce tiver alguma duvida.\r\n\r\nmeajuda >\r\n\r\nouvidoria: 0800 887 0463 ou demais canais em nubank.com.br/\r\n\r\ncontatosftouvidoria (atendimento das 8h as 18h em dias uteis),"
-  }
-},
-{
-  "model": "rifa.tentativacomprovante",
-  "pk": 10,
-  "fields": {
-    "data_hora": "2026-06-14T18:21:48.011Z",
-    "motivo": "Comprovante já utilizado.",
-    "score": 150,
-    "aprovado": false,
-    "imagem": "tentativas/WhatsApp_Image_2026-06-08_at_15_NCAmFZu.48.34.jpeg",
-    "texto_ocr": ";\r\nz\r\ncomprovante bb\r\nr$ 50,00\r\n07/06/2026 as 18:37:53\r\no pix enviado\r\nrecebedor\r\nigreja batista missionaria\r\ncnpj\r\n5.199.886/0001-68\r\nagencia\r\n0001\r\nconta\r\n15288253\r\ninstituicao\r\n37880206 cora scfi\r\ntipo de conta\r\nconta pagamento\r\nchave pix\r\nibmjardimguararapes&gmail.com\r\npagador\r\nricardo rodolfo s leal\r\ncpf\r\n*ens78314-\r\nagencia\r\nma-6\r\nconta\r\n18828-x\r\ninstituicao\r\n00000000 bco do brasil s.a,\r\ninformacoes adicionais\r\n1d: eooo00000020260607213732969722732\r\ncomprovante emitido em: 07/06/2026 as 18:38:42\r\ndocumento: 000000000060810\r\nautenticacao sisbb: d.7ee.94d,226.d8a.6c1\r\ncentral de relacionamento:\r\n4004 0001 capitais e regioes metropolitanas.\r\n0800 729 0001 demais localidades.\r\nsac: 0800 729 0722\r\nouvidoria: 0800 729 5678\r\natendimento a deficientes auditivos ou de fala: 0800 729\r\n0088\r\ncanal de etica e denuncias;\r\nhttps://canalconfidencial.com.br/bancodobrasil/\r\nesse e o novo comprovante do banco do brasil.\r\nmais clareza nas informacoes, facilitando sua vida."
-  }
-},
-{
-  "model": "rifa.tentativacomprovante",
-  "pk": 11,
-  "fields": {
-    "data_hora": "2026-06-14T18:22:14.934Z",
-    "motivo": "Aprovado",
-    "score": 150,
-    "aprovado": true,
-    "imagem": "tentativas/WhatsApp_Image_2026-06-07_at_15_t241KgC.41.56.jpeg",
-    "texto_ocr": "nu\r\no\r\n\r\ncomprovante de transferencia\r\n\r\no7 jun 2026 - 15:41:36\r\n\r\nvalor r$ 50,00\r\n\r\ntipo de transferencia pix\r\n\r\nid da transacao e182361202026060\r\n71841s18285caa7s\r\n\r\ndestino\r\n\r\nnome igreja batista missionaria\r\n\r\ncnpj o05199886000168\r\n\r\ninstituicao cora scfi\r\n\r\nchave pix ibmjardimguararapes&qgmail.com\r\n\r\norigem\r\n\r\nnome igor leandro dos santos\r\n\r\ninstituicao nu pagamentos - ip\r\n\r\ncpf --.,829,134---\r\n\r\nnu pagamentos s.a. - instituicao de pagamento\r\n\r\ncnpj 18.236.120/0001-58\r\n\r\n1d da transacao: e18236120202606071841s18285caa75\r\n\r\nestamos aqui para ajudar se voce tiver alguma duvida.\r\n\r\nmeajuda >\r\n\r\nouvidoria: 0800 887 0463 ou demais canais em nubank.com.br/\r\n\r\ncontatosftouvidoria (atendimento das 8h as 18h em dias uteis),"
-  }
-},
-{
-  "model": "rifa.tentativacomprovante",
-  "pk": 12,
-  "fields": {
-    "data_hora": "2026-06-14T18:24:07.476Z",
-    "motivo": "Aprovado",
-    "score": 150,
-    "aprovado": true,
-    "imagem": "tentativas/WhatsApp_Image_2026-06-08_at_15_hhrQ651.48.34.jpeg",
-    "texto_ocr": ";\r\nz\r\ncomprovante bb\r\nr$ 50,00\r\n07/06/2026 as 18:37:53\r\no pix enviado\r\nrecebedor\r\nigreja batista missionaria\r\ncnpj\r\n5.199.886/0001-68\r\nagencia\r\n0001\r\nconta\r\n15288253\r\ninstituicao\r\n37880206 cora scfi\r\ntipo de conta\r\nconta pagamento\r\nchave pix\r\nibmjardimguararapes&gmail.com\r\npagador\r\nricardo rodolfo s leal\r\ncpf\r\n*ens78314-\r\nagencia\r\nma-6\r\nconta\r\n18828-x\r\ninstituicao\r\n00000000 bco do brasil s.a,\r\ninformacoes adicionais\r\n1d: eooo00000020260607213732969722732\r\ncomprovante emitido em: 07/06/2026 as 18:38:42\r\ndocumento: 000000000060810\r\nautenticacao sisbb: d.7ee.94d,226.d8a.6c1\r\ncentral de relacionamento:\r\n4004 0001 capitais e regioes metropolitanas.\r\n0800 729 0001 demais localidades.\r\nsac: 0800 729 0722\r\nouvidoria: 0800 729 5678\r\natendimento a deficientes auditivos ou de fala: 0800 729\r\n0088\r\ncanal de etica e denuncias;\r\nhttps://canalconfidencial.com.br/bancodobrasil/\r\nesse e o novo comprovante do banco do brasil.\r\nmais clareza nas informacoes, facilitando sua vida."
-  }
-},
-{
-  "model": "rifa.tentativacomprovante",
-  "pk": 13,
-  "fields": {
-    "data_hora": "2026-06-14T18:24:55.675Z",
-    "motivo": "Aprovado",
-    "score": 150,
-    "aprovado": true,
-    "imagem": "tentativas/WhatsApp_Image_2026-06-08_at_15_05yJxDh.48.34.jpeg",
-    "texto_ocr": ";\r\nz\r\ncomprovante bb\r\nr$ 50,00\r\n07/06/2026 as 18:37:53\r\no pix enviado\r\nrecebedor\r\nigreja batista missionaria\r\ncnpj\r\n5.199.886/0001-68\r\nagencia\r\n0001\r\nconta\r\n15288253\r\ninstituicao\r\n37880206 cora scfi\r\ntipo de conta\r\nconta pagamento\r\nchave pix\r\nibmjardimguararapes&gmail.com\r\npagador\r\nricardo rodolfo s leal\r\ncpf\r\n*ens78314-\r\nagencia\r\nma-6\r\nconta\r\n18828-x\r\ninstituicao\r\n00000000 bco do brasil s.a,\r\ninformacoes adicionais\r\n1d: eooo00000020260607213732969722732\r\ncomprovante emitido em: 07/06/2026 as 18:38:42\r\ndocumento: 000000000060810\r\nautenticacao sisbb: d.7ee.94d,226.d8a.6c1\r\ncentral de relacionamento:\r\n4004 0001 capitais e regioes metropolitanas.\r\n0800 729 0001 demais localidades.\r\nsac: 0800 729 0722\r\nouvidoria: 0800 729 5678\r\natendimento a deficientes auditivos ou de fala: 0800 729\r\n0088\r\ncanal de etica e denuncias;\r\nhttps://canalconfidencial.com.br/bancodobrasil/\r\nesse e o novo comprovante do banco do brasil.\r\nmais clareza nas informacoes, facilitando sua vida."
-  }
-},
-{
-  "model": "rifa.tentativacomprovante",
-  "pk": 14,
-  "fields": {
-    "data_hora": "2026-06-14T18:29:53.667Z",
-    "motivo": "Aprovado",
-    "score": 150,
-    "aprovado": true,
-    "imagem": "tentativas/WhatsApp_Image_2026-06-07_at_15_zTZLwRD.41.56.jpeg",
-    "texto_ocr": "nu\r\no\r\n\r\ncomprovante de transferencia\r\n\r\no7 jun 2026 - 15:41:36\r\n\r\nvalor r$ 50,00\r\n\r\ntipo de transferencia pix\r\n\r\nid da transacao e182361202026060\r\n71841s18285caa7s\r\n\r\ndestino\r\n\r\nnome igreja batista missionaria\r\n\r\ncnpj o05199886000168\r\n\r\ninstituicao cora scfi\r\n\r\nchave pix ibmjardimguararapes&qgmail.com\r\n\r\norigem\r\n\r\nnome igor leandro dos santos\r\n\r\ninstituicao nu pagamentos - ip\r\n\r\ncpf --.,829,134---\r\n\r\nnu pagamentos s.a. - instituicao de pagamento\r\n\r\ncnpj 18.236.120/0001-58\r\n\r\n1d da transacao: e18236120202606071841s18285caa75\r\n\r\nestamos aqui para ajudar se voce tiver alguma duvida.\r\n\r\nmeajuda >\r\n\r\nouvidoria: 0800 887 0463 ou demais canais em nubank.com.br/\r\n\r\ncontatosftouvidoria (atendimento das 8h as 18h em dias uteis),"
-  }
-},
-{
-  "model": "rifa.tentativacomprovante",
-  "pk": 15,
-  "fields": {
-    "data_hora": "2026-06-14T18:30:29.459Z",
-    "motivo": "Aprovado",
-    "score": 150,
-    "aprovado": true,
-    "imagem": "tentativas/WhatsApp_Image_2026-06-07_at_15_ZwBL2S4.41.56.jpeg",
-    "texto_ocr": "nu\r\no\r\n\r\ncomprovante de transferencia\r\n\r\no7 jun 2026 - 15:41:36\r\n\r\nvalor r$ 50,00\r\n\r\ntipo de transferencia pix\r\n\r\nid da transacao e182361202026060\r\n71841s18285caa7s\r\n\r\ndestino\r\n\r\nnome igreja batista missionaria\r\n\r\ncnpj o05199886000168\r\n\r\ninstituicao cora scfi\r\n\r\nchave pix ibmjardimguararapes&qgmail.com\r\n\r\norigem\r\n\r\nnome igor leandro dos santos\r\n\r\ninstituicao nu pagamentos - ip\r\n\r\ncpf --.,829,134---\r\n\r\nnu pagamentos s.a. - instituicao de pagamento\r\n\r\ncnpj 18.236.120/0001-58\r\n\r\n1d da transacao: e18236120202606071841s18285caa75\r\n\r\nestamos aqui para ajudar se voce tiver alguma duvida.\r\n\r\nmeajuda >\r\n\r\nouvidoria: 0800 887 0463 ou demais canais em nubank.com.br/\r\n\r\ncontatosftouvidoria (atendimento das 8h as 18h em dias uteis),"
-  }
-},
-{
-  "model": "rifa.tentativacomprovante",
-  "pk": 16,
-  "fields": {
-    "data_hora": "2026-06-14T18:31:35.040Z",
-    "motivo": "Aprovado",
-    "score": 150,
-    "aprovado": true,
-    "imagem": "tentativas/WhatsApp_Image_2026-06-07_at_15_Ak0u3ww.41.56.jpeg",
-    "texto_ocr": "nu\r\no\r\n\r\ncomprovante de transferencia\r\n\r\no7 jun 2026 - 15:41:36\r\n\r\nvalor r$ 50,00\r\n\r\ntipo de transferencia pix\r\n\r\nid da transacao e182361202026060\r\n71841s18285caa7s\r\n\r\ndestino\r\n\r\nnome igreja batista missionaria\r\n\r\ncnpj o05199886000168\r\n\r\ninstituicao cora scfi\r\n\r\nchave pix ibmjardimguararapes&qgmail.com\r\n\r\norigem\r\n\r\nnome igor leandro dos santos\r\n\r\ninstituicao nu pagamentos - ip\r\n\r\ncpf --.,829,134---\r\n\r\nnu pagamentos s.a. - instituicao de pagamento\r\n\r\ncnpj 18.236.120/0001-58\r\n\r\n1d da transacao: e18236120202606071841s18285caa75\r\n\r\nestamos aqui para ajudar se voce tiver alguma duvida.\r\n\r\nmeajuda >\r\n\r\nouvidoria: 0800 887 0463 ou demais canais em nubank.com.br/\r\n\r\ncontatosftouvidoria (atendimento das 8h as 18h em dias uteis),"
-  }
-},
-{
-  "model": "rifa.tentativacomprovante",
-  "pk": 17,
-  "fields": {
-    "data_hora": "2026-06-15T15:23:23.679Z",
-    "motivo": "Aprovado",
-    "score": 150,
-    "aprovado": true,
-    "imagem": "tentativas/WhatsApp_Image_2026-06-07_at_15_Gjh9wYZ.41.56.jpeg",
-    "texto_ocr": "nu\r\no\r\n\r\ncomprovante de transferencia\r\n\r\no7 jun 2026 - 15:41:36\r\n\r\nvalor r$ 50,00\r\n\r\ntipo de transferencia pix\r\n\r\nid da transacao e182361202026060\r\n71841s18285caa7s\r\n\r\ndestino\r\n\r\nnome igreja batista missionaria\r\n\r\ncnpj o05199886000168\r\n\r\ninstituicao cora scfi\r\n\r\nchave pix ibmjardimguararapes&qgmail.com\r\n\r\norigem\r\n\r\nnome igor leandro dos santos\r\n\r\ninstituicao nu pagamentos - ip\r\n\r\ncpf --.,829,134---\r\n\r\nnu pagamentos s.a. - instituicao de pagamento\r\n\r\ncnpj 18.236.120/0001-58\r\n\r\n1d da transacao: e18236120202606071841s18285caa75\r\n\r\nestamos aqui para ajudar se voce tiver alguma duvida.\r\n\r\nmeajuda >\r\n\r\nouvidoria: 0800 887 0463 ou demais canais em nubank.com.br/\r\n\r\ncontatosftouvidoria (atendimento das 8h as 18h em dias uteis),"
-  }
-},
-{
-  "model": "rifa.tentativacomprovante",
-  "pk": 18,
-  "fields": {
-    "data_hora": "2026-06-15T15:28:00.090Z",
-    "motivo": "Comprovante já utilizado.",
-    "score": 150,
-    "aprovado": false,
-    "imagem": "tentativas/WhatsApp_Image_2026-06-07_at_15_1GcYJqR.41.56.jpeg",
-    "texto_ocr": "nu\r\no\r\n\r\ncomprovante de transferencia\r\n\r\no7 jun 2026 - 15:41:36\r\n\r\nvalor r$ 50,00\r\n\r\ntipo de transferencia pix\r\n\r\nid da transacao e182361202026060\r\n71841s18285caa7s\r\n\r\ndestino\r\n\r\nnome igreja batista missionaria\r\n\r\ncnpj o05199886000168\r\n\r\ninstituicao cora scfi\r\n\r\nchave pix ibmjardimguararapes&qgmail.com\r\n\r\norigem\r\n\r\nnome igor leandro dos santos\r\n\r\ninstituicao nu pagamentos - ip\r\n\r\ncpf --.,829,134---\r\n\r\nnu pagamentos s.a. - instituicao de pagamento\r\n\r\ncnpj 18.236.120/0001-58\r\n\r\n1d da transacao: e18236120202606071841s18285caa75\r\n\r\nestamos aqui para ajudar se voce tiver alguma duvida.\r\n\r\nmeajuda >\r\n\r\nouvidoria: 0800 887 0463 ou demais canais em nubank.com.br/\r\n\r\ncontatosftouvidoria (atendimento das 8h as 18h em dias uteis),"
-  }
-},
-{
-  "model": "rifa.tentativacomprovante",
-  "pk": 19,
-  "fields": {
-    "data_hora": "2026-06-15T15:28:16.400Z",
-    "motivo": "Aprovado",
-    "score": 150,
-    "aprovado": true,
-    "imagem": "tentativas/WhatsApp_Image_2026-06-07_at_15_5wwctjf.41.56.jpeg",
-    "texto_ocr": "nu\r\no\r\n\r\ncomprovante de transferencia\r\n\r\no7 jun 2026 - 15:41:36\r\n\r\nvalor r$ 50,00\r\n\r\ntipo de transferencia pix\r\n\r\nid da transacao e182361202026060\r\n71841s18285caa7s\r\n\r\ndestino\r\n\r\nnome igreja batista missionaria\r\n\r\ncnpj o05199886000168\r\n\r\ninstituicao cora scfi\r\n\r\nchave pix ibmjardimguararapes&qgmail.com\r\n\r\norigem\r\n\r\nnome igor leandro dos santos\r\n\r\ninstituicao nu pagamentos - ip\r\n\r\ncpf --.,829,134---\r\n\r\nnu pagamentos s.a. - instituicao de pagamento\r\n\r\ncnpj 18.236.120/0001-58\r\n\r\n1d da transacao: e18236120202606071841s18285caa75\r\n\r\nestamos aqui para ajudar se voce tiver alguma duvida.\r\n\r\nmeajuda >\r\n\r\nouvidoria: 0800 887 0463 ou demais canais em nubank.com.br/\r\n\r\ncontatosftouvidoria (atendimento das 8h as 18h em dias uteis),"
-  }
-},
-{
-  "model": "rifa.tentativacomprovante",
-  "pk": 20,
-  "fields": {
-    "data_hora": "2026-06-15T15:31:52.638Z",
-    "motivo": "Aprovado",
-    "score": 150,
-    "aprovado": true,
-    "imagem": "tentativas/WhatsApp_Image_2026-06-07_at_15_G93OuJo.41.56.jpeg",
-    "texto_ocr": "nu\r\no\r\n\r\ncomprovante de transferencia\r\n\r\no7 jun 2026 - 15:41:36\r\n\r\nvalor r$ 50,00\r\n\r\ntipo de transferencia pix\r\n\r\nid da transacao e182361202026060\r\n71841s18285caa7s\r\n\r\ndestino\r\n\r\nnome igreja batista missionaria\r\n\r\ncnpj o05199886000168\r\n\r\ninstituicao cora scfi\r\n\r\nchave pix ibmjardimguararapes&qgmail.com\r\n\r\norigem\r\n\r\nnome igor leandro dos santos\r\n\r\ninstituicao nu pagamentos - ip\r\n\r\ncpf --.,829,134---\r\n\r\nnu pagamentos s.a. - instituicao de pagamento\r\n\r\ncnpj 18.236.120/0001-58\r\n\r\n1d da transacao: e18236120202606071841s18285caa75\r\n\r\nestamos aqui para ajudar se voce tiver alguma duvida.\r\n\r\nmeajuda >\r\n\r\nouvidoria: 0800 887 0463 ou demais canais em nubank.com.br/\r\n\r\ncontatosftouvidoria (atendimento das 8h as 18h em dias uteis),"
-  }
-},
-{
-  "model": "rifa.tentativacomprovante",
-  "pk": 21,
-  "fields": {
-    "data_hora": "2026-06-15T15:33:31.422Z",
-    "motivo": "Aprovado",
-    "score": 150,
-    "aprovado": true,
-    "imagem": "tentativas/WhatsApp_Image_2026-06-07_at_15_Y28JchU.41.56.jpeg",
-    "texto_ocr": "nu\r\no\r\n\r\ncomprovante de transferencia\r\n\r\no7 jun 2026 - 15:41:36\r\n\r\nvalor r$ 50,00\r\n\r\ntipo de transferencia pix\r\n\r\nid da transacao e182361202026060\r\n71841s18285caa7s\r\n\r\ndestino\r\n\r\nnome igreja batista missionaria\r\n\r\ncnpj o05199886000168\r\n\r\ninstituicao cora scfi\r\n\r\nchave pix ibmjardimguararapes&qgmail.com\r\n\r\norigem\r\n\r\nnome igor leandro dos santos\r\n\r\ninstituicao nu pagamentos - ip\r\n\r\ncpf --.,829,134---\r\n\r\nnu pagamentos s.a. - instituicao de pagamento\r\n\r\ncnpj 18.236.120/0001-58\r\n\r\n1d da transacao: e18236120202606071841s18285caa75\r\n\r\nestamos aqui para ajudar se voce tiver alguma duvida.\r\n\r\nmeajuda >\r\n\r\nouvidoria: 0800 887 0463 ou demais canais em nubank.com.br/\r\n\r\ncontatosftouvidoria (atendimento das 8h as 18h em dias uteis),"
-  }
-},
-{
-  "model": "rifa.tentativacomprovante",
-  "pk": 22,
-  "fields": {
-    "data_hora": "2026-06-15T15:38:43.378Z",
-    "motivo": "Aprovado",
-    "score": 150,
-    "aprovado": true,
-    "imagem": "tentativas/WhatsApp_Image_2026-06-07_at_15_hgxY5yR.41.56.jpeg",
-    "texto_ocr": "nu\r\no\r\n\r\ncomprovante de transferencia\r\n\r\no7 jun 2026 - 15:41:36\r\n\r\nvalor r$ 50,00\r\n\r\ntipo de transferencia pix\r\n\r\nid da transacao e182361202026060\r\n71841s18285caa7s\r\n\r\ndestino\r\n\r\nnome igreja batista missionaria\r\n\r\ncnpj o05199886000168\r\n\r\ninstituicao cora scfi\r\n\r\nchave pix ibmjardimguararapes&qgmail.com\r\n\r\norigem\r\n\r\nnome igor leandro dos santos\r\n\r\ninstituicao nu pagamentos - ip\r\n\r\ncpf --.,829,134---\r\n\r\nnu pagamentos s.a. - instituicao de pagamento\r\n\r\ncnpj 18.236.120/0001-58\r\n\r\n1d da transacao: e18236120202606071841s18285caa75\r\n\r\nestamos aqui para ajudar se voce tiver alguma duvida.\r\n\r\nmeajuda >\r\n\r\nouvidoria: 0800 887 0463 ou demais canais em nubank.com.br/\r\n\r\ncontatosftouvidoria (atendimento das 8h as 18h em dias uteis),"
-  }
-},
-{
-  "model": "rifa.tentativacomprovante",
-  "pk": 23,
-  "fields": {
-    "data_hora": "2026-06-15T15:40:03.165Z",
-    "motivo": "Aprovado",
-    "score": 150,
-    "aprovado": true,
-    "imagem": "tentativas/WhatsApp_Image_2026-06-07_at_15_ItldLtN.41.56.jpeg",
-    "texto_ocr": "nu\r\no\r\n\r\ncomprovante de transferencia\r\n\r\no7 jun 2026 - 15:41:36\r\n\r\nvalor r$ 50,00\r\n\r\ntipo de transferencia pix\r\n\r\nid da transacao e182361202026060\r\n71841s18285caa7s\r\n\r\ndestino\r\n\r\nnome igreja batista missionaria\r\n\r\ncnpj o05199886000168\r\n\r\ninstituicao cora scfi\r\n\r\nchave pix ibmjardimguararapes&qgmail.com\r\n\r\norigem\r\n\r\nnome igor leandro dos santos\r\n\r\ninstituicao nu pagamentos - ip\r\n\r\ncpf --.,829,134---\r\n\r\nnu pagamentos s.a. - instituicao de pagamento\r\n\r\ncnpj 18.236.120/0001-58\r\n\r\n1d da transacao: e18236120202606071841s18285caa75\r\n\r\nestamos aqui para ajudar se voce tiver alguma duvida.\r\n\r\nmeajuda >\r\n\r\nouvidoria: 0800 887 0463 ou demais canais em nubank.com.br/\r\n\r\ncontatosftouvidoria (atendimento das 8h as 18h em dias uteis),"
-  }
-},
-{
-  "model": "rifa.tentativacomprovante",
-  "pk": 25,
-  "fields": {
-    "data_hora": "2026-06-18T19:41:39.086Z",
-    "motivo": "Destinatário não identificado",
-    "score": 70,
-    "aprovado": false,
-    "imagem": "tentativas/IMG-20260616-WA0043.jpg",
-    "texto_ocr": "comprovante de pix\r\n\r\nr$200,00\r\n\r\no realizado em 16/06/2026 as 17:40:11\r\n\r\nde\r\n\r\nsamuel jefter da silva\r\n\r\ncpf: **%,412,494-**\r\n\r\ninstituicao: itau unibanco s.a\r\n\r\npara\r\n\r\nalexsandro silva felix\r\n\r\ncpf: ***999084**\r\n\r\ninstituicao: banco santander (brasil) s.a.\r\nchave pix: +5587988710330\r\n\r\ndados da transacao\r\n\r\nautenticacao: baddea100ec8sddci1dbbs16ee3acb\r\nb7d4e77a021f\r\n\r\nid da transacao:\r\ne60701190202606162039dy5nl7sz20]\r\n\r\nrealizada em: celular\r\n\r\ncentral de atendimento\r\n\r\ncapitais e regioes metropolitanas: capitais e regioes metropolitanas:\r\n4004 4828\r\n\r\ndemais localidades: demais localidades: 0800 970 4828\r\n\r\nsac 24 horas: sac 24 horas: 0800 728 0728\r\n\r\nouvidoria (dias uteis das 9h as 18h): ouvidoria (dias uteis das 9h as 18h):\r\n0800 570 0011\r\n\r\ncanal para pcd auditiva ou de fala: canal para pcd auditiva ou de fala:\r\n0800 722 1722"
-  }
-},
-{
-  "model": "rifa.tentativacomprovante",
-  "pk": 26,
-  "fields": {
-    "data_hora": "2026-06-18T19:42:04.658Z",
-    "motivo": "Aprovado",
-    "score": 70,
-    "aprovado": true,
-    "imagem": "tentativas/1000931908.png",
-    "texto_ocr": "() pronto! seu pagamento foi realizado.\r\ncomprovante do pix\r\nvoce pode consultar o comprovante da sua\r\ntransacao em inicio > pix > extrato pix.\r\nvalor pago\r\nr$ 50,00\r\npara\r\nigreja batista missionaria\r\ncnpj\r\n05.****** /0001-6*\r\ninstituicao\r\ncora sociedade de cr dito, financiamento e\r\ndindin no jogo\r\npremios de e r$ 42 mil na hora ev"
+    "nome_participante": "Alexsandro Silva Felix",
+    "pagador": "Alexsandro Silva Felix",
+    "data_hora_pix": "16/06/2026 19:50:07",
+    "valor": "50.00",
+    "texto_ocr": "23:18 (000 + eneecesttnia 67)\r\n< 178165026614/7paf aq && :\r\n«s santander\r\ncomprovante do pix\r\n16/06/2026 - 19:50:07\r\n\r\nvalor pago\r\n\r\nr$50,00\r\n\r\nforma de pagamento\r\n\r\nag 4008 cc 1082312-3\r\n\r\ndados do recebedor\r\n\r\npara\r\n\r\nigreja batista missionaria\r\n\r\ncnpj\r\n\r\n05.***.\"**/0001-6\"\r\n\r\nchave\r\n\r\nibmijardimguararapes q gmail.com\r\n\r\ninstituicao\r\n\r\ncora sociedade de cr dito, financiamento e\r\n\r\ninvestimento s.a.\r\n\r\ndados do pagador\r\n\r\nde\r\n\r\nalexsandro silva felix\r\n\r\ncpf\r\n\r\n***.999.084-\"*\r\n\r\ninstituicao\r\n\r\nbco santander (brasil) s.a.\r\n\r\nid/transacao\r\n\r\ne9040088820260616224963785314853\r\n\r\ndata e hora da transacao\r\n\r\n16/06/2026 - 19:50:07\r\n\r\ncodigo de autenticacao\r\n\r\n8f2298873ba3db301924461\r\n\r\ncomprovante do pix 112\r\n\r\npa\r\n\r\n1 o <",
+    "imagem": "comprovantes/34983.jpg",
+    "hash_imagem": "52436b7701a52771d0e3a6717561916b1c3d4212b07fa55f579a2d3a1a147274",
+    "assinatura": "de||50.00",
+    "criado_em": "2026-06-17T02:20:18.124Z",
+    "numero": null
   }
 },
 {
   "model": "auth.user",
   "fields": {
-    "password": "pbkdf2_sha256$1000000$X1kVBb7AgIEUXGKsPh3U4O$m4Sm1nU5Oj9g+RwM7miaky7ubgTbr9TbKB+Xbez3gvM=",
-    "last_login": "2026-06-15T22:26:51.410Z",
+    "password": "pbkdf2_sha256$1200000$EIYtMWIG3jV3UuEW7azqKf$iDHUad6LAv/QFKAPzMCij0fLcPcZg9/qBo1+LsTUmeg=",
+    "last_login": "2026-06-26T23:18:59.322Z",
     "is_superuser": true,
     "username": "igor",
     "first_name": "",
@@ -302,32 +342,80 @@
     "email": "",
     "is_staff": true,
     "is_active": true,
-    "date_joined": "2026-05-31T18:33:31.529Z",
+    "date_joined": "2026-06-05T16:27:09.222Z",
     "groups": [],
     "user_permissions": []
   }
 },
 {
   "model": "sessions.session",
-  "pk": "66xq1c1mnmiw5qcxmajqcqd3qy1g38cy",
+  "pk": "09hovfv3ryskr91uodglawgo03tqy2cf",
   "fields": {
-    "session_data": ".eJxVjMsOwiAUBf-FtSFe2lJw6d5vIPcBUjWQlHZl_HfbpAvdnpk5bxVwXXJYW5zDJOqiQJ1-N0J-xrIDeWC5V821LPNEelf0QZu-VYmv6-H-HWRseatxBA8megZ2HhkJRkGyHULnEth0Nj2z-GTFC9GAknp0cfBkJPJWqc8XBKU5Tg:1wZFlb:7ylpP_48DmvnsPZmwe_XiOYDp3tNNXNrdV9diaE_OOs",
-    "expire_date": "2026-06-29T22:26:51.448Z"
+    "session_data": ".eJxVjDsOwjAQBe_iGln-xTaU9DmD5d314gBypDipEHeHSCmgfTPzXiLlba1p62VJE4mL0OL0u0HGR2k7oHtut1ni3NZlArkr8qBdjjOV5_Vw_w5q7vVbgzfaBq0Z2IXgHSvLaiC0ntBwYYyGCc-KHJEqxDEGC6CDKnlQZFG8P_FCOLk:1wdFp5:ldzz3L9vfX1QTjty20BoRZANhjZkA6XV3LZz5G8E9PQ",
+    "expire_date": "2026-07-10T23:18:59.327Z"
   }
 },
 {
   "model": "sessions.session",
-  "pk": "qssbib18gwyud9x2p5ikl4j78tvlsbxl",
+  "pk": "1uzpw6f5v3u79bl8s9zka5n69rtvquxc",
   "fields": {
-    "session_data": ".eJxVjMsOwiAUBf-FtSFe2lJw6d5vIPcBUjWQlHZl_HfbpAvdnpk5bxVwXXJYW5zDJOqiQJ1-N0J-xrIDeWC5V821LPNEelf0QZu-VYmv6-H-HWRseatxBA8megZ2HhkJRkGyHULnEth0Nj2z-GTFC9GAknp0cfBkJPJWqc8XBKU5Tg:1wYEwW:kT4RD7jAc0mTIje9Xb53jX3_wKjq05Z2x0rdOnY0bTM",
-    "expire_date": "2026-06-27T03:21:56.261Z"
+    "session_data": ".eJxVjDsOwjAQBe_iGln-xTaU9DmD5d314gBypDipEHeHSCmgfTPzXiLlba1p62VJE4mL0OL0u0HGR2k7oHtut1ni3NZlArkr8qBdjjOV5_Vw_w5q7vVbgzfaBq0Z2IXgHSvLaiC0ntBwYYyGCc-KHJEqxDEGC6CDKnlQZFG8P_FCOLk:1wZfX6:mylj_csh_iBTo9bY_mCobiVd8eS8qfMaqKjsakKhGxw",
+    "expire_date": "2026-07-01T01:57:36.296Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "55r5qltqqpklrw55ij9si88gbaddqzsa",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGln-xTaU9DmD5d314gBypDipEHeHSCmgfTPzXiLlba1p62VJE4mL0OL0u0HGR2k7oHtut1ni3NZlArkr8qBdjjOV5_Vw_w5q7vVbgzfaBq0Z2IXgHSvLaiC0ntBwYYyGCc-KHJEqxDEGC6CDKnlQZFG8P_FCOLk:1wWxKd:_8PGiY2BQtgz_kgSbH8WSMAxGazaQa0sDROtQTGvonI",
+    "expire_date": "2026-06-23T14:21:31.371Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "8ubhaku3yaff7ma7d7xwxibcz5x262yg",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGln-xTaU9DmD5d314gBypDipEHeHSCmgfTPzXiLlba1p62VJE4mL0OL0u0HGR2k7oHtut1ni3NZlArkr8qBdjjOV5_Vw_w5q7vVbgzfaBq0Z2IXgHSvLaiC0ntBwYYyGCc-KHJEqxDEGC6CDKnlQZFG8P_FCOLk:1wX2xg:2d_Cnn0Fg0Mu9jeqb7l2dpCMMQr3WE6W31bruFEivUo",
+    "expire_date": "2026-06-23T20:22:12.015Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "fuqxmwp9ut55yi7x78uoy996enrcvnnb",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGln-xTaU9DmD5d314gBypDipEHeHSCmgfTPzXiLlba1p62VJE4mL0OL0u0HGR2k7oHtut1ni3NZlArkr8qBdjjOV5_Vw_w5q7vVbgzfaBq0Z2IXgHSvLaiC0ntBwYYyGCc-KHJEqxDEGC6CDKnlQZFG8P_FCOLk:1waHqU:z5VeoIp27X7HNudcgF9moLg1Hf308WUHew4F3Lqmr6M",
+    "expire_date": "2026-07-02T18:52:10.146Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "n9j5biyis31an9epr86ywornxrtdb8re",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGln-xTaU9DmD5d314gBypDipEHeHSCmgfTPzXiLlba1p62VJE4mL0OL0u0HGR2k7oHtut1ni3NZlArkr8qBdjjOV5_Vw_w5q7vVbgzfaBq0Z2IXgHSvLaiC0ntBwYYyGCc-KHJEqxDEGC6CDKnlQZFG8P_FCOLk:1wZtPb:KHV_6Qzyhta-a_V_68jgSsq2E_AtvmjZ4PdxXJVRfSw",
+    "expire_date": "2026-07-01T16:46:47.174Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "qep2072r1kqgzzsuzpgxshpw2rnu8cpm",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGln-xTaU9DmD5d314gBypDipEHeHSCmgfTPzXiLlba1p62VJE4mL0OL0u0HGR2k7oHtut1ni3NZlArkr8qBdjjOV5_Vw_w5q7vVbgzfaBq0Z2IXgHSvLaiC0ntBwYYyGCc-KHJEqxDEGC6CDKnlQZFG8P_FCOLk:1waicI:-EyBjKIIOhLuJQyqpQDbEs6tgAhp_IuXVG36w7_Yq_Y",
+    "expire_date": "2026-07-03T23:27:18.067Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "ycje1r54rpfcgvgk3qc40y77jphg3ulm",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGln-xTaU9DmD5d314gBypDipEHeHSCmgfTPzXiLlba1p62VJE4mL0OL0u0HGR2k7oHtut1ni3NZlArkr8qBdjjOV5_Vw_w5q7vVbgzfaBq0Z2IXgHSvLaiC0ntBwYYyGCc-KHJEqxDEGC6CDKnlQZFG8P_FCOLk:1wVYmr:8NHjKg5zg2Vj0kEJ1oK3WMxjhDl0b-GU1oXOq3b5nlw",
+    "expire_date": "2026-06-19T17:56:53.532Z"
   }
 },
 {
   "model": "admin.logentry",
   "pk": 1,
   "fields": {
-    "action_time": "2026-05-31T18:40:27.530Z",
+    "action_time": "2026-06-05T19:45:16.648Z",
     "user": [
       "igor"
     ],
@@ -338,14 +426,32 @@
     "object_id": "1",
     "object_repr": "Sorteio Beneficente",
     "action_flag": 2,
-    "change_message": "[{\"changed\": {\"fields\": [\"Nome campanha\", \"Premio\"]}}]"
+    "change_message": "[{\"changed\": {\"fields\": [\"Premio\"]}}]"
   }
 },
 {
   "model": "admin.logentry",
   "pk": 2,
   "fields": {
-    "action_time": "2026-05-31T18:40:56.166Z",
+    "action_time": "2026-06-08T19:20:48.480Z",
+    "user": [
+      "igor"
+    ],
+    "content_type": [
+      "rifa",
+      "comprovanteusado"
+    ],
+    "object_id": "3",
+    "object_repr": "eooo00000020260607213732969722732",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 3,
+  "fields": {
+    "action_time": "2026-06-08T19:25:23.368Z",
     "user": [
       "igor"
     ],
@@ -361,45 +467,9 @@
 },
 {
   "model": "admin.logentry",
-  "pk": 3,
-  "fields": {
-    "action_time": "2026-06-03T15:31:01.813Z",
-    "user": [
-      "igor"
-    ],
-    "content_type": [
-      "rifa",
-      "configuracao"
-    ],
-    "object_id": "1",
-    "object_repr": "Sorteio Beneficente",
-    "action_flag": 2,
-    "change_message": "[{\"changed\": {\"fields\": [\"Valor\", \"Premio\", \"Total numeros\"]}}]"
-  }
-},
-{
-  "model": "admin.logentry",
   "pk": 4,
   "fields": {
-    "action_time": "2026-06-09T00:05:31.909Z",
-    "user": [
-      "igor"
-    ],
-    "content_type": [
-      "rifa",
-      "comprovanteusado"
-    ],
-    "object_id": "1",
-    "object_repr": "e182361202026060",
-    "action_flag": 3,
-    "change_message": ""
-  }
-},
-{
-  "model": "admin.logentry",
-  "pk": 5,
-  "fields": {
-    "action_time": "2026-06-09T00:11:09.812Z",
+    "action_time": "2026-06-08T20:38:51.736Z",
     "user": [
       "igor"
     ],
@@ -408,6 +478,24 @@
       "comprovanteusado"
     ],
     "object_id": "2",
+    "object_repr": "e18236120202605132313s1823a73833",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 5,
+  "fields": {
+    "action_time": "2026-06-08T20:59:32.660Z",
+    "user": [
+      "igor"
+    ],
+    "content_type": [
+      "rifa",
+      "comprovanteusado"
+    ],
+    "object_id": "1",
     "object_repr": "e182361202026060",
     "action_flag": 3,
     "change_message": ""
@@ -417,7 +505,7 @@
   "model": "admin.logentry",
   "pk": 6,
   "fields": {
-    "action_time": "2026-06-09T00:24:41.590Z",
+    "action_time": "2026-06-08T21:38:21.943Z",
     "user": [
       "igor"
     ],
@@ -425,8 +513,8 @@
       "rifa",
       "comprovanteusado"
     ],
-    "object_id": "3",
-    "object_repr": "e182361202026060",
+    "object_id": "5",
+    "object_repr": "e00000000020260607213732969722732",
     "action_flag": 3,
     "change_message": ""
   }
@@ -435,7 +523,7 @@
   "model": "admin.logentry",
   "pk": 7,
   "fields": {
-    "action_time": "2026-06-11T15:57:09.256Z",
+    "action_time": "2026-06-08T21:40:56.028Z",
     "user": [
       "igor"
     ],
@@ -443,8 +531,8 @@
       "rifa",
       "comprovanteusado"
     ],
-    "object_id": "2",
-    "object_repr": "ricardo rodolfo s leal|07/06/2026 as 18:37:53|50.00",
+    "object_id": "4",
+    "object_repr": "e182361202026060",
     "action_flag": 3,
     "change_message": ""
   }
@@ -453,7 +541,7 @@
   "model": "admin.logentry",
   "pk": 8,
   "fields": {
-    "action_time": "2026-06-11T16:06:43.630Z",
+    "action_time": "2026-06-09T02:07:20.906Z",
     "user": [
       "igor"
     ],
@@ -461,8 +549,404 @@
       "rifa",
       "comprovanteusado"
     ],
-    "object_id": "1",
-    "object_repr": "igor leandro dos santos|o7 jun 2026 - 15:41:36|50.00",
+    "object_id": "8",
+    "object_repr": "e182361202026060",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 9,
+  "fields": {
+    "action_time": "2026-06-09T02:07:41.292Z",
+    "user": [
+      "igor"
+    ],
+    "content_type": [
+      "rifa",
+      "participante"
+    ],
+    "object_id": "23",
+    "object_repr": "#365 - Maria das Graças",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 10,
+  "fields": {
+    "action_time": "2026-06-09T02:39:28.551Z",
+    "user": [
+      "igor"
+    ],
+    "content_type": [
+      "rifa",
+      "comprovanteusado"
+    ],
+    "object_id": "6",
+    "object_repr": "e0000000020260607213732969722732",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 11,
+  "fields": {
+    "action_time": "2026-06-09T02:56:10.127Z",
+    "user": [
+      "igor"
+    ],
+    "content_type": [
+      "rifa",
+      "comprovanteusado"
+    ],
+    "object_id": "6",
+    "object_repr": "e0000000020260607213732969722732",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 12,
+  "fields": {
+    "action_time": "2026-06-09T12:29:25.517Z",
+    "user": [
+      "igor"
+    ],
+    "content_type": [
+      "rifa",
+      "comprovanteusado"
+    ],
+    "object_id": "9",
+    "object_repr": "e182361202026060",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 13,
+  "fields": {
+    "action_time": "2026-06-09T14:48:46.045Z",
+    "user": [
+      "igor"
+    ],
+    "content_type": [
+      "rifa",
+      "comprovanteusado"
+    ],
+    "object_id": "14",
+    "object_repr": "e182361202026060",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 14,
+  "fields": {
+    "action_time": "2026-06-09T15:16:48.512Z",
+    "user": [
+      "igor"
+    ],
+    "content_type": [
+      "rifa",
+      "comprovanteusado"
+    ],
+    "object_id": "15",
+    "object_repr": "e182361202026060",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 15,
+  "fields": {
+    "action_time": "2026-06-09T15:29:43.128Z",
+    "user": [
+      "igor"
+    ],
+    "content_type": [
+      "rifa",
+      "comprovanteusado"
+    ],
+    "object_id": "16",
+    "object_repr": "e182361202026060",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 16,
+  "fields": {
+    "action_time": "2026-06-09T15:38:52.715Z",
+    "user": [
+      "igor"
+    ],
+    "content_type": [
+      "rifa",
+      "comprovanteusado"
+    ],
+    "object_id": "17",
+    "object_repr": "e182361202026060",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 17,
+  "fields": {
+    "action_time": "2026-06-09T15:38:52.715Z",
+    "user": [
+      "igor"
+    ],
+    "content_type": [
+      "rifa",
+      "comprovanteusado"
+    ],
+    "object_id": "13",
+    "object_repr": "e1818954720260609143",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 18,
+  "fields": {
+    "action_time": "2026-06-09T15:38:52.715Z",
+    "user": [
+      "igor"
+    ],
+    "content_type": [
+      "rifa",
+      "comprovanteusado"
+    ],
+    "object_id": "12",
+    "object_repr": "e0000000020260607213",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 19,
+  "fields": {
+    "action_time": "2026-06-09T15:38:52.715Z",
+    "user": [
+      "igor"
+    ],
+    "content_type": [
+      "rifa",
+      "comprovanteusado"
+    ],
+    "object_id": "11",
+    "object_repr": "e0000000020260607210",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 20,
+  "fields": {
+    "action_time": "2026-06-09T15:38:52.715Z",
+    "user": [
+      "igor"
+    ],
+    "content_type": [
+      "rifa",
+      "comprovanteusado"
+    ],
+    "object_id": "10",
+    "object_repr": "e0000000002026060721",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 21,
+  "fields": {
+    "action_time": "2026-06-09T15:38:52.715Z",
+    "user": [
+      "igor"
+    ],
+    "content_type": [
+      "rifa",
+      "comprovanteusado"
+    ],
+    "object_id": "7",
+    "object_repr": "e60701190202606090030dy5xd9ujhf0",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 22,
+  "fields": {
+    "action_time": "2026-06-09T15:46:09.281Z",
+    "user": [
+      "igor"
+    ],
+    "content_type": [
+      "rifa",
+      "comprovanteusado"
+    ],
+    "object_id": "18",
+    "object_repr": "e182361202026060",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 23,
+  "fields": {
+    "action_time": "2026-06-09T17:02:07.732Z",
+    "user": [
+      "igor"
+    ],
+    "content_type": [
+      "rifa",
+      "comprovanteusado"
+    ],
+    "object_id": "19",
+    "object_repr": "91447s06318ec753",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 24,
+  "fields": {
+    "action_time": "2026-06-09T20:37:34.884Z",
+    "user": [
+      "igor"
+    ],
+    "content_type": [
+      "rifa",
+      "registrocomprovante"
+    ],
+    "object_id": "3",
+    "object_repr": "RANIELE TORRES BELCHIOR — R$50.00 — 11:52:52",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Pagador\", \"Data hora pix\", \"Texto ocr\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 25,
+  "fields": {
+    "action_time": "2026-06-09T20:39:23.065Z",
+    "user": [
+      "igor"
+    ],
+    "content_type": [
+      "rifa",
+      "registrocomprovante"
+    ],
+    "object_id": "3",
+    "object_repr": "RANIELE TORRES BELCHIOR — R$50.00 — 11:52:52",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 26,
+  "fields": {
+    "action_time": "2026-06-09T20:39:53.713Z",
+    "user": [
+      "igor"
+    ],
+    "content_type": [
+      "rifa",
+      "registrocomprovante"
+    ],
+    "object_id": "3",
+    "object_repr": "RANIELE TORRES BELCHIOR — R$50.00 — 09/06/2026 11:52:52",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Data hora pix\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 27,
+  "fields": {
+    "action_time": "2026-06-09T20:41:41.108Z",
+    "user": [
+      "igor"
+    ],
+    "content_type": [
+      "rifa",
+      "registrocomprovante"
+    ],
+    "object_id": "4",
+    "object_repr": "Raniele Torres (igreja) — R$50.00 — 09/06/2026 17:39",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Pagador\", \"Data hora pix\", \"Texto ocr\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 28,
+  "fields": {
+    "action_time": "2026-06-10T00:22:01.147Z",
+    "user": [
+      "igor"
+    ],
+    "content_type": [
+      "rifa",
+      "registrocomprovante"
+    ],
+    "object_id": "4",
+    "object_repr": "Raniele Torres (igreja) — R$50.00 — 09/06/2026 17:39",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 29,
+  "fields": {
+    "action_time": "2026-06-10T00:23:42.616Z",
+    "user": [
+      "igor"
+    ],
+    "content_type": [
+      "rifa",
+      "registrocomprovante"
+    ],
+    "object_id": "8",
+    "object_repr": "igor leandro dos santos — R$50.00 — o7 jun 2026 - 15:41:36",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 30,
+  "fields": {
+    "action_time": "2026-06-10T00:23:42.616Z",
+    "user": [
+      "igor"
+    ],
+    "content_type": [
+      "rifa",
+      "registrocomprovante"
+    ],
+    "object_id": "7",
+    "object_repr": "igor leandro dos santos — R$50.00 — o7 jun 2026 - 15:41:36",
     "action_flag": 3,
     "change_message": ""
   }
