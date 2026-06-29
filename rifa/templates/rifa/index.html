@@ -821,6 +821,11 @@ function fecharApresentacao() {
 
 function mostrarTutorial() {
   if (localStorage.getItem('tutorial_visto')) return;
+  
+  // Se já existir um overlay antigo, remove para não duplicar
+  const antigo = document.getElementById('tutorial-overlay');
+  if (antigo) antigo.remove();
+
   const overlay = document.createElement('div');
   overlay.id = 'tutorial-overlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:3000;display:flex;align-items:center;justify-content:center;padding:1rem;';
@@ -835,6 +840,23 @@ function mostrarTutorial() {
 
   let passoAtual = 0;
 
+  // Criamos uma função interna global temporária para os botões chamarem sem erro de escopo
+  window.avancarTutorial = function() {
+    if (passoAtual < passos.length - 1) {
+      passoAtual++;
+      renderPasso();
+    } else {
+      fecharTutorial();
+    }
+  };
+
+  window.voltarTutorial = function() {
+    if (passoAtual > 0) {
+      passoAtual--;
+      renderPasso();
+    }
+  };
+
   function renderPasso() {
     const p = passos[passoAtual];
     overlay.innerHTML = `
@@ -847,26 +869,23 @@ function mostrarTutorial() {
           ${passos.map((_, i) => `<div style="width:8px;height:8px;border-radius:50%;background:${i === passoAtual ? 'var(--gold)' : 'rgba(255,255,255,0.2)'}"></div>`).join('')}
         </div>
         <div style="display:flex;gap:0.6rem;">
-          ${passoAtual > 0 ? `<button id="btn-anterior-tutorial" style="flex:1;padding:0.8rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.6);font-family:'Cinzel',serif;font-size:0.82rem;font-weight:700;cursor:pointer;text-transform:uppercase;">← Anterior</button>` : ''}
-          <button id="btn-proximo-tutorial" style="flex:1;padding:0.8rem;background:linear-gradient(135deg,var(--gold),#E8A820);border:none;border-radius:8px;color:#111;font-family:'Cinzel',serif;font-size:0.82rem;font-weight:700;cursor:pointer;text-transform:uppercase;">${passoAtual < passos.length - 1 ? 'Próximo →' : '✦ Começar!'}</button>
+          ${passoAtual > 0 ? `<button onclick="window.voltarTutorial()" style="flex:1;padding:0.8rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.6);font-family:'Cinzel',serif;font-size:0.82rem;font-weight:700;cursor:pointer;text-transform:uppercase;">← Anterior</button>` : ''}
+          <button onclick="window.avancarTutorial()" style="flex:1;padding:0.8rem;background:linear-gradient(135deg,var(--gold),#E8A820);border:none;border-radius:8px;color:#111;font-family:'Cinzel',serif;font-size:0.82rem;font-weight:700;cursor:pointer;text-transform:uppercase;">${passoAtual < passos.length - 1 ? 'Próximo →' : '✦ Começar!'}</button>
         </div>
-     
-        </div>
+      </div>
     `;
-    setTimeout(() => {
-      const btnP = document.getElementById('btn-proximo-tutorial');
-      const btnA = document.getElementById('btn-anterior-tutorial');
-      if (btnP) btnP.onclick = () => { if (passoAtual < passos.length - 1) { passoAtual++; renderPasso(); } else fecharTutorial(); };
-      if (btnA) btnA.onclick = () => { passoAtual--; renderPasso(); };
-    }, 0);
   }
+  
   renderPasso();
 }
 
+// Garanta que a sua fecharTutorial também limpa as funções da janela
 function fecharTutorial() {
   localStorage.setItem('tutorial_visto', 'true');
   const overlay = document.getElementById('tutorial-overlay');
   if (overlay) overlay.remove();
+  delete window.avancarTutorial;
+  delete window.voltarTutorial;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
