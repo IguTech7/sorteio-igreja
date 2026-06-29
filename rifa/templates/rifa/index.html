@@ -376,7 +376,6 @@ let selectedNums = [];
 let todosComprovantes = [];
 let paginaAtual = 1;
 const POR_PAGINA = 100;
-let checagemPixInterval = null;
 
 async function api(url, method='GET', body=null) {
   const opts = { method, headers: {'Content-Type': 'application/json'} };
@@ -483,6 +482,7 @@ function selectNums(n) {
   renderGrid();
   document.getElementById('selected-num-display').textContent = selectedNums.length ? selectedNums.join(', ') : '—';
   const quantidade = selectedNums.length;
+  document.getElementById('resumo-qtd').textContent = Clinzel;
   document.getElementById('resumo-qtd').textContent = quantidade;
   document.getElementById('resumo-total').textContent = 'R$ ' + (quantidade * VALOR_NUMERO).toFixed(2).replace('.', ',');
   updateConfirmBtn();
@@ -520,9 +520,11 @@ async function confirmarParticipacao() {
   }
 }
 
+let checagemPixInterval = null; // Guarda o timer de checagem
+
 function abrirModalPixDinamico(nome, numeros, qrCodeBase64, qrCodeCopiaCola) {
   const totalPix = (numeros.length * VALOR_NUMERO).toFixed(2).replace('.', ',');
-  const overlay = document.getElementById('pix-modal-overlay') || document.createElement('div');
+  const overlay = document.createElement('div');
   overlay.id = 'pix-modal-overlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:3000;display:flex;align-items:center;justify-content:center;padding:1rem;overflow-y:auto;';
   
@@ -531,7 +533,7 @@ function abrirModalPixDinamico(nome, numeros, qrCodeBase64, qrCodeCopiaCola) {
       <div style="font-family:'Cinzel',serif;font-size:1.1rem;color:var(--navy);font-weight:700;margin-bottom:1rem;">🙏 PRONTINHO! GERAMOS SEU PIX</div>
       
       <div class="pix-box">
-        ${qrCodeBase64 ? `<img src="data:image/jpeg;base64,${qrCodeBase64}" alt="QR Code Pix" class="pix-qrcode">` : '<div style="width:140px;height:140px;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:10px;border:3px solid var(--gold);font-size:2rem;">⏳</div>'}
+        <img src="data:image/jpeg;base64,${qrCodeBase64}" alt="QR Code Pix" class="pix-qrcode">
         <div class="pix-info" style="text-align:left;">
           <h3>Aperte em copiar ou escaneie o código</h3>
           <div class="valor-pix">R$ ${totalPix}</div>
@@ -540,19 +542,19 @@ function abrirModalPixDinamico(nome, numeros, qrCodeBase64, qrCodeCopiaCola) {
       </div>
 
       <div style="margin:12px 0;">
-        <div id="texto-copia-cola" class="pix-chave" style="max-height:60px;overflow-y:auto;font-family:monospace;background:#eee;padding:8px;border-radius:6px;font-size:0.75rem;word-break:break-all;">${qrCodeCopiaCola || 'Código Pix em validação automática...'}</div>
+        <div id="texto-copia-cola" class="pix-chave" style="max-height:60px;overflow-y:auto;font-family:monospace;background:#eee;padding:8px;border-radius:6px;font-size:0.75rem;word-break:break-all;">${qrCodeCopiaCola}</div>
       </div>
 
       <button onclick="copiarTextoPix()" class="btn-primary" style="margin-bottom:12px;padding:0.7rem;font-size:0.85rem;">📋 Copiar Código Pix</button>
       
       <div style="background:rgba(201,148,42,0.1);border:1px solid var(--gold);border-radius:8px;padding:10px;font-size:0.8rem;text-align:center;color:#555;margin-bottom:12px;">
-        ⚡ <strong>Confirmação automática!</strong> Assim que pagar no banco, o sistema valida em instantes e libera seus números.
+        ⚡ <strong>Confirmação automática!</strong> Assim que pagar no banco, o sistema valida in instantes e libera seus números.
       </div>
 
       <button onclick="fecharModalPix()" style="width:100%;padding:0.6rem;background:transparent;border:1px solid #999;color:#555;font-weight:700;border-radius:6px;cursor:pointer;text-transform:uppercase;font-size:0.75rem;">Fechar Janela</button>
     </div>
   `;
-  if (!document.getElementById('pix-modal-overlay')) document.body.appendChild(overlay);
+  document.body.appendChild(overlay);
 
   if (checagemPixInterval) clearInterval(checagemPixInterval);
   
@@ -568,17 +570,31 @@ function abrirModalPixDinamico(nome, numeros, qrCodeBase64, qrCodeCopiaCola) {
     } catch (err) {
       console.error("Erro ao checar status do Pix:", err);
     }
-  }, 4000);
+  }, 5000);
+}
+
+// FUNÇÃO ATUALIZADA: CAPTURA O TEXTO DIRETO DO ELEMENTO HTML
+function copiarTextoPix() {
+  const elementoTexto = document.getElementById('texto-copia-cola');
+  if (elementoTexto) {
+    const texto = elementoTexto.innerText || elementoTexto.textContent;
+    navigator.clipboard.writeText(texto.trim());
+    showToast('Código Pix Copia e Cola copiado!', 'success');
+  } else {
+    showToast('Erro ao copiar o código Pix.', 'error');
+  }
 }
 
 function mostrarMensagemSucessoPix(nome, numeros) {
   const cardModal = document.getElementById('modal-conteudo-pix');
   if (!cardModal) return;
-  cardModal.style.borderColor = "#2A7A4A";
+
+  cardModal.style.borderColor = "#2A7A4A"; // Borda verde de sucesso
   cardModal.innerHTML = `
     <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">🎉</div>
     <div style="font-family:'Cinzel',serif;font-size:1.4rem;color:#2A7A4A;font-weight:700;margin-bottom:0.5rem;">PAGAMENTO CONFIRMADO!</div>
     <div style="font-size:1rem; color:var(--navy); font-weight:600; margin-bottom:1rem;">Obrigado por sua participação, ${nome}!</div>
+    
     <div style="background:rgba(42,122,74,0.1); border:1px solid #2A7A4A; border-radius:10px; padding:1rem; margin-bottom:1.5rem; text-align:left;">
       <p style="font-size:0.9rem; margin-bottom:4px; color:#333;">Seus números foram reservados com sucesso:</p>
       <div style="font-size:1.4rem; font-weight:700; color:#2A7A4A; text-align:center; letter-spacing:2px; margin:8px 0;">
@@ -586,250 +602,24 @@ function mostrarMensagemSucessoPix(nome, numeros) {
       </div>
       <p style="font-size:0.75rem; color:#666; font-style:italic; text-align:center;">Boa sorte! Que Deus abençoe ricamente a sua vida. 🙏</p>
     </div>
+
     <button onclick="fecharModalPix()" class="btn-primary" style="background:linear-gradient(135deg, #2A7A4A 0%, #1E5C36 100%); color:white; box-shadow:0 4px 14px rgba(42,122,74,0.3); width:100%;">Concluir e Voltar ao Início</button>
   `;
 }
 
-function copiarTextoPix() {
-  const elementoTexto = document.getElementById('texto-copia-cola');
-  if (elementoTexto) {
-    const texto = elementoTexto.innerText || elementoTexto.textContent;
-    navigator.clipboard.writeText(texto.trim());
-    showToast('Código Pix Copia e Cola copiado!', 'success');
-  }
-}
-
 function fecharModalPix() {
-  if (checagemPixInterval) clearInterval(checagemPixInterval);
+  if (checagemPixInterval) {
+    clearInterval(checagemPixInterval);
+    checagemPixInterval = null;
+  }
   const modal = document.getElementById('pix-modal-overlay');
   if(modal) modal.remove();
+  
   selectedNums = [];
   document.getElementById('nome-input').value = '';
   document.getElementById('tel-input').value = '';
   carregarRifa();
   showPage('home');
-}
-
-function buscarNumero() {
-  const n = parseInt(document.getElementById('busca-numero').value);
-  if (!n || n < 1 || n > TOTAL) { showToast('Número inválido.', 'error'); return; }
-  paginaAtual = Math.ceil(n / POR_PAGINA);
-  renderGrid();
-  setTimeout(() => {
-    const btns = document.querySelectorAll('.num-btn');
-    const idx = n - (paginaAtual - 1) * POR_PAGINA - 1;
-    const btn = btns[idx];
-    if (!btn) return;
-    btn.style.outline = '3px solid white';
-    btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    if (!btn.classList.contains('taken')) selectNums(n);
-  }, 100);
-}
-
-function escolherPorMim() {
-  const disponiveis = [];
-  for (let i = 1; i <= TOTAL; i++) {
-    if (!ocupados[i] && !selectedNums.includes(i)) disponiveis.push(i);
-  }
-  if (!disponiveis.length) { showToast('Não há números disponíveis.', 'error'); return; }
-  const aleatorio = disponiveis[Math.floor(Math.random() * disponiveis.length)];
-  selectNums(aleatorio);
-  paginaAtual = Math.ceil(aleatorio / POR_PAGINA);
-  renderGrid();
-  showToast(`Número ${aleatorio} selecionado! 🎲`, 'success');
-}
-
-async function carregarSorteio() {
-  const d = await api('/api/vendidos/');
-  const grid = document.getElementById('sold-grid');
-  const btn = document.getElementById('btn-sorteio');
-  if (!d.vendidos || !d.vendidos.length) {
-    grid.innerHTML = '<div class="empty-msg">Nenhum número vendido ainda.</div>';
-    btn.disabled = true;
-    return;
-  }
-  btn.disabled = false;
-  grid.innerHTML = '';
-  d.vendidos.forEach(p => {
-    const chip = document.createElement('div');
-    chip.className = 'sold-chip';
-    chip.innerHTML = `<span class="sold-chip-num">${String(p.numero).padStart(2,'00')}</span><span class="sold-chip-name">${p.nome}</span>`;
-    grid.appendChild(chip);
-  });
-}
-
-async function resetarRifa() {
-  if (!confirm('Tem certeza que deseja resetar toda a rifa?')) return;
-  showLoading(true);
-  const d = await api('/api/resetar/', 'POST');
-  showLoading(false);
-  if (d.ok) {
-    showToast('Rifa resetada com sucesso.', 'success');
-    await carregarSorteio();
-    carregarStatus();
-  }
-}
-
-function showToast(msg, type) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast ' + (type||'');
-  void t.offsetWidth;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 5000);
-}
-
-async function carregarComprovantes() {
-  const d = await api('/api/comprovantes/');
-  const grid = document.getElementById('comprovantes-grid');
-  if (!d.comprovantes || !d.comprovantes.length) {
-    grid.innerHTML = '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;grid-column:1/-1;">Nenhum pagamento registrado no banco ainda.</div>';
-    return;
-  }
-  todosComprovantes = d.comprovantes;
-  renderizarComprovantes(todosComprovantes);
-}
-
-function renderizarComprovantes(lista) {
-  const grid = document.getElementById('comprovantes-grid');
-  grid.innerHTML = lista.map(c => `
-    <div style="background:#1A1A1A;border:1px solid #2A7A4A40;border-left:4px solid #2A7A4A;border-radius:12px;padding:1.25rem;display:flex;flex-direction:column;gap:0.5rem;color:white;">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <span style="background:rgba(42,122,74,0.2);color:#6FCF97;font-size:0.7rem;font-weight:700;padding:0.25rem 0.6rem;border-radius:999px;">🟢 CONFIRMADO MP</span>
-        <span style="color:rgba(255,255,255,0.3);font-size:0.72rem;">Ref: ${c.external_reference || c.id}</span>
-      </div>
-      <div>
-        <div style="font-size:0.68rem;color:rgba(255,255,255,0.35);text-transform:uppercase;">Participante</div>
-        <div style="color:white;font-size:0.9rem;font-weight:600;">${c.nome_participante || '—'}</div>
-      </div>
-      <div style="display:flex;justify-content:space-between;">
-        <div>
-          <div style="font-size:0.68rem;color:rgba(255,255,255,0.35);text-transform:uppercase;">Valor Pago</div>
-          <div style="color:var(--gold);font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;">R$ ${c.valor.toFixed(2).replace('.', ',')}</div>
-        </div>
-      </div>
-    </div>
-  `).join('');
-}
-
-function modoApresentacao() {
-  const overlay = document.createElement('div');
-  overlay.id = 'apresentacao-overlay';
-  overlay.style.cssText = 'position:fixed;inset:0;background:#000;z-index:2000;display:flex;flex-direction:column;align-items:center;justify-content:center;';
-  overlay.innerHTML = `
-    <div style="text-align:center;padding:2rem;">
-      <div style="font-size:3rem;margin-bottom:1rem;">✝</div>
-      <div style="font-family:'Cinzel',serif;font-size:1rem;color:rgba(255,255,255,0.4);letter-spacing:0.3em;text-transform:uppercase;margin-bottom:0.5rem;">Igreja Batista Missionária</div>
-      <div style="font-family:'Cinzel',serif;font-size:1.4rem;color:#C9942A;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:3rem;">Sorteio Beneficente</div>
-      <div id="apres-numero" style="font-family:'Cinzel',serif;font-size:clamp(6rem,20vw,14rem);font-weight:700;color:#C9942A;line-height:1;text-shadow:0 0 60px rgba(201,148,42,0.4);">—</div>
-      <div id="apres-nome" style="font-family:'Cinzel',serif;font-size:clamp(1.5rem,4vw,2.5rem);color:white;margin-top:1rem;min-height:3rem;"></div>
-      <div id="apres-status" style="font-size:1rem;color:rgba(255,255,255,0.3);margin-top:0.5rem;font-style:italic;"></div>
-      <div style="display:flex;gap:1rem;justify-content:center;margin-top:3rem;flex-wrap:wrap;">
-        <button onclick="iniciarSorteioApresentacao()" id="btn-apres-sortear" style="padding:1rem 2.5rem;background:linear-gradient(135deg,#C9942A,#E8A820);border:none;border-radius:10px;color:#111;font-family:'Cinzel',serif;font-size:1rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">✦ Sortear ✦</button>
-        <button onclick="fecharApresentacao()" style="padding:1rem 2rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:10px;color:rgba(255,255,255,0.5);font-family:'Cinzel',serif;font-size:0.9rem;font-weight:700;cursor:pointer;">Fechar</button>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(overlay);
-  if (overlay.requestFullscreen) overlay.requestFullscreen();
-}
-
-async function iniciarSorteioApresentacao() {
-  const btn = document.getElementById('btn-apres-sortear');
-  const numEl = document.getElementById('apres-numero');
-  const nomeEl = document.getElementById('apres-nome');
-  const statusEl = document.getElementById('apres-status');
-  btn.disabled = true;
-  statusEl.textContent = 'Sorteando...';
-  nomeEl.textContent = '';
-  const vendidos = await api('/api/vendidos/');
-  if (!vendidos.vendidos.length) { statusEl.textContent = 'Nenhum número vendido.'; btn.disabled = false; return; }
-  const nums = vendidos.vendidos.map(p => p.numero);
-  let count = 0;
-  const interval = setInterval(async () => {
-    numEl.textContent = String(nums[Math.floor(Math.random()*nums.length)]).padStart(2,'00');
-    count++;
-    if (count >= 40) {
-      clearInterval(interval);
-      const result = await api('/api/sortear/', 'POST');
-      if (result.ok) {
-        numEl.textContent = String(result.numero).padStart(2,'00');
-        nomeEl.textContent = result.nome;
-        statusEl.textContent = '🏆 Parabéns! Que Deus abençoe!';
-      }
-      btn.disabled = false;
-    }
-  }, 80);
-}
-
-function fecharApresentacao() {
-  if (document.fullscreenElement) document.exitFullscreen();
-  const overlay = document.getElementById('apresentacao-overlay');
-  if (overlay) overlay.remove();
-}
-
-function mostrarTutorial() {
-  if (localStorage.getItem('tutorial_visto')) return;
-  const antigo = document.getElementById('tutorial-overlay');
-  if (antigo) antigo.remove();
-
-  const overlay = document.createElement('div');
-  overlay.id = 'tutorial-overlay';
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:3000;display:flex;align-items:center;justify-content:center;padding:1rem;';
-  document.body.appendChild(overlay);
-
-  const passos = [
-    { icone: '🎟️', titulo: 'Escolha seu número', desc: 'Navegue pela grade e clique em um número disponível. Você pode escolher mais de um!' },
-    { icone: '✍️', titulo: 'Preencha seus dados', desc: 'Digite seu nome completo e telefone de contato nos campos abaixo.' },
-    { icone: '⚡', titulo: 'Gere o Código Pix', desc: 'Clique em "Confirmar Participação". Um código copia e cola exclusivo e o QR Code aparecerão instantaneamente.' },
-    { icone: '✅', titulo: 'Pague e pronto!', desc: 'Pague pelo aplicativo do seu banco. A validação é imediata pelo Mercado Pago e seus números serão liberados!' },
-  ];
-
-  let passoAtual = 0;
-
-  window.avancarTutorial = function() {
-    if (passoAtual < passos.length - 1) {
-      passoAtual++;
-      renderPasso();
-    } else {
-      fecharTutorial();
-    }
-  };
-
-  window.voltarTutorial = function() {
-    if (passoAtual > 0) {
-      passoAtual--;
-      renderPasso();
-    }
-  };
-
-  function renderPasso() {
-    const p = passos[passoAtual];
-    overlay.innerHTML = `
-      <div style="background:#1A1A1A;border:2px solid rgba(201,148,42,0.4);border-radius:16px;padding:2rem;max-width:360px;width:100%;text-align:center;">
-        <div style="font-size:2.5rem;margin-bottom:0.75rem;">${p.icone}</div>
-        <div style="font-family:'Cinzel',serif;font-size:0.68rem;color:var(--gold);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.4rem;">Passo ${passoAtual + 1} de ${passos.length}</div>
-        <div style="font-family:'Cinzel',serif;font-size:1.1rem;color:white;font-weight:600;margin-bottom:0.75rem;">${p.titulo}</div>
-        <div style="font-size:0.9rem;color:rgba(255,255,255,0.7);line-height:1.6;margin-bottom:1.5rem;">${p.desc}</div>
-        <div style="display:flex;gap:0.4rem;justify-content:center;margin-bottom:1.25rem;">
-          ${passos.map((_, i) => `<div style="width:8px;height:8px;border-radius:50%;background:${i === passoAtual ? 'var(--gold)' : 'rgba(255,255,255,0.2)'}"></div>`).join('')}
-        </div>
-        <div style="display:flex;gap:0.6rem;">
-          ${passoAtual > 0 ? `<button onclick="window.voltarTutorial()" style="flex:1;padding:0.8rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.6);font-family:'Cinzel',serif;font-size:0.82rem;font-weight:700;cursor:pointer;text-transform:uppercase;">← Anterior</button>` : ''}
-          <button onclick="window.avancarTutorial()" style="flex:1;padding:0.8rem;background:linear-gradient(135deg,var(--gold),#E8A820);border:none;border-radius:8px;color:#111;font-family:'Cinzel',serif;font-size:0.82rem;font-weight:700;cursor:pointer;text-transform:uppercase;">${passoAtual < passos.length - 1 ? 'Próximo →' : '✦ Começar!'}</button>
-        </div>
-      </div>
-    `;
-  }
-  renderPasso();
-}
-
-function fecharTutorial() {
-  localStorage.setItem('tutorial_visto', 'true');
-  const overlay = document.getElementById('tutorial-overlay');
-  if (overlay) overlay.remove();
-  delete window.avancarTutorial;
-  delete window.voltarTutorial;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -852,69 +642,119 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function buscarParticipante() {
-    const termo = document.getElementById('busca-excluir').value.trim();
-    const container = document.getElementById('resultado-busca');
-    if (!termo) { container.innerHTML = '<div style="color:#ff8888; font-size:0.8rem;">Digite para buscar.</div>'; return; }
-    container.innerHTML = '<div style="color:var(--gold); font-size:0.8rem;">Buscando...</div>';
+  const termo = document.getElementById('busca-excluir').value.trim();
+  const container = document.getElementById('resultado-busca');
+  
+  if (!termo) {
+    container.innerHTML = '<div style="color:#ff8888; font-size:0.8rem;">Digite um nome ou número para buscar.</div>';
+    return;
+  }
 
-    fetch(`/api/buscar-participante/?termo=${encodeURIComponent(termo)}`)
-        .then(response => response.json())
-        .then(data => {
-            if (!data.ok || !data.participantes || data.participantes.length === 0) {
-                container.innerHTML = '<div style="color:#ff8888; font-size:0.8rem;">Nenhum participante encontrado.</div>';
-                return;
-            }
-            let html = '<div style="display:flex; flex-direction:column; gap:0.5rem; margin-top:0.5rem;">';
-            data.participantes.forEach(p => {
-                html += `
-                    <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.04); padding:0.5rem; border-radius:4px; gap:0.5rem;">
-                        <span style="color:white; font-size:0.85rem;"><strong>Nº ${p.numero}</strong> - ${p.nome}</span>
-                        <button onclick="excluirParticipante(${p.numero})" style="padding:0.25rem 0.5rem; background:#ff4444; color:white; border:none; border-radius:4px; font-size:0.75rem; font-weight:700; cursor:pointer;">Excluir</button>
-                    </div>
-                `;
-            });
-            container.innerHTML = html + '</div>';
-        })
-        .catch(err => { container.innerHTML = '<div style="color:#ff8888; font-size:0.8rem;">Erro.</div>'; });
+  container.innerHTML = '<div style="color:var(--gold); font-size:0.8rem;">Buscando...</div>';
+
+  fetch(`/api/buscar-participante/?termo=${encodeURIComponent(termo)}`)
+    .then(response => response.json())
+    .then(data => {
+      if (!data.ok || !data.participantes || data.participantes.length === 0) {
+        container.innerHTML = '<div style="color:#ff8888; font-size:0.8rem;">Nenhum participante encontrado.</div>';
+        return;
+      }
+
+      let html = '<div style="display:flex; flex-direction:column; gap:0.5rem; margin-top:0.5rem;">';
+      data.participantes.forEach(p => {
+        html += `
+          <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.04); padding:0.5rem; border-radius:4px; gap:0.5rem;">
+            <span style="color:white; font-size:0.85rem;"><strong>Nº ${p.numero}</strong> - ${p.nome}</span>
+            <button onclick="excluirParticipante(${p.numero})" style="padding:0.25rem 0.5rem; background:#ff4444; color:white; border:none; border-radius:4px; font-size:0.75rem; font-weight:700; cursor:pointer;">Excluir</button>
+          </div>
+        `;
+      });
+      html += '</div>';
+      container.innerHTML = html;
+    })
+    .catch(err => {
+      console.error(err);
+      container.innerHTML = '<div style="color:#ff8888; font-size:0.8rem;">Erro ao buscar participante.</div>';
+    });
 }
 
 function excluirParticipante(numero) {
-    if (!confirm(`Excluir o número ${numero}?`)) return;
-    fetch('/api/excluir/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-        },
-        body: JSON.stringify({ numero: numero })
-    })
-    .then(response => response.json())
-    .then(data => { if (data.ok) { alert('Liberado!'); location.reload(); } })
-    .catch(err => alert('Erro de conexão.'));
+  if (!confirm(`Tem certeza que deseja excluir o participante do número ${numero} e liberá-lo na grade?`)) {
+    return;
+  }
+
+  fetch('/api/excluir/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+    },
+    body: JSON.stringify({ numero: numero })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.ok) {
+      alert(`Número ${numero} foi liberado com sucesso!`);
+      location.reload();
+    } else {
+      alert('Erro: ' + data.erro);
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    alert('Erro de conexão ao tentar excluir.');
+  });
 }
 
 function cadastrarManual() {
-    const nome = document.getElementById('admin-nome').value.trim();
-    const tel = document.getElementById('admin-tel').value.trim();
-    const numerosStr = document.getElementById('admin-numeros').value.trim();
-    if (!nome || !numerosStr) { alert('Preencha os campos obrigatórios.'); return; }
-    const numeros = numerosStr.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n));
-    if (numeros.length === 0) return;
+  const nome = document.getElementById('admin-nome').value.trim();
+  const tel = document.getElementById('admin-tel').value.trim();
+  const numerosStr = document.getElementById('admin-numeros').value.trim();
 
-    showLoading(true);
-    fetch('/api/participar-admin/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-        },
-        body: JSON.stringify({ nome, telefone: tel, numeros })
+  if (!nome || !numerosStr) {
+    alert('Por favor, preencha o Nome e os Números.');
+    return;
+  }
+
+  const numeros = numerosStr.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n));
+
+  if (numeros.length === 0) {
+    alert('Insira números válidos separados por vírgula.');
+    return;
+  }
+
+  showLoading(true);
+
+  fetch('/api/participar-admin/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+    },
+    body: JSON.stringify({
+      nome: nome,
+      telefone: tel,
+      numeros: numeros
     })
-    .then(response => response.json())
-    .then(data => {
-        showLoading(false);
-        if (data.ok) { alert('Sucesso!'); location.reload(); }
-    });
+  })
+  .then(response => response.json())
+  .then(data => {
+    showLoading(false);
+    if (data.ok) {
+      alert('Cadastro manual realizado com sucesso!');
+      document.getElementById('admin-nome').value = '';
+      document.getElementById('admin-tel').value = '';
+      document.getElementById('admin-numeros').value = '';
+      location.reload();
+    } else {
+      alert('Erro: ' + data.erro);
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    showLoading(false);
+    alert('Erro de conexão ao tentar cadastrar manualmente.');
+  });
 }
 </script>
 
