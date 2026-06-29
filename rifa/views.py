@@ -491,3 +491,25 @@ def api_buscar_participante(request):
         })
 
     return JsonResponse({'ok': True, 'participantes': lista_participantes})
+
+def api_verificar_comprovante(request):
+    numeros_str = request.GET.get('numeros', '')
+    if not numeros_str:
+        return JsonResponse({'pago': False})
+
+    try:
+        # Separa a string "1,2" em uma lista de inteiros [1, 2]
+        lista_numeros = [int(n) for n in numeros_str.split(',') if n.strip().isdigit()]
+        
+        # Conta quantos desses números já foram gravados com sucesso na tabela Participante
+        # (Lembrando que o seu Webhook do MP cria o participante assim que detecta o pagamento aprovado)
+        total_pagos = Participante.objects.filter(numero__in=lista_numeros).count()
+
+        # Se todos os números que a pessoa escolheu já constam no banco, significa que o pagamento foi processado!
+        if total_pagos >= len(lista_numeros) and len(lista_numeros) > 0:
+            return JsonResponse({'pago': True})
+            
+    except Exception as e:
+        print(f"Erro na verificação do Pix: {str(e)}")
+
+    return JsonResponse({'pago': False})

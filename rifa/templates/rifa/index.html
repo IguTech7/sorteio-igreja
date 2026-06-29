@@ -522,14 +522,18 @@ async function confirmarParticipacao() {
   }
 }
 
+let checagemPixInterval = null; // Guarda o timer de checagem
+
 function abrirModalPixDinamico(nome, numeros, qrCodeBase64, qrCodeCopiaCola) {
   const totalPix = (numeros.length * VALOR_NUMERO).toFixed(2).replace('.', ',');
   const overlay = document.createElement('div');
   overlay.id = 'pix-modal-overlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:3000;display:flex;align-items:center;justify-content:center;padding:1rem;overflow-y:auto;';
+  
+  // O conteúdo do modal agora tem um ID interno (modal-conteudo-pix) para podermos mudar o texto depois
   overlay.innerHTML = `
-    <div style="background:var(--cream);border:3px solid var(--gold);border-radius:16px;padding:1.5rem;max-width:440px;width:100%;box-shadow:var(--shadow);margin:auto;color:var(--text-dark);">
-      <div style="text-align:center;font-family:'Cinzel',serif;font-size:1.1rem;color:var(--navy);font-weight:700;margin-bottom:1rem;">🙏 PRONTINHO! GERAMOS SEU PIX</div>
+    <div id="modal-conteudo-pix" style="background:var(--cream);border:3px solid var(--gold);border-radius:16px;padding:1.5rem;max-width:440px;width:100%;box-shadow:var(--shadow);margin:auto;color:var(--text-dark);text-align:center;">
+      <div style="font-family:'Cinzel',serif;font-size:1.1rem;color:var(--navy);font-weight:700;margin-bottom:1rem;">🙏 PRONTINHO! GERAMOS SEU PIX</div>
       
       <div class="pix-box">
         <img src="data:image/jpeg;base64,${qrCodeBase64}" alt="QR Code Pix" class="pix-qrcode">
@@ -554,14 +558,55 @@ function abrirModalPixDinamico(nome, numeros, qrCodeBase64, qrCodeCopiaCola) {
     </div>
   `;
   document.body.appendChild(overlay);
-}
 
-function copiarTextoPix(texto) {
-  navigator.clipboard.writeText(texto);
+  // ── INICIA A CHECAGEM AUTOMÁTICA ──
+  // Passamos a lista de números para o backend verificar se eles já mudaram de status no banco de dados
+  if (checagemPixInterval) clearInterval(checagemPixInterval);
+  
+  checagemPixInterval = setInterval(async () => {
+    try {
+      const resposta = await fetch(`/api/verificar-comprovante/?numeros=${numeros.join(',')}`);
+      const statusData = await resposta.json();
+      
+      if (statusData.pago) {
+        // Se o banco de dados confirmou o pagamento, para a checagem e mostra a mensagem de sucesso!
+        clearInterval(checagemPixInterval);
+        mostrarMensagemSucessoPix(nome, numeros);
+      }
+    } catch (err) {
+      console.error("Erro ao checar status do Pix:", err);
+    }
+  }, 5000); // Executa a cada 5 segundos
+}  navigator.clipboard.writeText(texto);
   showToast('Código Pix Copia e Cola copiado!', 'success');
+
+function mostrarMensagemSucessoPix(nome, numeros) {
+  const cardModal = document.getElementById('modal-conteudo-pix');
+  if (!cardModal) return;
+
+  cardModal.style.borderColor = "#2A7A4A"; // Borda verde de sucesso
+  cardModal.innerHTML = `
+    <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">🎉</div>
+    <div style="font-family:'Cinzel',serif;font-size:1.4rem;color:#2A7A4A;font-weight:700;margin-bottom:0.5rem;">PAGAMENTO CONFIRMADO!</div>
+    <div style="font-size:1rem; color:var(--navy); font-weight:600; margin-bottom:1rem;">Obrigado por sua participação, ${nome}!</div>
+    
+    <div style="background:rgba(42,122,74,0.1); border:1px solid #2A7A4A; border-radius:10px; padding:1rem; margin-bottom:1.5rem; text-align:left;">
+      <p style="font-size:0.9rem; margin-bottom:4px; color:#333;">Seus números foram reservados com sucesso:</p>
+      <div style="font-size:1.4rem; font-weight:700; color:#2A7A4A; text-align:center; letter-spacing:2px; margin:8px 0;">
+        ${numeros.map(n => String(n).padStart(2, '0')).join(', ')}
+      </div>
+      <p style="font-size:0.75rem; color:#666; font-style:italic; text-align:center;">Boa sorte! Que Deus abençoe ricamente a sua vida. 🙏</p>
+    </div>
+
+    <button onclick="fecharModalPix()" class="btn-primary" style="background:linear-gradient(135deg, #2A7A4A 0%, #1E5C36 100%); color:white; box-shadow:0 4px 14px rgba(42,122,74,0.3); width:100%;">Concluir e Voltar ao Início</button>
+  `;
 }
 
 function fecharModalPix() {
+  if (checagemPixInterval) {
+    clearInterval(checagemPixInterval); // Garante que o timer pare ao fechar
+    checagemPixInterval = null;
+  }
   const modal = document.getElementById('pix-modal-overlay');
   if(modal) modal.remove();
   selectedNums = [];
