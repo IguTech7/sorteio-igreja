@@ -510,6 +510,10 @@ async function confirmarParticipacao() {
       localStorage.setItem('pendente_nome', nome);
       localStorage.setItem('pendente_telefone', telefone);
       localStorage.setItem('pendente_numeros', JSON.stringify(selectedNums));
+      
+      // ADICIONADO AQUI: Guarda que existe um Pix sendo processado para o caso da página resetar
+      localStorage.setItem('pix_em_andamento', 'true');
+
       abrirModalPixDinamico(nome, selectedNums, d.qr_code_base64, d.qr_code);
     } else {
       showToast(d.erro || 'Erro ao criar chave de pagamento.', 'error');
@@ -609,19 +613,51 @@ function mostrarMensagemSucessoPix(nome, numeros) {
   `;
 }
 
+// ATUALIZADO: Limpa o localStorage ao fechar o modal voluntariamente
 function fecharModalPix() {
   if (checagemPixInterval) {
-    clearInterval(checagemPixInterval); // Garante que o timer pare ao fechar
+    clearInterval(checagemPixInterval);
     checagemPixInterval = null;
   }
   const modal = document.getElementById('pix-modal-overlay');
   if(modal) modal.remove();
+  
+  // Limpa os registros temporários do navegador
+  localStorage.removeItem('pendente_nome');
+  localStorage.removeItem('pendente_numeros');
+  localStorage.removeItem('pix_em_andamento');
+
   selectedNums = [];
   document.getElementById('nome-input').value = '';
   document.getElementById('tel-input').value = '';
   carregarRifa();
   showPage('home');
 }
+
+// ATUALIZADO: Executa assim que a página termina de carregar (recarregar)
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('nome-input').addEventListener('input', updateConfirmBtn);
+  carregarStatus();
+  mostrarTutorial();
+
+  // SE A PÁGINA RECARREGOU: Verifica se havia uma compra pendente do usuário
+  const pixEmAndamento = localStorage.getItem('pix_em_andamento');
+  const nomePendente = localStorage.getItem('pendente_nome');
+  const numerosPendentes = JSON.parse(localStorage.getItem('pendente_numeros') || '[]');
+
+  if (pixEmAndamento && numerosPendentes.length > 0) {
+    // Faz uma checagem rápida no banco de dados para ver se já foi pago
+    fetch(`/api/verificar-comprovante/?numeros=${numerosPendentes.join(',')}`)
+      .then(r => r.json())
+      .then(statusData => {
+        if (statusData.pago) {
+          // Se foi pago enquanto ele estava no banco, abre o modal direto no Sucesso!
+          abrirModalPixDinamico(nomePendente, numerosPendentes, '', ''); 
+          mostrarMensagemSucessoPix(nomePendente, numerosPendentes);
+        }
+      }).catch(err => console.error(err));
+  }
+});
 
 function buscarNumero() {
   const n = parseInt(document.getElementById('busca-numero').value);
