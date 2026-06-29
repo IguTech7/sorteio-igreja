@@ -376,6 +376,7 @@ let selectedNums = [];
 let todosComprovantes = [];
 let paginaAtual = 1;
 const POR_PAGINA = 100;
+let checagemPixInterval = null;
 
 async function api(url, method='GET', body=null) {
   const opts = { method, headers: {'Content-Type': 'application/json'} };
@@ -507,13 +508,6 @@ async function confirmarParticipacao() {
     });
 
     if (d.ok) {
-      localStorage.setItem('pendente_nome', nome);
-      localStorage.setItem('pendente_telefone', telefone);
-      localStorage.setItem('pendente_numeros', JSON.stringify(selectedNums));
-      
-      // ADICIONADO AQUI: Guarda que existe um Pix sendo processado para o caso da página resetar
-      localStorage.setItem('pix_em_andamento', 'true');
-
       abrirModalPixDinamico(nome, selectedNums, d.qr_code_base64, d.qr_code);
     } else {
       showToast(d.erro || 'Erro ao criar chave de pagamento.', 'error');
@@ -526,11 +520,9 @@ async function confirmarParticipacao() {
   }
 }
 
-let checagemPixInterval = null; // Guarda o timer de checagem
-
 function abrirModalPixDinamico(nome, numeros, qrCodeBase64, qrCodeCopiaCola) {
   const totalPix = (numeros.length * VALOR_NUMERO).toFixed(2).replace('.', ',');
-  const overlay = document.createElement('div');
+  const overlay = document.getElementById('pix-modal-overlay') || document.createElement('div');
   overlay.id = 'pix-modal-overlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:3000;display:flex;align-items:center;justify-content:center;padding:1rem;overflow-y:auto;';
   
@@ -539,7 +531,7 @@ function abrirModalPixDinamico(nome, numeros, qrCodeBase64, qrCodeCopiaCola) {
       <div style="font-family:'Cinzel',serif;font-size:1.1rem;color:var(--navy);font-weight:700;margin-bottom:1rem;">🙏 PRONTINHO! GERAMOS SEU PIX</div>
       
       <div class="pix-box">
-        <img src="data:image/jpeg;base64,${qrCodeBase64}" alt="QR Code Pix" class="pix-qrcode">
+        ${qrCodeBase64 ? `<img src="data:image/jpeg;base64,${qrCodeBase64}" alt="QR Code Pix" class="pix-qrcode">` : '<div style="width:140px;height:140px;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:10px;border:3px solid var(--gold);font-size:2rem;">⏳</div>'}
         <div class="pix-info" style="text-align:left;">
           <h3>Aperte em copiar ou escaneie o código</h3>
           <div class="valor-pix">R$ ${totalPix}</div>
@@ -548,7 +540,7 @@ function abrirModalPixDinamico(nome, numeros, qrCodeBase64, qrCodeCopiaCola) {
       </div>
 
       <div style="margin:12px 0;">
-        <div id="texto-copia-cola" class="pix-chave" style="max-height:60px;overflow-y:auto;font-family:monospace;background:#eee;padding:8px;border-radius:6px;font-size:0.75rem;word-break:break-all;">${qrCodeCopiaCola}</div>
+        <div id="texto-copia-cola" class="pix-chave" style="max-height:60px;overflow-y:auto;font-family:monospace;background:#eee;padding:8px;border-radius:6px;font-size:0.75rem;word-break:break-all;">${qrCodeCopiaCola || 'Código Pix em validação automática...'}</div>
       </div>
 
       <button onclick="copiarTextoPix()" class="btn-primary" style="margin-bottom:12px;padding:0.7rem;font-size:0.85rem;">📋 Copiar Código Pix</button>
@@ -560,7 +552,7 @@ function abrirModalPixDinamico(nome, numeros, qrCodeBase64, qrCodeCopiaCola) {
       <button onclick="fecharModalPix()" style="width:100%;padding:0.6rem;background:transparent;border:1px solid #999;color:#555;font-weight:700;border-radius:6px;cursor:pointer;text-transform:uppercase;font-size:0.75rem;">Fechar Janela</button>
     </div>
   `;
-  document.body.appendChild(overlay);
+  if (!document.getElementById('pix-modal-overlay')) document.body.appendChild(overlay);
 
   if (checagemPixInterval) clearInterval(checagemPixInterval);
   
@@ -576,31 +568,17 @@ function abrirModalPixDinamico(nome, numeros, qrCodeBase64, qrCodeCopiaCola) {
     } catch (err) {
       console.error("Erro ao checar status do Pix:", err);
     }
-  }, 5000);
-}
-
-// FUNÇÃO ATUALIZADA: CAPTURA O TEXTO DIRETO DO ELEMENTO HTML
-function copiarTextoPix() {
-  const elementoTexto = document.getElementById('texto-copia-cola');
-  if (elementoTexto) {
-    const texto = elementoTexto.innerText || elementoTexto.textContent;
-    navigator.clipboard.writeText(texto.trim());
-    showToast('Código Pix Copia e Cola copiado!', 'success');
-  } else {
-    showToast('Erro ao copiar o código Pix.', 'error');
-  }
+  }, 4000);
 }
 
 function mostrarMensagemSucessoPix(nome, numeros) {
   const cardModal = document.getElementById('modal-conteudo-pix');
   if (!cardModal) return;
-
-  cardModal.style.borderColor = "#2A7A4A"; // Borda verde de sucesso
+  cardModal.style.borderColor = "#2A7A4A";
   cardModal.innerHTML = `
     <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">🎉</div>
     <div style="font-family:'Cinzel',serif;font-size:1.4rem;color:#2A7A4A;font-weight:700;margin-bottom:0.5rem;">PAGAMENTO CONFIRMADO!</div>
     <div style="font-size:1rem; color:var(--navy); font-weight:600; margin-bottom:1rem;">Obrigado por sua participação, ${nome}!</div>
-    
     <div style="background:rgba(42,122,74,0.1); border:1px solid #2A7A4A; border-radius:10px; padding:1rem; margin-bottom:1.5rem; text-align:left;">
       <p style="font-size:0.9rem; margin-bottom:4px; color:#333;">Seus números foram reservados com sucesso:</p>
       <div style="font-size:1.4rem; font-weight:700; color:#2A7A4A; text-align:center; letter-spacing:2px; margin:8px 0;">
@@ -608,86 +586,29 @@ function mostrarMensagemSucessoPix(nome, numeros) {
       </div>
       <p style="font-size:0.75rem; color:#666; font-style:italic; text-align:center;">Boa sorte! Que Deus abençoe ricamente a sua vida. 🙏</p>
     </div>
-
     <button onclick="fecharModalPix()" class="btn-primary" style="background:linear-gradient(135deg, #2A7A4A 0%, #1E5C36 100%); color:white; box-shadow:0 4px 14px rgba(42,122,74,0.3); width:100%;">Concluir e Voltar ao Início</button>
   `;
 }
 
-// ATUALIZADO: Limpa o localStorage ao fechar o modal voluntariamente
-function fecharModalPix() {
-  if (checagemPixInterval) {
-    clearInterval(checagemPixInterval);
-    checagemPixInterval = null;
+function copiarTextoPix() {
+  const elementoTexto = document.getElementById('texto-copia-cola');
+  if (elementoTexto) {
+    const texto = elementoTexto.innerText || elementoTexto.textContent;
+    navigator.clipboard.writeText(texto.trim());
+    showToast('Código Pix Copia e Cola copiado!', 'success');
   }
+}
+
+function fecharModalPix() {
+  if (checagemPixInterval) clearInterval(checagemPixInterval);
   const modal = document.getElementById('pix-modal-overlay');
   if(modal) modal.remove();
-  
-  // Limpa os registros temporários do navegador
-  localStorage.removeItem('pendente_nome');
-  localStorage.removeItem('pendente_numeros');
-  localStorage.removeItem('pix_em_andamento');
-
   selectedNums = [];
   document.getElementById('nome-input').value = '';
   document.getElementById('tel-input').value = '';
   carregarRifa();
   showPage('home');
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('nome-input').addEventListener('input', updateConfirmBtn);
-  carregarStatus();
-  mostrarTutorial();
-
-  // ── BLINDAGEM CONTRA RESET DE MEMÓRIA DO CELULAR ──
-  const pixEmAndamento = localStorage.getItem('pix_em_andamento');
-  const nomePendente = localStorage.getItem('pendente_nome');
-  const numerosPendentes = JSON.parse(localStorage.getItem('pendente_numeros') || '[]');
-
-  if (pixEmAndamento && numerosPendentes.length > 0) {
-    // 1. Reabre o modal imediatamente em modo de espera para o usuário não ficar perdido
-    abrirModalPixDinamico(nomePendente, numerosPendentes, '', '');
-    
-    const cardModal = document.getElementById('modal-conteudo-pix');
-    if (cardModal) {
-      cardModal.innerHTML = `
-        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⏳</div>
-        <div style="font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gold);font-weight:700;margin-bottom:1rem;">RECONECTANDO AO SEU PIX...</div>
-        <p style="font-size:0.85rem; color:#555; margin-bottom:12px;">Identificamos que você estava realizando o pagamento dos números: <strong>${numerosPendentes.join(', ')}</strong></p>
-        <div id="status-reconexao" style="font-size:0.8rem; color:#666; font-style:italic; background:rgba(0,0,0,0.03); padding:8px; border-radius:6px; margin-bottom:12px;">
-          Aguardando confirmação de recebimento do banco...
-        </div>
-        <button onclick="fecharModalPix()" style="width:100%;padding:0.6rem;background:transparent;border:1px solid #999;color:#555;font-weight:700;border-radius:6px;cursor:pointer;text-transform:uppercase;font-size:0.75rem;">Voltar para a Grade</button>
-      `;
-    }
-
-    // 2. Cria uma checagem insistente (polling) de 3 em 3 segundos para dar tempo do Webhook processar
-    let tentativasReconexao = 0;
-    const intervalReconexao = setInterval(async () => {
-      tentativasReconexao++;
-      
-      try {
-        const resposta = await fetch(`/api/verificar-comprovante/?numeros=${numerosPendentes.join(',')}`);
-        const statusData = await response.json(); // Se der erro de nome, use statusData aqui
-        
-        if (statusData.pago) {
-          clearInterval(intervalReconexao);
-          localStorage.removeItem('pix_em_andamento'); // Limpa a pendência
-          mostrarMensagemSucessoPix(nomePendente, numerosPendentes);
-        }
-      } catch (err) {
-        console.error("Erro na checagem de reconexão:", err);
-      }
-
-      // Se passar de 1 minuto (20 tentativas) e o banco não confirmar, para de tentar e deixa ele fechar
-      if (tentativasReconexao >= 20) {
-        clearInterval(intervalReconexao);
-        const txtStatus = document.getElementById('status-reconexao');
-        if (txtStatus) txtStatus.innerHTML = "⚠️ Pix não identificado ainda. Se você já pagou, a grade atualizará em instantes.";
-      }
-    }, 3000);
-  }
-});
 
 function buscarNumero() {
   const n = parseInt(document.getElementById('busca-numero').value);
@@ -847,12 +768,8 @@ function fecharApresentacao() {
   if (overlay) overlay.remove();
 }
 
-
-
 function mostrarTutorial() {
   if (localStorage.getItem('tutorial_visto')) return;
-  
-  // Se já existir um overlay antigo, remove para não duplicar
   const antigo = document.getElementById('tutorial-overlay');
   if (antigo) antigo.remove();
 
@@ -870,7 +787,6 @@ function mostrarTutorial() {
 
   let passoAtual = 0;
 
-  // Criamos uma função interna global temporária para os botões chamarem sem erro de escopo
   window.avancarTutorial = function() {
     if (passoAtual < passos.length - 1) {
       passoAtual++;
@@ -905,11 +821,9 @@ function mostrarTutorial() {
       </div>
     `;
   }
-  
   renderPasso();
 }
 
-// Garanta que a sua fecharTutorial também limpa as funções da janela
 function fecharTutorial() {
   localStorage.setItem('tutorial_visto', 'true');
   const overlay = document.getElementById('tutorial-overlay');
@@ -922,20 +836,27 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('nome-input').addEventListener('input', updateConfirmBtn);
   carregarStatus();
   mostrarTutorial();
+
+  // ── RECONEXÃO PELO COOKIE DO DJANGO DEPOIS DO RESET ──
+  const dadosSucessoBackend = {{ dados_sucesso|safe }};
+  
+  if (dadosSucessoBackend && dadosSucessoBackend.numeros.length > 0) {
+    abrirModalPixDinamico(dadosSucessoBackend.nome, dadosSucessoBackend.numeros, '', ''); 
+    mostrarMensagemSucessoPix(dadosSucessoBackend.nome, dadosSucessoBackend.numeros);
+    
+    // Limpa os cookies de controle para não reabrir o modal em um F5 futuro
+    document.cookie = "tel_pendente=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "nome_pendente=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "nums_pendentes=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  }
 });
 
 function buscarParticipante() {
     const termo = document.getElementById('busca-excluir').value.trim();
     const container = document.getElementById('resultado-busca');
-    
-    if (!termo) {
-        container.innerHTML = '<div style="color:#ff8888; font-size:0.8rem;">Digite um nome ou número para buscar.</div>';
-        return;
-    }
-
+    if (!termo) { container.innerHTML = '<div style="color:#ff8888; font-size:0.8rem;">Digite para buscar.</div>'; return; }
     container.innerHTML = '<div style="color:var(--gold); font-size:0.8rem;">Buscando...</div>';
 
-    // ADICIONADA A BARRA (/) DEPOIS DE BUSCAR-PARTICIPANTE PARA CORRIGIR O 404 NO LOCALHOST
     fetch(`/api/buscar-participante/?termo=${encodeURIComponent(termo)}`)
         .then(response => response.json())
         .then(data => {
@@ -943,7 +864,6 @@ function buscarParticipante() {
                 container.innerHTML = '<div style="color:#ff8888; font-size:0.8rem;">Nenhum participante encontrado.</div>';
                 return;
             }
-
             let html = '<div style="display:flex; flex-direction:column; gap:0.5rem; margin-top:0.5rem;">';
             data.participantes.forEach(p => {
                 html += `
@@ -953,20 +873,13 @@ function buscarParticipante() {
                     </div>
                 `;
             });
-            html += '</div>';
-            container.innerHTML = html;
+            container.innerHTML = html + '</div>';
         })
-        .catch(err => {
-            console.error(err);
-            container.innerHTML = '<div style="color:#ff8888; font-size:0.8rem;">Erro ao buscar participante.</div>';
-        });
+        .catch(err => { container.innerHTML = '<div style="color:#ff8888; font-size:0.8rem;">Erro.</div>'; });
 }
 
 function excluirParticipante(numero) {
-    if (!confirm(`Tem certeza que deseja excluir o participante do número ${numero} e liberá-lo na grade?`)) {
-        return;
-    }
-
+    if (!confirm(`Excluir o número ${numero}?`)) return;
     fetch('/api/excluir/', {
         method: 'POST',
         headers: {
@@ -976,81 +889,39 @@ function excluirParticipante(numero) {
         body: JSON.stringify({ numero: numero })
     })
     .then(response => response.json())
-    .then(data => {
-        if (data.ok) {
-            alert(`Número ${numero} foi liberado com sucesso!`);
-            location.reload();
-        } else {
-            alert('Erro: ' + data.erro);
-        }
-    })
-    .catch(err => {
-        console.error(err);
-        alert('Erro de conexão ao tentar excluir.');
-    });
+    .then(data => { if (data.ok) { alert('Liberado!'); location.reload(); } })
+    .catch(err => alert('Erro de conexão.'));
 }
 
 function cadastrarManual() {
     const nome = document.getElementById('admin-nome').value.trim();
     const tel = document.getElementById('admin-tel').value.trim();
     const numerosStr = document.getElementById('admin-numeros').value.trim();
-
-    if (!nome || !numerosStr) {
-        alert('Por favor, preencha o Nome e os Números.');
-        return;
-    }
-
-    // Transforma a string "1, 2, 3" em uma array de inteiros [1, 2, 3]
+    if (!nome || !numerosStr) { alert('Preencha os campos obrigatórios.'); return; }
     const numeros = numerosStr.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n));
-
-    if (numeros.length === 0) {
-        alert('Insira números válidos separados por vírgula.');
-        return;
-    }
+    if (numeros.length === 0) return;
 
     showLoading(true);
-
-    // Envia para a rota de admin que já existe no seu urls.py
     fetch('/api/participar-admin/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
         },
-        body: JSON.stringify({
-            nome: nome,
-            telefone: tel,
-            numeros: numeros
-        })
+        body: JSON.stringify({ nome, telefone: tel, numeros })
     })
     .then(response => response.json())
     .then(data => {
         showLoading(false);
-        if (data.ok) {
-            alert('Cadastro manual realizado com sucesso!');
-            // Limpa os campos do formulário de admin
-            document.getElementById('admin-nome').value = '';
-            document.getElementById('admin-tel').value = '';
-            document.getElementById('admin-numeros').value = '';
-            location.reload(); // Recarrega para pintar os números de vermelho na grade
-        } else {
-            alert('Erro: ' + data.erro);
-        }
-    })
-    .catch(err => {
-        console.error(err);
-        showLoading(false);
-        alert('Erro de conexão ao tentar cadastrar manualmente.');
+        if (data.ok) { alert('Sucesso!'); location.reload(); }
     });
 }
 </script>
-
 
 <button onclick="mostrarTutorial();localStorage.removeItem('tutorial_visto');" style="position:fixed;bottom:24px;right:24px;display:flex;align-items:center;gap:6px;background:var(--gold);border:none;border-radius:24px;padding:8px 14px 8px 10px;box-shadow:0 2px 8px rgba(201,148,42,0.4);z-index:998;cursor:pointer;">
   <span style="color:#111;font-size:1rem;font-weight:700;">?</span>
   <span style="color:#111;font-size:0.75rem;font-weight:700;white-space:nowrap;">Tutorial</span>
 </button>
-
 
 <a href="https://wa.me/5587981033286?text=Olá!%20Preciso%20de%20ajuda%20com%20o%20Sorteio%20Beneficente." target="_blank"
    style="position:fixed;bottom:24px;left:24px;display:flex;align-items:center;gap:6px;background:#25D366;border-radius:24px;padding:8px 14px 8px 10px;box-shadow:0 2px 8px rgba(0,0,0,0.3);z-index:999;text-decoration:none;">
