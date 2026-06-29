@@ -69,16 +69,6 @@
     .card-title { font-family: 'Cinzel', serif; font-size: 1rem; color: var(--navy-mid); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 1rem; text-transform: uppercase; display: flex; align-items: center; gap: 0.5rem; }
     .card-title::after { content: ''; flex: 1; height: 1px; background: rgba(201,148,42,0.2); }
 
-    /* ── PIX LAYOUT ── */
-    .pix-layout { display: grid; grid-template-columns: auto 1fr; gap: 1.5rem; align-items: center; }
-    @media(max-width: 480px) { .pix-layout { grid-template-columns: 1fr; text-align: center; } .qr-box { margin: 0 auto; } }
-    .qr-box { width: 120px; height: 120px; background: white; border: 3px solid var(--gold); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; padding: 6px; box-shadow: var(--shadow-sm); }
-    .qr-box img { width: 100%; height: 100%; object-fit: contain; }
-    .pix-info h3 { font-family: 'Cinzel', serif; font-size: 1rem; color: var(--navy); font-weight: 600; }
-    .pix-key { display: inline-block; margin-top: 0.5rem; background: var(--cream-mid); border: 1px solid rgba(201,148,42,0.3); border-radius: 6px; padding: 0.4rem 0.75rem; font-family: monospace; font-size: 0.85rem; color: var(--navy-mid); word-break: break-all; }
-    .valor-destaque { margin-top: 0.75rem; font-size: 1.6rem; font-family: 'Cinzel', serif; color: var(--gold); font-weight: 700; }
-    .valor-destaque small { font-size: 0.85rem; color: var(--text-light); font-family: 'Lato', sans-serif; font-weight: 400; display: block; margin-top: 0.1rem; }
-
     /* ── INFO GRID ── */
     .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-bottom: 1.25rem; }
     @media(min-width: 480px) { .info-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); } }
@@ -131,14 +121,14 @@
     .btn-confirm:hover { transform: translateY(-1px); box-shadow: 0 5px 20px rgba(201,148,42,0.5); }
     .btn-confirm:disabled { opacity: 0.45; cursor: not-allowed; transform: none; background: #ccc; box-shadow: none; }
 
-    /* ── PIX BOX ── */
+    /* ── DYNAMIC PIX MODAL BOX ── */
     .pix-box { display: flex !important; align-items: center; gap: 20px; margin: 16px 0; }
     .pix-qrcode { width: 140px; background: #fff; padding: 6px; border-radius: 10px; border: 3px solid var(--gold); flex-shrink: 0; }
     .pix-info { flex: 1; }
     .pix-info h3 { margin: 0 0 8px; color: var(--navy); font-family: 'Cinzel', serif; font-size: 0.95rem; }
     .pix-info p { margin-bottom: 8px; color: #555; font-size: 0.85rem; }
     .pix-chave-area { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 10px 0; }
-    .pix-chave { padding: 6px 10px; border: 1px solid rgba(201,148,42,.4); border-radius: 8px; background: #f5f5f5; color: #333; font-size: 0.8rem; word-break: break-all; }
+    .pix-chave { padding: 6px 10px; border: 1px solid rgba(201,148,42,.4); border-radius: 8px; background: #f5f5f5; color: #333; font-size: 0.8rem; word-break: break-all; max-width: 100%; }
     .valor-pix { font-size: 1.6rem; font-weight: 700; color: var(--gold); }
     .btn-copiar-pix { width: auto !important; padding: 6px 14px !important; font-size: 0.78rem !important; white-space: nowrap; }
     @media (max-width: 480px) {
@@ -192,7 +182,7 @@
     .btn-reset:hover { background: rgba(139,26,26,0.15); border-color: rgba(248,180,180,0.5); color: rgba(248,180,180,0.85); }
 
     /* ── LOADING ── */
-    .loading-overlay { position: fixed; inset: 0; background: rgba(14,26,48,0.7); z-index: 500; align-items: center; justify-content: center; display: none; }
+    .loading-overlay { position: fixed; inset: 0; background: rgba(14,26,48,0.7); z-index: 2500; align-items: center; justify-content: center; display: none; }
     .loading-overlay.show { display: flex; }
     .loading-spinner { width: 40px; height: 40px; border: 3px solid rgba(201,148,42,0.2); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -202,11 +192,8 @@
     #resumo-compra div { text-align: center; }
     #resumo-compra span { display: block; font-size: .72rem; text-transform: uppercase; color: #888; font-weight: 700; }
     #resumo-compra strong { display: block; font-family: 'Cinzel', serif; font-size: 1.2rem; color: var(--gold); }
-    #status-comprovante { text-align: center; margin: 10px 0; font-weight: 600; font-size: 0.9rem; }
-    .btn-comprovante { width: fit-content; min-width: 220px; margin: 0 auto 16px; display: block; padding: 10px 20px; }
   </style>
 </head>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <body>
 <div class="app-wrapper">
 
@@ -220,14 +207,12 @@
       <button class="nav-tab" onclick="showPage('rifa')">Números</button>
       {% if request.user.is_authenticated %}
       <button class="nav-tab" onclick="showPage('sorteio')">Sorteio</button>
-      <button class="nav-tab" onclick="showPage('comprovantes')">Comprovantes</button>
-      <button class="nav-tab" onclick="showPage('tentativas')">Tentativas</button>
+      <button class="nav-tab" onclick="showPage('comprovantes')">Pagamentos</button>
       {% endif %}
     </div>
   </div>
 </nav>
 
-<!-- HOME -->
 <div id="page-home" class="page active">
   <div class="page-inner">
     <div class="hero">
@@ -263,23 +248,7 @@
       <div class="info-item"><div class="info-item-icon">🙏</div><div class="info-item-label">Causa</div><div class="info-item-value">{{ config.causa }}</div></div>
     </div>
 
-    <div class="card">
-      <div class="card-title">✦ Contribuição via PIX</div>
-      <div class="pix-layout">
-        <div class="qr-box"><img src="{% static 'rifa/qrcode_pix.png' %}" alt="QR Code PIX"></div>
-        <div class="pix-info">
-          <h3>Realize sua oferta</h3>
-          <p style="color:var(--text-mid);font-size:0.85rem;margin-top:0.3rem;">Escaneie o QR Code ou use a chave PIX:</p>
-          <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin-top:0.5rem;">
-            <div class="pix-key" id="pix-key-text">{{ config.pix_chave }}</div>
-            <button onclick="copiarPix()" id="btn-copiar" style="padding:0.4rem 0.8rem;background:var(--gold);border:none;border-radius:6px;color:var(--navy);font-size:0.78rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Copiar</button>
-          </div>
-          <div class="valor-destaque">R$ {{ config.valor }}<small>por número</small></div>
-        </div>
-      </div>
-    </div>
-
-    <div style="border-radius:12px;overflow:hidden;margin:0 auto 1.25rem;box-shadow:0 8px 40px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.08);max-width:320px;">
+    <div style="border-radius:12px;overflow:hidden;margin:1.5rem auto 1.25rem;box-shadow:0 8px 40px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.08);max-width:320px;">
       <div style="background:#111;padding:0.85rem 1rem;text-align:center;border-bottom:1px solid rgba(255,255,255,0.06);">
         <div style="font-family:'Cinzel',serif;font-size:0.72rem;color:var(--gold);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.2rem;">🏆 Prêmio</div>
         <div style="font-family:'Cinzel',serif;font-size:1rem;color:white;font-weight:600;">Terreno — Lagoa dos Vinhedos</div>
@@ -291,7 +260,6 @@
   </div>
 </div>
 
-<!-- RIFA -->
 <div id="page-rifa" class="page">
   <div class="page-inner">
     <div class="rifa-header">
@@ -325,44 +293,21 @@
         <div><span>Total</span><strong id="resumo-total">R$ 0,00</strong></div>
       </div>
 
-      <div class="pix-box">
-        <img src="{% static 'rifa/qrcode_pix.png' %}" alt="QR Code PIX" class="pix-qrcode">
-        <div class="pix-info">
-          <h3>REALIZE SUA OFERTA</h3>
-          <p>Escaneie o QR Code ou use a chave PIX:</p>
-          <div class="pix-chave-area">
-            <div class="pix-chave">{{ config.pix_chave }}</div>
-            <button onclick="copiarPix()" class="btn-primary btn-copiar-pix">COPIAR</button>
-          </div>
-          <div class="valor-pix">R$ {{ config.valor }}</div>
-          <small>por número</small>
-        </div>
-      </div>
-
-      <div style="background:rgba(201,148,42,0.08);border:1px solid rgba(201,148,42,0.25);border-radius:8px;padding:0.65rem 0.9rem;margin-bottom:0.75rem;font-size:0.82rem;color:#444;line-height:1.5;">
-        📱 <strong style="color:#C9942A;">Dica:</strong> Salve o comprovante PIX na galeria antes de enviar para uma leitura melhor!
-      </div>
-
       <div class="form-group">
         <label class="form-label" for="nome-input">Seu Nome Completo</label>
         <input type="text" id="nome-input" class="form-input" placeholder="Ex: Maria das Graças Silva" maxlength="60" autocomplete="name">
       </div>
 
       <div class="form-group">
-        <label class="form-label" for="tel-input">Telefone (opcional)</label>
+        <label class="form-label" for="tel-input">Telefone (WhatsApp)</label>
         <input type="tel" id="tel-input" class="form-input" placeholder="(87) 99999-9999" maxlength="20">
       </div>
-
-      <button class="btn-primary btn-comprovante" onclick="abrirComprovante()">ENVIAR COMPROVANTE PIX</button>
-
-      <div id="status-comprovante">❌ Comprovante não enviado</div>
 
       <button class="btn-confirm" id="btn-confirm" onclick="confirmarParticipacao()" disabled>✦ Confirmar Participação</button>
     </div>
   </div>
 </div>
 
-<!-- SORTEIO -->
 <div id="page-sorteio" class="page">
   <div class="page-inner">
     <div class="sorteio-header"><h2>Sorteio</h2></div>
@@ -383,82 +328,51 @@
       <div class="admin-title">⚙ Administração</div>
       <button class="btn-reset" onclick="resetarRifa()">Resetar Rifa</button>
       <span style="font-size:0.75rem;color:rgba(240,200,90,0.3);margin-left:0.75rem;">Remove todos os registros</span>
+      
       <form method="post" action="/logout/" style="display:inline;">
         {% csrf_token %}
         <button type="submit" style="background:transparent;border:none;margin-left:1rem;font-size:0.8rem;color:rgba(248,180,180,0.6);font-weight:700;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;">Sair</button>
       </form>
-      <div style="margin-top:1rem;">
-        <div style="font-size:0.72rem;color:rgba(255,255,255,0.3);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem;">Excluir Participante</div>
+
+      <div style="margin-top:1.5rem; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1rem;">
+        <div style="font-size:0.72rem;color:rgba(255,255,255,0.3);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem;">Excluir Participante / Liberar Número</div>
         <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
           <input type="text" id="busca-excluir" placeholder="Nome ou número..." style="padding:0.5rem 0.75rem;border-radius:6px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:white;font-size:0.85rem;flex:1;min-width:140px;">
           <button onclick="buscarParticipante()" style="padding:0.5rem 1rem;background:var(--gold);border:none;border-radius:6px;color:#111;font-size:0.8rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Buscar</button>
         </div>
         <div id="resultado-busca" style="margin-top:0.75rem;"></div>
       </div>
-      <div style="margin-top:1rem;border-top:1px solid rgba(255,255,255,0.06);padding-top:1rem;">
-        <div style="font-size:0.72rem;color:rgba(255,255,255,0.3);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem;">Cadastro Manual</div>
+
+      <div style="margin-top:1.5rem;border-top:1px solid rgba(255,255,255,0.06);padding-top:1rem;">
+        <div style="font-size:0.72rem;color:rgba(255,255,255,0.3);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem;">Cadastro Manual (Dinheiro / Cortesia)</div>
         <div style="display:flex;flex-direction:column;gap:0.5rem;">
           <input type="text" id="admin-nome" placeholder="Nome completo..." style="padding:0.5rem 0.75rem;border-radius:6px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:white;font-size:0.85rem;">
           <input type="tel" id="admin-tel" placeholder="Telefone (opcional)..." style="padding:0.5rem 0.75rem;border-radius:6px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:white;font-size:0.85rem;">
           <input type="text" id="admin-numeros" placeholder="Números ex: 1, 2, 3..." style="padding:0.5rem 0.75rem;border-radius:6px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:white;font-size:0.85rem;">
-          <button onclick="cadastrarManual()" style="padding:0.5rem 1rem;background:var(--gold);border:none;border-radius:6px;color:#111;font-size:0.8rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Cadastrar</button>
+          <button onclick="cadastrarManual()" style="padding:0.5rem 1rem;background:var(--gold);border:none;border-radius:6px;color:#111;font-size:0.8rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Cadastrar Manualmente</button>
         </div>
-        <div id="resultado-admin" style="margin-top:0.5rem;"></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- COMPROVANTES -->
 <div id="page-comprovantes" class="page">
   <div class="page-inner">
-    <div class="sorteio-header"><h2>Comprovantes</h2></div>
+    <div class="sorteio-header"><h2>Aprovações Direct MP</h2></div>
     <div style="display:flex;gap:0.5rem;margin-bottom:1.25rem;flex-wrap:wrap;">
-      <input type="text" id="busca-comprovante" placeholder="Buscar por nome, pagador ou número..." oninput="filtrarComprovantes()" style="flex:1;min-width:180px;padding:0.65rem 0.85rem;border-radius:7px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:white;font-size:0.88rem;font-family:'Lato',sans-serif;">
-      <button onclick="document.getElementById('busca-comprovante').value='';filtrarComprovantes()" style="padding:0.65rem 0.9rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:7px;color:rgba(255,255,255,0.5);font-size:0.8rem;font-weight:700;cursor:pointer;">Limpar</button>
-      <button onclick="exportarCSV()" style="padding:0.65rem 1rem;background:rgba(42,122,74,0.3);border:1px solid rgba(42,122,74,0.5);border-radius:7px;color:#6FCF97;font-size:0.8rem;font-weight:700;cursor:pointer;text-transform:uppercase;">⬇ CSV</button>
+      <input type="text" id="busca-comprovante" placeholder="Buscar por participante..." oninput="filtrarComprovantes()" style="flex:1;min-width:180px;padding:0.65rem 0.85rem;border-radius:7px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:white;font-size:0.88rem;font-family:'Lato',sans-serif;">
     </div>
     <div id="comprovantes-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:1rem;">
-      <div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;grid-column:1/-1;">Carregando...</div>
-    </div>
-  </div>
-</div>
-
-<!-- TENTATIVAS -->
-<div id="page-tentativas" class="page" style="color:white;">
-  <div class="page-inner">
-    <div class="sorteio-header"><h2>Histórico de Tentativas</h2></div>
-    <div class="admin-card" style="overflow-x:auto;">
-      <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
-        <thead>
-          <tr style="border-bottom:1px solid rgba(201,148,42,0.3);">
-            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Status</th>
-            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Data/Hora</th>
-            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Motivo</th>
-            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Score</th>
-            <th style="padding:0.6rem 0.5rem;text-align:left;color:rgba(240,200,90,0.6);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;">Imagem</th>
-            <th style="padding:0.6rem 0.5rem;"></th>
-          </tr>
-        </thead>
-        <tbody id="tentativas-body">
-          <tr><td colspan="6" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;">Carregando...</td></tr>
-        </tbody>
-      </table>
+      <div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;grid-column:1/-1;">Carregando pagamentos...</div>
     </div>
   </div>
 </div>
 
 <script>
 const TOTAL = {{ config.total_numeros }};
+const VALOR_NUMERO = parseFloat("{{ config.valor }}".replace(',', '.')) || 50.00;
 let ocupados = {};
 let selectedNums = [];
-let comprovanteEnviado = false;
-let comprovanteArquivo = null;
-let valorEncontrado = 0;
-let quantidadePermitida = 0;
-let dadosComprovante = {};
-let hashImagemAtual = null;
-let assinaturaAtual = null;
 let todosComprovantes = [];
 let paginaAtual = 1;
 const POR_PAGINA = 100;
@@ -478,13 +392,14 @@ function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('page-' + id).classList.add('active');
-  const names = ['home', 'rifa', 'sorteio', 'comprovantes', 'tentativas'];
-  document.querySelectorAll('.nav-tab')[names.indexOf(id)].classList.add('active');
+  const names = ['home', 'rifa', 'sorteio', 'comprovantes'];
+  const tabIdx = names.indexOf(id);
+  if(tabIdx !== -1) document.querySelectorAll('.nav-tab')[tabIdx].classList.add('active');
+  
   if (id === 'home') carregarStatus();
   if (id === 'rifa') carregarRifa();
   if (id === 'sorteio') carregarSorteio();
   if (id === 'comprovantes') carregarComprovantes();
-  if (id === 'tentativas') carregarTentativas();
 }
 
 async function carregarStatus() {
@@ -493,7 +408,7 @@ async function carregarStatus() {
   document.getElementById('stat-vendidos').textContent = d.vendidos;
   document.getElementById('stat-disponiveis').textContent = d.disponiveis;
   const arrecadado = document.getElementById('stat-arrecadado');
-  if (arrecadado) arrecadado.textContent = 'R$' + d.arrecadado.toFixed(0);
+  if (arrecadado) arrecadado.textContent = 'R$ ' + d.arrecadado.toFixed(0);
 }
 
 async function carregarRifa() {
@@ -513,7 +428,7 @@ function renderGrid() {
     btn.textContent = i;
     if (ocupados[i]) {
       btn.classList.add('taken');
-      btn.title = 'Ocupado: ' + ocupados[i];
+      btn.title = 'Ocupado';
       btn.disabled = true;
     } else if (selectedNums.includes(i)) {
       btn.classList.add('selected');
@@ -541,29 +456,20 @@ function renderPaginacao() {
   btnAnterior.textContent = '← Anterior';
   btnAnterior.disabled = paginaAtual === 1;
   btnAnterior.style.cssText = 'padding:0.45rem 0.85rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:white;cursor:pointer;font-size:0.78rem;font-weight:700;';
-  btnAnterior.onclick = () => { paginaAtual--; renderGrid(); window.scrollTo({top: document.getElementById('numbers-grid').offsetTop - 80, behavior:'smooth'}); };
+  btnAnterior.onclick = () => { paginaAtual--; renderGrid(); };
   pag.appendChild(btnAnterior);
+  
   const info = document.createElement('span');
   info.style.cssText = 'color:rgba(255,255,255,0.6);font-size:0.82rem;font-family:"Cinzel",serif;padding:0 0.4rem;';
   info.textContent = `${paginaAtual}/${totalPaginas}`;
   pag.appendChild(info);
+  
   const btnProximo = document.createElement('button');
   btnProximo.textContent = 'Próxima →';
   btnProximo.disabled = paginaAtual === totalPaginas;
   btnProximo.style.cssText = 'padding:0.45rem 0.85rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:white;cursor:pointer;font-size:0.78rem;font-weight:700;';
-  btnProximo.onclick = () => { paginaAtual++; renderGrid(); window.scrollTo({top: document.getElementById('numbers-grid').offsetTop - 80, behavior:'smooth'}); };
+  btnProximo.onclick = () => { paginaAtual++; renderGrid(); };
   pag.appendChild(btnProximo);
-  const select = document.createElement('select');
-  select.style.cssText = 'padding:0.4rem;background:#111;border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:white;font-size:0.78rem;cursor:pointer;';
-  for (let i = 1; i <= totalPaginas; i++) {
-    const opt = document.createElement('option');
-    opt.value = i;
-    opt.textContent = `${(i-1)*POR_PAGINA+1}–${Math.min(i*POR_PAGINA, TOTAL)}`;
-    if (i === paginaAtual) opt.selected = true;
-    select.appendChild(opt);
-  }
-  select.onchange = () => { paginaAtual = parseInt(select.value); renderGrid(); };
-  pag.appendChild(select);
 }
 
 function selectNums(n) {
@@ -577,158 +483,121 @@ function selectNums(n) {
   document.getElementById('selected-num-display').textContent = selectedNums.length ? selectedNums.join(', ') : '—';
   const quantidade = selectedNums.length;
   document.getElementById('resumo-qtd').textContent = quantidade;
-  document.getElementById('resumo-total').textContent = 'R$ ' + (quantidade * 50).toFixed(2).replace('.', ',');
+  document.getElementById('resumo-total').textContent = 'R$ ' + (quantidade * VALOR_NUMERO).toFixed(2).replace('.', ',');
   updateConfirmBtn();
 }
 
 function updateConfirmBtn() {
   const nome = document.getElementById('nome-input').value.trim();
-  document.getElementById('btn-confirm').disabled = selectedNums.length === 0 || !nome || !comprovanteEnviado;
-}
-
-async function gerarHashImagem(arquivo) {
-  const buffer = await arquivo.arrayBuffer();
-  const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  document.getElementById('btn-confirm').disabled = selectedNums.length === 0 || !nome;
 }
 
 async function confirmarParticipacao() {
-  if (!comprovanteEnviado) {
-    showToast('Envie o comprovante PIX para confirmar.', 'error');
-    return;
-  }
   const nome = document.getElementById('nome-input').value.trim();
   const telefone = document.getElementById('tel-input').value.trim();
+
   if (selectedNums.length === 0 || !nome) return;
-
-  const valorEsperado = selectedNums.length * 50;
-  if (valorEncontrado < valorEsperado) {
-    showToast(`Pagamento insuficiente. Esperado: R$ ${valorEsperado}`, 'error');
-    return;
-  }
-
-  const numerosPermitidos = Math.floor(valorEncontrado / 50);
-  if (selectedNums.length < numerosPermitidos) {
-    const continuar = await confirmarAviso(
-      `Você pagou <strong style="color:var(--gold);">R$ ${valorEncontrado.toFixed(2)}</strong> e tem direito a <strong style="color:var(--gold);">${numerosPermitidos} número(s)</strong>, mas selecionou apenas <strong style="color:var(--gold);">${selectedNums.length}</strong>. Deseja confirmar assim mesmo?`
-    );
-    if (!continuar) return;
-  }
-
   showLoading(true);
+
   try {
-    const formData = new FormData();
-    formData.append('nome_participante', nome);
-    formData.append('pagador', dadosComprovante?.pagador || '');
-    formData.append('data_hora_pix', dadosComprovante?.data_hora || '');
-    formData.append('valor', valorEncontrado);
-    formData.append('texto_ocr', dadosComprovante?.texto_ocr || '');
-    formData.append('hash_imagem', hashImagemAtual || '');
-    formData.append('assinatura', assinaturaAtual || '');
-    if (comprovanteArquivo) formData.append('imagem', comprovanteArquivo);
-
-    const respostaComprovante = await fetch('/api/registrar-comprovante/', { method: 'POST', body: formData });
-    const dadosResposta = await respostaComprovante.json();
-
-    if (!dadosResposta.ok) {
-      showToast(dadosResposta.erro || 'Comprovante inválido.', 'error');
-      showLoading(false);
-      return;
-    }
-
-    const d = await api('/api/participar/', 'POST', { numeros: selectedNums, nome, telefone });
+    const d = await api('/api/criar-pagamento/', 'POST', {
+      numeros: selectedNums,
+      nome: nome,
+      telefone: telefone
+    });
 
     if (d.ok) {
-      document.getElementById('nome-input').value = '';
-      document.getElementById('tel-input').value = '';
-      document.getElementById('selected-num-display').textContent = '—';
-      const num = [...selectedNums];
-      selectedNums = [];
-      dadosComprovante = null;
-      valorEncontrado = 0;
-      hashImagemAtual = null;
-      assinaturaAtual = null;
-      comprovanteEnviado = false;
-      document.getElementById('status-comprovante').innerHTML = '❌ Envie um novo comprovante';
-      await carregarRifa();
-      mostrarComprovante(nome, num);
-      showToast(d.mensagem || 'Participação confirmada!', 'success');
+      localStorage.setItem('pendente_nome', nome);
+      localStorage.setItem('pendente_telefone', telefone);
+      localStorage.setItem('pendente_numeros', JSON.stringify(selectedNums));
+      abrirModalPixDinamico(nome, selectedNums, d.qr_code_base64, d.qr_code);
     } else {
-      showToast(d.erro, 'error');
-      selectedNums = [];
-      await carregarRifa();
+      showToast(d.erro || 'Erro ao criar chave de pagamento.', 'error');
     }
+  } catch (erro) {
+    console.error(erro);
+    showToast('Erro ao processar integração com o Mercado Pago.', 'error');
   } finally {
     showLoading(false);
   }
 }
 
-function mostrarComprovante(nome, numero) {
-  const data = new Date().toLocaleDateString('pt-BR');
-  const hora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-  const numStr = Array.isArray(numero) ? numero.map(n => String(n).padStart(2,'0')).join(', ') : String(numero).padStart(2,'0');
+function abrirModalPixDinamico(nome, numeros, qrCodeBase64, qrCodeCopiaCola) {
+  const totalPix = (numeros.length * VALOR_NUMERO).toFixed(2).replace('.', ',');
   const overlay = document.createElement('div');
-  overlay.id = 'comprovante-overlay';
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;overflow-y:auto;';
+  overlay.id = 'pix-modal-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:3000;display:flex;align-items:center;justify-content:center;padding:1rem;overflow-y:auto;';
   overlay.innerHTML = `
-    <div id="comprovante-card" style="background:#1A1A1A;border:2px solid #C9942A;border-radius:16px;padding:2rem;max-width:380px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(201,148,42,0.3);margin:auto;">
-      <div style="font-size:2rem;margin-bottom:0.5rem;">✝</div>
-      <div style="font-family:'Cinzel',serif;font-size:0.7rem;color:#C9942A;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.25rem;">Comprovante de Participação</div>
-      <div style="font-family:'Cinzel',serif;font-size:1rem;color:white;font-weight:600;margin-bottom:1.5rem;">Igreja Batista Missionária</div>
-      <div style="background:rgba(201,148,42,0.1);border:1px solid rgba(201,148,42,0.3);border-radius:10px;padding:1.25rem;margin-bottom:1.25rem;">
-        <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.25rem;">Número(s)</div>
-        <div style="font-family:'Cinzel',serif;font-size:2.5rem;font-weight:700;color:#C9942A;line-height:1.2;">${numStr}</div>
-      </div>
-      <div style="margin-bottom:1.25rem;">
-        <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.25rem;">Participante</div>
-        <div style="font-family:'Cinzel',serif;font-size:1.2rem;color:white;font-weight:600;">${nome}</div>
-      </div>
-      <div style="display:flex;justify-content:center;gap:2rem;margin-bottom:1rem;">
-        <div>
-          <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;">Data</div>
-          <div style="font-size:0.85rem;color:rgba(255,255,255,0.7);margin-top:0.1rem;">${data}</div>
-        </div>
-        <div>
-          <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;">Hora</div>
-          <div style="font-size:0.85rem;color:rgba(255,255,255,0.7);margin-top:0.1rem;">${hora}</div>
+    <div style="background:var(--cream);border:3px solid var(--gold);border-radius:16px;padding:1.5rem;max-width:440px;width:100%;box-shadow:var(--shadow);margin:auto;color:var(--text-dark);">
+      <div style="text-align:center;font-family:'Cinzel',serif;font-size:1.1rem;color:var(--navy);font-weight:700;margin-bottom:1rem;">🙏 PRONTINHO! GERAMOS SEU PIX</div>
+      
+      <div class="pix-box">
+        <img src="data:image/jpeg;base64,${qrCodeBase64}" alt="QR Code Pix" class="pix-qrcode">
+        <div class="pix-info" style="text-align:left;">
+          <h3>Aperte em copiar ou escaneie o código</h3>
+          <div class="valor-pix">R$ ${totalPix}</div>
+          <p style="font-size:0.8rem;color:#666;margin-top:4px;">Número(s): <strong>${numeros.join(', ')}</strong></p>
         </div>
       </div>
-      <div style="margin:0.75rem 0;padding:0.6rem 0.8rem;background:rgba(201,148,42,0.08);border:1px solid rgba(201,148,42,0.25);border-radius:10px;color:rgba(255,255,255,0.85);font-size:0.75rem;line-height:1.4;text-align:center;">
-        ✅ Participação confirmada! Salve e compartilhe com amigos. 🙏
+
+      <div style="margin:12px 0;">
+        <div class="pix-chave" style="max-height:60px;overflow-y:auto;font-family:monospace;background:#eee;padding:8px;border-radius:6px;font-size:0.75rem;word-break:break-all;">${qrCodeCopiaCola}</div>
       </div>
-      <button onclick="salvarComprovante()" style="width:100%;padding:0.85rem;background:transparent;border:2px solid #C9942A;border-radius:8px;color:#C9942A;font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.6rem;">⬇ Baixar Comprovante</button>
-      <button onclick="compartilharWhatsApp('${nome}', ${JSON.stringify(Array.isArray(numero) ? numero : [numero])})" style="width:100%;padding:0.85rem;background:#25D366;border:none;border-radius:8px;color:white;font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.6rem;">📲 Compartilhar no WhatsApp</button>
-      <button onclick="fecharComprovante()" style="width:100%;padding:0.85rem;background:#C9942A;border:none;border-radius:8px;color:#111;font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;">✓ Concluir</button>
+
+      <button onclick="copiarTextoPix('${qrCodeCopiaCola}')" class="btn-primary" style="margin-bottom:12px;padding:0.7rem;font-size:0.85rem;">📋 Copiar Código Pix</button>
+      
+      <div style="background:rgba(201,148,42,0.1);border:1px solid var(--gold);border-radius:8px;padding:10px;font-size:0.8rem;text-align:center;color:#555;margin-bottom:12px;">
+        ⚡ <strong>Confirmação automática!</strong> Assim que pagar no banco, o sistema valida em instantes e libera seus números.
+      </div>
+
+      <button onclick="fecharModalPix()" style="width:100%;padding:0.6rem;background:transparent;border:1px solid #999;color:#555;font-weight:700;border-radius:6px;cursor:pointer;text-transform:uppercase;font-size:0.75rem;">Fechar Janela</button>
     </div>
   `;
   document.body.appendChild(overlay);
 }
 
-function fecharComprovante() {
-  const overlay = document.getElementById('comprovante-overlay');
-  if (overlay) overlay.remove();
+function copiarTextoPix(texto) {
+  navigator.clipboard.writeText(texto);
+  showToast('Código Pix Copia e Cola copiado!', 'success');
 }
 
-async function salvarComprovante() {
-  try {
-    const canvas = await html2canvas(document.getElementById('comprovante-card'), {
-      backgroundColor: '#1A1A1A', scale: 2, useCORS: true, allowTaint: true, logging: false
-    });
-    const link = document.createElement('a');
-    link.download = 'comprovante-rifa.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  } catch(e) {
-    console.error(e);
-    showToast('Tire um print para salvar o comprovante.', '');
+function fecharModalPix() {
+  const modal = document.getElementById('pix-modal-overlay');
+  if(modal) modal.remove();
+  selectedNums = [];
+  document.getElementById('nome-input').value = '';
+  document.getElementById('tel-input').value = '';
+  carregarRifa();
+  showPage('home');
+}
+
+function buscarNumero() {
+  const n = parseInt(document.getElementById('busca-numero').value);
+  if (!n || n < 1 || n > TOTAL) { showToast('Número inválido.', 'error'); return; }
+  paginaAtual = Math.ceil(n / POR_PAGINA);
+  renderGrid();
+  setTimeout(() => {
+    const btns = document.querySelectorAll('.num-btn');
+    const idx = n - (paginaAtual - 1) * POR_PAGINA - 1;
+    const btn = btns[idx];
+    if (!btn) return;
+    btn.style.outline = '3px solid white';
+    btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (!btn.classList.contains('taken')) selectNums(n);
+  }, 100);
+}
+
+function escolherPorMim() {
+  const disponiveis = [];
+  for (let i = 1; i <= TOTAL; i++) {
+    if (!ocupados[i] && !selectedNums.includes(i)) disponiveis.push(i);
   }
-}
-
-function compartilharWhatsApp(nome, numeros) {
-  const lista = Array.isArray(numeros) ? numeros.join(', ') : numeros;
-  const msg = `✝ *Comprovante de Participação*\n\n*Igreja Batista Missionária Jardim Guararapes*\n\n👤 *Participante:* ${nome}\n🔢 *Número(s):* ${lista}\n\n🙏 Que Deus abençoe! Participe também:\n${window.location.origin}`;
-  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+  if (!disponiveis.length) { showToast('Não há números disponíveis.', 'error'); return; }
+  const aleatorio = disponiveis[Math.floor(Math.random() * disponiveis.length)];
+  selectNums(aleatorio);
+  paginaAtual = Math.ceil(aleatorio / POR_PAGINA);
+  renderGrid();
+  showToast(`Número ${aleatorio} selecionado! 🎲`, 'success');
 }
 
 async function carregarSorteio() {
@@ -756,19 +625,10 @@ async function resetarRifa() {
   const d = await api('/api/resetar/', 'POST');
   showLoading(false);
   if (d.ok) {
-    document.getElementById('winner-card').style.display = 'none';
-    document.getElementById('winner-card').classList.remove('show');
+    showToast('Rifa resetada com sucesso.', 'success');
     await carregarSorteio();
-    showToast('Rifa resetada com sucesso.', '');
-  } else if (d.erro === 'Não autorizado.') {
-    showToast('Faça login para resetar.', 'error');
-    setTimeout(() => window.location.href = '/login/', 1500);
+    carregarStatus();
   }
-}
-
-function copiarPix() {
-  navigator.clipboard.writeText('ibmjardimguararapes@gmail.com');
-  showToast('Chave PIX copiada!', 'success');
 }
 
 function showToast(msg, type) {
@@ -777,62 +637,40 @@ function showToast(msg, type) {
   t.className = 'toast ' + (type||'');
   void t.offsetWidth;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 8000);
+  setTimeout(() => t.classList.remove('show'), 5000);
 }
 
-async function buscarParticipante() {
-  const termo = document.getElementById('busca-excluir').value.trim().toLowerCase();
-  const resultado = document.getElementById('resultado-busca');
-  if (!termo) { resultado.innerHTML = ''; return; }
-  const d = await api('/api/vendidos/');
-  const encontrados = d.vendidos.filter(p => p.nome.toLowerCase().includes(termo) || String(p.numero) === termo);
-  if (!encontrados.length) {
-    resultado.innerHTML = '<div style="color:rgba(255,255,255,0.4);font-size:0.85rem;">Nenhum participante encontrado.</div>';
+async function carregarComprovantes() {
+  const d = await api('/api/comprovantes/');
+  const grid = document.getElementById('comprovantes-grid');
+  if (!d.comprovantes || !d.comprovantes.length) {
+    grid.innerHTML = '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;grid-column:1/-1;">Nenhum pagamento registrado no banco ainda.</div>';
     return;
   }
-  resultado.innerHTML = encontrados.map(p => `
-    <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:0.5rem 0.75rem;margin-bottom:0.4rem;">
-      <span style="color:white;font-size:0.85rem;"><strong style="color:var(--gold);">#${String(p.numero).padStart(2,'0')}</strong> — ${p.nome}</span>
-      <button onclick="excluirParticipante(${p.numero})" style="padding:0.3rem 0.7rem;background:rgba(139,26,26,0.4);border:1px solid rgba(248,180,180,0.3);border-radius:5px;color:rgba(248,180,180,0.8);font-size:0.75rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Excluir</button>
+  todosComprovantes = d.comprovantes;
+  renderizarComprovantes(todosComprovantes);
+}
+
+function renderizarComprovantes(lista) {
+  const grid = document.getElementById('comprovantes-grid');
+  grid.innerHTML = lista.map(c => `
+    <div style="background:#1A1A1A;border:1px solid #2A7A4A40;border-left:4px solid #2A7A4A;border-radius:12px;padding:1.25rem;display:flex;flex-direction:column;gap:0.5rem;color:white;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="background:rgba(42,122,74,0.2);color:#6FCF97;font-size:0.7rem;font-weight:700;padding:0.25rem 0.6rem;border-radius:999px;">🟢 CONFIRMADO MP</span>
+        <span style="color:rgba(255,255,255,0.3);font-size:0.72rem;">Ref: ${c.external_reference || c.id}</span>
+      </div>
+      <div>
+        <div style="font-size:0.68rem;color:rgba(255,255,255,0.35);text-transform:uppercase;">Participante</div>
+        <div style="color:white;font-size:0.9rem;font-weight:600;">${c.nome_participante || '—'}</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;">
+        <div>
+          <div style="font-size:0.68rem;color:rgba(255,255,255,0.35);text-transform:uppercase;">Valor Pago</div>
+          <div style="color:var(--gold);font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;">R$ ${c.valor.toFixed(2).replace('.', ',')}</div>
+        </div>
+      </div>
     </div>
   `).join('');
-}
-
-async function excluirParticipante(numero) {
-  if (!confirm(`Excluir o número ${numero}?`)) return;
-  showLoading(true);
-  const d = await api('/api/excluir/', 'POST', { numero });
-  showLoading(false);
-  if (d.ok) {
-    showToast('✦ ' + d.mensagem, 'success');
-    document.getElementById('busca-excluir').value = '';
-    document.getElementById('resultado-busca').innerHTML = '';
-    await carregarSorteio();
-  } else {
-    showToast(d.erro, 'error');
-  }
-}
-
-async function cadastrarManual() {
-  const nome = document.getElementById('admin-nome').value.trim();
-  const telefone = document.getElementById('admin-tel').value.trim();
-  const numerosRaw = document.getElementById('admin-numeros').value.trim();
-  if (!nome || !numerosRaw) { showToast('Preencha o nome e os números.', 'error'); return; }
-  const numeros = numerosRaw.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n));
-  if (!numeros.length) { showToast('Números inválidos.', 'error'); return; }
-  showLoading(true);
-  const d = await api('/api/participar-admin/', 'POST', { numeros, nome, telefone });
-  showLoading(false);
-  if (d.ok) {
-    showToast(d.mensagem, 'success');
-    document.getElementById('admin-nome').value = '';
-    document.getElementById('admin-tel').value = '';
-    document.getElementById('admin-numeros').value = '';
-    await carregarSorteio();
-    await carregarRifa();
-  } else {
-    showToast(d.erro, 'error');
-  }
 }
 
 function modoApresentacao() {
@@ -855,7 +693,6 @@ function modoApresentacao() {
   `;
   document.body.appendChild(overlay);
   if (overlay.requestFullscreen) overlay.requestFullscreen();
-  else if (overlay.webkitRequestFullscreen) overlay.webkitRequestFullscreen();
 }
 
 async function iniciarSorteioApresentacao() {
@@ -880,10 +717,6 @@ async function iniciarSorteioApresentacao() {
         numEl.textContent = String(result.numero).padStart(2,'00');
         nomeEl.textContent = result.nome;
         statusEl.textContent = '🏆 Parabéns! Que Deus abençoe!';
-      } else if (result.erro === 'Não autorizado.') {
-        fecharApresentacao();
-        showToast('Faça login para realizar o sorteio.', 'error');
-        setTimeout(() => window.location.href = '/login/', 1500);
       }
       btn.disabled = false;
     }
@@ -896,388 +729,7 @@ function fecharApresentacao() {
   if (overlay) overlay.remove();
 }
 
-async function abrirComprovante() {
-  const arquivo = document.createElement('input');
-  arquivo.type = 'file';
-  arquivo.accept = 'image/*';
-  arquivo.onchange = async () => {
-    if (!arquivo.files.length) return;
-    comprovanteArquivo = arquivo.files[0];
-    showToast('Analisando comprovante...', 'success');
-    await validarComprovanteOCR();
-  };
-  arquivo.click();
-}
 
-async function validarComprovanteOCR() {
-  try {
-    const resultado = await Tesseract.recognize(comprovanteArquivo, 'por');
-    const texto = resultado.data.text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    console.log('Texto OCR:', texto);
-
-    let nomePagador = '';
-    const matchPagador =
-      texto.match(/origem[\s\S]*?nome\s+([^\n]+)/i) ||
-      texto.match(/pagador\s*\n+([^\n]+)/i) ||
-      texto.match(/pagador\s+([a-záàâãéèêíïóôõöúçñ\s]+)/i);
-    if (matchPagador) nomePagador = matchPagador[1].trim();
-
-    let dataHoraComprovante = '';
-    const matchDataHora =
-      texto.match(/(\d{2}\s+\w+\s+\d{4}\s*-\s*\d{2}:\d{2}:\d{2})/i) ||
-      texto.match(/([o0]\d\s+\w+\s+\d{4}\s*-\s*\d{2}:\d{2}:\d{2})/i) ||
-      texto.match(/(\d{2}\/\d{2}\/\d{4}\s+as\s+\d{2}:\d{2}:\d{2})/i) ||
-      texto.match(/(\d{2}\/\d{2}\/\d{4}\s+as\s+\d{2}:\d{2})/i);
-    if (matchDataHora) dataHoraComprovante = matchDataHora[1].trim();
-
-    let dataValida = false;
-    const matchData =
-      texto.match(/(\d{1,2})\s+(jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)\s+(\d{4})/i) ||
-      texto.match(/(\d{2})\/(\d{2})\/(\d{4})/) ||
-      texto.match(/(\d{2})-(\d{2})-(\d{4})/);
-    if (matchData) {
-      let dia, mes, ano;
-      if (matchData[2] && isNaN(matchData[2])) {
-        const meses = {jan:0,fev:1,mar:2,abr:3,mai:4,jun:5,jul:6,ago:7,set:8,out:9,nov:10,dez:11};
-        dia = parseInt(matchData[1]); mes = meses[matchData[2]]; ano = parseInt(matchData[3]);
-      } else {
-        dia = parseInt(matchData[1]); mes = parseInt(matchData[2]) - 1; ano = parseInt(matchData[3]);
-      }
-      const dataComprovante = new Date(ano, mes, dia);
-      const dataInicio = new Date(2026, 5, 7);
-      dataInicio.setHours(0,0,0,0);
-      dataValida = dataComprovante >= dataInicio;
-    }
-
-    const temPix = texto.includes('pix') || texto.includes('transferencia pix') || texto.includes('pagamento pix');
-    const temIgreja = texto.includes('igreja batista') || texto.includes('missionaria') || texto.includes('ibmjardim') || texto.includes('jardim guararapes') || texto.includes('bat. miss');
-    const textoNumeros = texto.replace(/\D/g, '');
-    const temCNPJ = textoNumeros.includes('51998860000168') || textoNumeros.includes('05199886000168') || textoNumeros.includes('5199886000168');
-    const temChavePix = texto.includes('ibmjardimguararapes');
-
-    valorEncontrado = 0;
-    const matchValor =
-      texto.match(/valor enviado[:\s]*r?\$?\s*(\d+[.,]\d{2})/i) ||
-      texto.match(/valor transferido[:\s]*r?\$?\s*(\d+[.,]\d{2})/i) ||
-      texto.match(/valor[:\s\-]*r?\$?\s*(\d+[.,]\d{2})/i) ||
-      texto.match(/r\$\s*(\d{1,6}[.,]\d{2})/i);
-    if (matchValor) valorEncontrado = parseFloat(matchValor[1].replace(/\./g, '').replace(',', '.'));
-
-    let score = 0;
-    if (temPix) score += 30;
-    if (temIgreja) score += 20;
-    if (temCNPJ) score += 40;
-    if (temChavePix) score += 20;
-    if (valorEncontrado >= 50) score += 20;
-    if (dataValida) score += 20;
-
-    console.log('Score OCR:', score);
-
-    const temDestinatario = temIgreja || temCNPJ || temChavePix;
-
-    if (score >= 70 && temDestinatario) {
-      const hashImagem = await gerarHashImagem(comprovanteArquivo);
-      const assinatura = `${nomePagador}|${dataHoraComprovante}|${valorEncontrado.toFixed(2)}`.toLowerCase();
-
-      const verificacao = await api('/api/verificar-comprovante/', 'POST', { hash_imagem: hashImagem, assinatura });
-
-      const fd = new FormData();
-      fd.append('score', score);
-      fd.append('texto_ocr', texto);
-      if (comprovanteArquivo) fd.append('imagem', comprovanteArquivo);
-
-      if (!verificacao.ok) {
-        fd.append('motivo', verificacao.erro || 'Comprovante já utilizado');
-        fd.append('aprovado', 'false');
-        fetch('/api/registrar-tentativa/', { method: 'POST', body: fd });
-        showToast(verificacao.erro || 'Comprovante já utilizado.', 'error');
-        comprovanteEnviado = false;
-        document.getElementById('status-comprovante').innerHTML = '❌ Comprovante já utilizado';
-        return;
-      }
-
-      fd.append('motivo', 'Aprovado');
-      fd.append('aprovado', 'true');
-      fetch('/api/registrar-tentativa/', { method: 'POST', body: fd });
-
-      comprovanteEnviado = true;
-      hashImagemAtual = hashImagem;
-      assinaturaAtual = assinatura;
-      dadosComprovante = { pagador: nomePagador, data_hora: dataHoraComprovante, valor: valorEncontrado, texto_ocr: texto };
-      quantidadePermitida = Math.floor(valorEncontrado / 50);
-
-      document.getElementById('status-comprovante').innerHTML =
-        `✅ Comprovante validado • ${quantidadePermitida} número(s) disponível(is)<br><span style="font-size:0.82rem;color:var(--gold);">👆 Agora clique em Confirmar Participação</span>`;
-
-      updateConfirmBtn();
-      showToast('✅ Comprovante validado! Confirme sua participação.', 'success');
-
-    } else {
-      let erros = [];
-      if (!temPix) erros.push('PIX não identificado');
-      if (valorEncontrado < 50) erros.push('Valor menor que R$ 50');
-      if (!dataValida) erros.push('Data inválida');
-      if (!temDestinatario) erros.push('Destinatário não identificado');
-      const motivoFinal = erros.length ? erros.join(' | ') : 'Comprovante inválido';
-
-      const fd = new FormData();
-      fd.append('motivo', motivoFinal);
-      fd.append('score', score);
-      fd.append('aprovado', 'false');
-      fd.append('texto_ocr', texto);
-      if (comprovanteArquivo) fd.append('imagem', comprovanteArquivo);
-      fetch('/api/registrar-tentativa/', { method: 'POST', body: fd });
-
-      showToast(motivoFinal, 'error');
-    }
-  } catch (erro) {
-    console.error(erro);
-    showToast('Erro ao analisar comprovante.', 'error');
-  }
-}
-
-function buscarNumero() {
-  const n = parseInt(document.getElementById('busca-numero').value);
-  if (!n || n < 1 || n > TOTAL) { showToast('Número inválido.', 'error'); return; }
-  paginaAtual = Math.ceil(n / POR_PAGINA);
-  renderGrid();
-  setTimeout(() => {
-    const btns = document.querySelectorAll('.num-btn');
-    const idx = n - (paginaAtual - 1) * POR_PAGINA - 1;
-    const btn = btns[idx];
-    if (!btn) return;
-    btn.style.outline = '3px solid white';
-    btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    if (!btn.classList.contains('taken')) selectNums(n);
-    else showToast(`Número ${n} já está ocupado.`, 'error');
-  }, 100);
-}
-
-function escolherPorMim() {
-  const disponiveis = [];
-  for (let i = 1; i <= TOTAL; i++) {
-    if (!ocupados[i] && !selectedNums.includes(i)) disponiveis.push(i);
-  }
-  if (!disponiveis.length) { showToast('Não há números disponíveis.', 'error'); return; }
-  const aleatorio = disponiveis[Math.floor(Math.random() * disponiveis.length)];
-  selectNums(aleatorio);
-  paginaAtual = Math.ceil(aleatorio / POR_PAGINA);
-  renderGrid();
-  setTimeout(() => {
-    const btns = document.querySelectorAll('.num-btn');
-    const idx = aleatorio - (paginaAtual - 1) * POR_PAGINA - 1;
-    const btn = btns[idx];
-    if (btn) btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, 100);
-  showToast(`Número ${aleatorio} selecionado! 🎲`, 'success');
-}
-
-async function carregarComprovantes() {
-  const d = await api('/api/comprovantes/');
-  const grid = document.getElementById('comprovantes-grid');
-  if (!d.comprovantes || !d.comprovantes.length) {
-    grid.innerHTML = '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;grid-column:1/-1;">Nenhum comprovante registrado.</div>';
-    return;
-  }
-  todosComprovantes = d.comprovantes;
-  renderizarComprovantes(todosComprovantes);
-}
-
-function filtrarComprovantes() {
-  const termo = document.getElementById('busca-comprovante').value.toLowerCase().trim();
-  if (!termo) { renderizarComprovantes(todosComprovantes); return; }
-  const filtrados = todosComprovantes.filter(c =>
-    (c.pagador || '').toLowerCase().includes(termo) ||
-    (c.nome_participante || '').toLowerCase().includes(termo) ||
-    (c.numeros || []).some(n => String(n).includes(termo))
-  );
-  renderizarComprovantes(filtrados);
-}
-
-function renderizarComprovantes(lista) {
-  const grid = document.getElementById('comprovantes-grid');
-  if (!lista.length) {
-    grid.innerHTML = '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;grid-column:1/-1;">Nenhum resultado encontrado.</div>';
-    return;
-  }
-  grid.innerHTML = lista.map(c => `
-    <div style="background:#1A1A1A;border:1px solid #2A7A4A40;border-left:4px solid #2A7A4A;border-radius:12px;padding:1.25rem;display:flex;flex-direction:column;gap:0.75rem;">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <span style="background:rgba(42,122,74,0.2);color:#6FCF97;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:0.25rem 0.6rem;border-radius:999px;">🟢 APROVADO</span>
-        <span style="color:rgba(255,255,255,0.3);font-size:0.72rem;">#${c.id}</span>
-      </div>
-      ${c.imagem_url
-        ? `<img src="${c.imagem_url}" onclick="verImagem('${c.imagem_url}')" style="width:100%;height:140px;object-fit:cover;border-radius:8px;cursor:pointer;">`
-        : `<div style="width:100%;height:60px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.03);border-radius:8px;color:rgba(255,255,255,0.2);font-size:0.78rem;">sem imagem</div>`}
-      <div>
-        <div style="font-size:0.68rem;color:rgba(255,255,255,0.35);text-transform:uppercase;font-weight:700;">Pagador</div>
-        <div style="color:white;font-size:0.9rem;font-weight:600;">${c.pagador || '—'}</div>
-      </div>
-      <div style="display:flex;justify-content:space-between;">
-        <div>
-          <div style="font-size:0.68rem;color:rgba(255,255,255,0.35);text-transform:uppercase;font-weight:700;">Valor</div>
-          <div style="color:var(--gold);font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;">R$ ${c.valor.toFixed(2).replace('.', ',')}</div>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-size:0.68rem;color:rgba(255,255,255,0.35);text-transform:uppercase;font-weight:700;">Data PIX</div>
-          <div style="color:rgba(255,255,255,0.7);font-size:0.8rem;">${c.data_hora_pix || '—'}</div>
-        </div>
-      </div>
-      <div>
-        <div style="font-size:0.68rem;color:rgba(255,255,255,0.35);text-transform:uppercase;font-weight:700;">Participante</div>
-        <div style="color:rgba(255,255,255,0.85);font-size:0.88rem;">${c.nome_participante || '—'}</div>
-      </div>
-      <div>
-        <div style="font-size:0.68rem;color:rgba(255,255,255,0.35);text-transform:uppercase;font-weight:700;margin-bottom:0.25rem;">Números</div>
-        <div>${c.numeros && c.numeros.length
-          ? c.numeros.map(n => `<span style="display:inline-block;background:rgba(201,148,42,0.15);border:1px solid rgba(201,148,42,0.3);border-radius:5px;padding:0.15rem 0.45rem;margin:0.1rem;font-family:'Cinzel',serif;font-size:0.78rem;color:var(--gold);">${String(n).padStart(2,'0')}</span>`).join('')
-          : '<span style="color:rgba(255,255,255,0.2);font-size:0.75rem;">—</span>'}</div>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,0.06);padding-top:0.5rem;">
-        <span style="color:rgba(255,255,255,0.3);font-size:0.7rem;">${c.criado_em}</span>
-        <span style="color:rgba(255,255,255,0.2);font-size:0.65rem;font-family:monospace;" title="${c.hash_imagem || ''}">${c.hash_imagem ? '🔐 '+c.hash_imagem.substring(0,8) : ''}</span>
-      </div>
-      <div style="display:flex;gap:0.5rem;">
-        <button onclick="editarComprovante(${c.id}, '${(c.pagador||'').replace(/'/g,"\\'")}', '${(c.data_hora_pix||'').replace(/'/g,"\\'")}', '${(c.nome_participante||'').replace(/'/g,"\\'")}' )" style="flex:1;padding:0.45rem;background:rgba(42,80,140,0.4);border:1px solid rgba(100,160,255,0.3);border-radius:6px;color:rgba(100,160,255,0.9);font-size:0.75rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Editar</button>
-        <button onclick="excluirComprovante(${c.id})" style="flex:1;padding:0.45rem;background:rgba(139,26,26,0.4);border:1px solid rgba(248,180,180,0.3);border-radius:6px;color:rgba(248,180,180,0.9);font-size:0.75rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Excluir</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-async function excluirComprovante(id) {
-  if (!confirm('Excluir este comprovante?')) return;
-  showLoading(true);
-  const d = await api('/api/excluir-comprovante/', 'POST', { id });
-  showLoading(false);
-  if (d.ok) { showToast('Registro excluído.', 'success'); await carregarComprovantes(); }
-  else showToast(d.erro, 'error');
-}
-
-function verImagem(url) {
-  const overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:2000;display:flex;align-items:center;justify-content:center;cursor:pointer;';
-  overlay.innerHTML = `<img src="${url}" style="max-width:90vw;max-height:90vh;border-radius:12px;border:2px solid rgba(201,148,42,0.4);">`;
-  overlay.onclick = () => overlay.remove();
-  document.body.appendChild(overlay);
-}
-
-function editarComprovante(id, pagador, dataHora, participante) {
-  const overlay = document.createElement('div');
-  overlay.id = 'editar-overlay';
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:2000;display:flex;align-items:center;justify-content:center;padding:1rem;';
-  overlay.innerHTML = `
-    <div style="background:#1A1A1A;border:2px solid rgba(201,148,42,0.4);border-radius:14px;padding:2rem;max-width:420px;width:100%;">
-      <div style="font-family:'Cinzel',serif;font-size:0.85rem;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:1.5rem;">✦ Editar Comprovante</div>
-      <div style="margin-bottom:1rem;">
-        <label style="display:block;font-size:0.75rem;color:rgba(255,255,255,0.4);font-weight:700;text-transform:uppercase;margin-bottom:0.4rem;">Pagador</label>
-        <input id="edit-pagador" value="${pagador}" style="width:100%;padding:0.6rem 0.8rem;border-radius:7px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:white;font-size:0.9rem;">
-      </div>
-      <div style="margin-bottom:1rem;">
-        <label style="display:block;font-size:0.75rem;color:rgba(255,255,255,0.4);font-weight:700;text-transform:uppercase;margin-bottom:0.4rem;">Data/Hora PIX</label>
-        <input id="edit-datahora" value="${dataHora}" style="width:100%;padding:0.6rem 0.8rem;border-radius:7px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:white;font-size:0.9rem;" placeholder="ex: 09 jun 2026 - 14:30:00">
-      </div>
-      <div style="margin-bottom:1.5rem;">
-        <label style="display:block;font-size:0.75rem;color:rgba(255,255,255,0.4);font-weight:700;text-transform:uppercase;margin-bottom:0.4rem;">Participante</label>
-        <input id="edit-participante" value="${participante}" style="width:100%;padding:0.6rem 0.8rem;border-radius:7px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:white;font-size:0.9rem;">
-      </div>
-      <div style="display:flex;gap:0.75rem;">
-        <button onclick="salvarEdicao(${id})" style="flex:1;padding:0.8rem;background:var(--gold);border:none;border-radius:8px;color:#111;font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Salvar</button>
-        <button onclick="document.getElementById('editar-overlay').remove()" style="flex:1;padding:0.8rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.5);font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Cancelar</button>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(overlay);
-}
-
-async function salvarEdicao(id) {
-  const pagador = document.getElementById('edit-pagador').value.trim();
-  const dataHora = document.getElementById('edit-datahora').value.trim();
-  const participante = document.getElementById('edit-participante').value.trim();
-  showLoading(true);
-  const d = await api('/api/editar-comprovante/', 'POST', { id, pagador, data_hora_pix: dataHora, nome_participante: participante });
-  showLoading(false);
-  if (d.ok) {
-    document.getElementById('editar-overlay').remove();
-    showToast('Comprovante atualizado!', 'success');
-    await carregarComprovantes();
-  } else showToast(d.erro, 'error');
-}
-
-function exportarCSV() {
-  if (!todosComprovantes.length) { showToast('Nenhum comprovante para exportar.', 'error'); return; }
-  const cabecalho = ['ID', 'Pagador', 'Participante', 'Valor', 'Data PIX', 'Números', 'Enviado em'];
-  const linhas = todosComprovantes.map(c => [
-    c.id,
-    `"${(c.pagador || '').replace(/"/g, '""')}"`,
-    `"${(c.nome_participante || '').replace(/"/g, '""')}"`,
-    c.valor.toFixed(2).replace('.', ','),
-    `"${c.data_hora_pix || ''}"`,
-    `"${(c.numeros || []).join(', ')}"`,
-    `"${c.criado_em}"`
-  ]);
-  const csv = [cabecalho, ...linhas].map(l => l.join(';')).join('\n');
-  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = `comprovantes_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.csv`;
-  link.click();
-}
-
-async function carregarTentativas() {
-  const d = await api('/api/tentativas/');
-  const tbody = document.getElementById('tentativas-body');
-  if (!d.tentativas || !d.tentativas.length) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-style:italic;">Nenhuma tentativa registrada.</td></tr>';
-    return;
-  }
-  tbody.innerHTML = d.tentativas.map(t => `
-    <tr style="border-bottom:1px solid rgba(255,255,255,0.06);background:${t.aprovado ? 'rgba(42,122,74,0.08)' : 'rgba(139,26,26,0.08)'};">
-      <td style="padding:0.6rem 0.5rem;font-size:1.1rem;">${t.aprovado ? '✅' : '❌'}</td>
-      <td style="padding:0.6rem 0.5rem;color:rgba(255,255,255,0.4);font-size:0.78rem;">${t.data_hora}</td>
-      <td style="padding:0.6rem 0.5rem;color:${t.aprovado ? '#6FCF97' : '#F47C7C'};">${t.motivo || '—'}</td>
-      <td style="padding:0.6rem 0.5rem;color:var(--gold);font-weight:700;">${t.score}</td>
-      <td style="padding:0.6rem 0.5rem;">
-        ${t.imagem_url
-          ? `<img src="${t.imagem_url}" onclick="verImagem('${t.imagem_url}')" style="width:48px;height:48px;object-fit:cover;border-radius:6px;border:1px solid rgba(201,148,42,0.3);cursor:pointer;" onerror="this.style.display='none'">`
-          : '<span style="color:rgba(255,255,255,0.2);font-size:0.75rem;">—</span>'}
-      </td>
-      <td style="padding:0.6rem 0.5rem;">
-        <button onclick="excluirTentativa(${t.id})" style="padding:0.3rem 0.6rem;background:rgba(139,26,26,0.4);border:1px solid rgba(248,180,180,0.3);border-radius:5px;color:rgba(248,180,180,0.8);font-size:0.72rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Excluir</button>
-      </td>
-    </tr>
-  `).join('');
-}
-
-async function excluirTentativa(id) {
-  if (!confirm('Excluir esta tentativa?')) return;
-  showLoading(true);
-  const d = await api('/api/excluir-tentativa/', 'POST', { id });
-  showLoading(false);
-  if (d.ok) { showToast('Tentativa excluída.', 'success'); await carregarTentativas(); }
-  else showToast(d.erro, 'error');
-}
-
-function confirmarAviso(mensagem) {
-  return new Promise((resolve) => {
-    const overlay = document.createElement('div');
-    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;';
-    overlay.innerHTML = `
-      <div style="background:#1A1A1A;border:2px solid rgba(201,148,42,0.4);border-radius:16px;padding:2rem;max-width:360px;width:100%;text-align:center;">
-        <div style="font-size:2rem;margin-bottom:1rem;">⚠️</div>
-        <div style="font-family:'Cinzel',serif;font-size:0.8rem;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.75rem;">Atenção</div>
-        <div style="font-size:0.9rem;color:rgba(255,255,255,0.8);line-height:1.6;margin-bottom:1.75rem;">${mensagem}</div>
-        <div style="display:flex;gap:0.75rem;">
-          <button id="aviso-cancelar" style="flex:1;padding:0.85rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.6);font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Voltar</button>
-          <button id="aviso-confirmar" style="flex:1;padding:0.85rem;background:linear-gradient(135deg,var(--gold),#E8A820);border:none;border-radius:8px;color:#111;font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;cursor:pointer;text-transform:uppercase;">Confirmar</button>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(overlay);
-    document.getElementById('aviso-confirmar').onclick = () => { overlay.remove(); resolve(true); };
-    document.getElementById('aviso-cancelar').onclick = () => { overlay.remove(); resolve(false); };
-  });
-}
 
 function mostrarTutorial() {
   if (localStorage.getItem('tutorial_visto')) return;
@@ -1288,9 +740,9 @@ function mostrarTutorial() {
 
   const passos = [
     { icone: '🎟️', titulo: 'Escolha seu número', desc: 'Navegue pela grade e clique em um número disponível. Você pode escolher mais de um!' },
-    { icone: '💰', titulo: 'Faça o PIX', desc: 'Escaneie o QR Code ou copie a chave PIX e faça a transferência no valor correspondente.' },
-    { icone: '📄', titulo: 'Envie o comprovante', desc: 'Clique em "Enviar Comprovante PIX" e selecione a foto. O sistema valida automaticamente.' },
-    { icone: '✅', titulo: 'Confirme sua participação', desc: 'Preencha seu nome e clique em "Confirmar Participação". Salve e compartilhe seu comprovante!' },
+    { icone: '✍️', titulo: 'Preencha seus dados', desc: 'Digite seu nome completo e telefone de contato nos campos abaixo.' },
+    { icone: '⚡', titulo: 'Gere o Código Pix', desc: 'Clique em "Confirmar Participação". Um código copia e cola exclusivo e o QR Code aparecerão instantaneamente.' },
+    { icone: '✅', titulo: 'Pague e pronto!', desc: 'Pague pelo aplicativo do seu banco. A validação é imediata pelo Mercado Pago e seus números serão liberados!' },
   ];
 
   let passoAtual = 0;
@@ -1310,8 +762,8 @@ function mostrarTutorial() {
           ${passoAtual > 0 ? `<button id="btn-anterior-tutorial" style="flex:1;padding:0.8rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.6);font-family:'Cinzel',serif;font-size:0.82rem;font-weight:700;cursor:pointer;text-transform:uppercase;">← Anterior</button>` : ''}
           <button id="btn-proximo-tutorial" style="flex:1;padding:0.8rem;background:linear-gradient(135deg,var(--gold),#E8A820);border:none;border-radius:8px;color:#111;font-family:'Cinzel',serif;font-size:0.82rem;font-weight:700;cursor:pointer;text-transform:uppercase;">${passoAtual < passos.length - 1 ? 'Próximo →' : '✦ Começar!'}</button>
         </div>
-        <button onclick="fecharTutorial()" style="margin-top:0.75rem;background:transparent;border:none;color:rgba(255,255,255,0.3);font-size:0.78rem;cursor:pointer;text-decoration:underline;">Pular tutorial</button>
-      </div>
+     
+        </div>
     `;
     setTimeout(() => {
       const btnP = document.getElementById('btn-proximo-tutorial');
@@ -1334,15 +786,135 @@ document.addEventListener('DOMContentLoaded', () => {
   carregarStatus();
   mostrarTutorial();
 });
+
+function buscarParticipante() {
+    const termo = document.getElementById('busca-excluir').value.trim();
+    const container = document.getElementById('resultado-busca');
+    
+    if (!termo) {
+        container.innerHTML = '<div style="color:#ff8888; font-size:0.8rem;">Digite um nome ou número para buscar.</div>';
+        return;
+    }
+
+    container.innerHTML = '<div style="color:var(--gold); font-size:0.8rem;">Buscando...</div>';
+
+    // ADICIONADA A BARRA (/) DEPOIS DE BUSCAR-PARTICIPANTE PARA CORRIGIR O 404 NO LOCALHOST
+    fetch(`/api/buscar-participante/?termo=${encodeURIComponent(termo)}`)
+        .then(response => response.json())
+        .then(data => {
+            if (!data.ok || !data.participantes || data.participantes.length === 0) {
+                container.innerHTML = '<div style="color:#ff8888; font-size:0.8rem;">Nenhum participante encontrado.</div>';
+                return;
+            }
+
+            let html = '<div style="display:flex; flex-direction:column; gap:0.5rem; margin-top:0.5rem;">';
+            data.participantes.forEach(p => {
+                html += `
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.04); padding:0.5rem; border-radius:4px; gap:0.5rem;">
+                        <span style="color:white; font-size:0.85rem;"><strong>Nº ${p.numero}</strong> - ${p.nome}</span>
+                        <button onclick="excluirParticipante(${p.numero})" style="padding:0.25rem 0.5rem; background:#ff4444; color:white; border:none; border-radius:4px; font-size:0.75rem; font-weight:700; cursor:pointer;">Excluir</button>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        })
+        .catch(err => {
+            console.error(err);
+            container.innerHTML = '<div style="color:#ff8888; font-size:0.8rem;">Erro ao buscar participante.</div>';
+        });
+}
+
+function excluirParticipante(numero) {
+    if (!confirm(`Tem certeza que deseja excluir o participante do número ${numero} e liberá-lo na grade?`)) {
+        return;
+    }
+
+    fetch('/api/excluir/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify({ numero: numero })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.ok) {
+            alert(`Número ${numero} foi liberado com sucesso!`);
+            location.reload();
+        } else {
+            alert('Erro: ' + data.erro);
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Erro de conexão ao tentar excluir.');
+    });
+}
+
+function cadastrarManual() {
+    const nome = document.getElementById('admin-nome').value.trim();
+    const tel = document.getElementById('admin-tel').value.trim();
+    const numerosStr = document.getElementById('admin-numeros').value.trim();
+
+    if (!nome || !numerosStr) {
+        alert('Por favor, preencha o Nome e os Números.');
+        return;
+    }
+
+    // Transforma a string "1, 2, 3" em uma array de inteiros [1, 2, 3]
+    const numeros = numerosStr.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n));
+
+    if (numeros.length === 0) {
+        alert('Insira números válidos separados por vírgula.');
+        return;
+    }
+
+    showLoading(true);
+
+    // Envia para a rota de admin que já existe no seu urls.py
+    fetch('/api/participar-admin/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify({
+            nome: nome,
+            telefone: tel,
+            numeros: numeros
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        showLoading(false);
+        if (data.ok) {
+            alert('Cadastro manual realizado com sucesso!');
+            // Limpa os campos do formulário de admin
+            document.getElementById('admin-nome').value = '';
+            document.getElementById('admin-tel').value = '';
+            document.getElementById('admin-numeros').value = '';
+            location.reload(); // Recarrega para pintar os números de vermelho na grade
+        } else {
+            alert('Erro: ' + data.erro);
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        showLoading(false);
+        alert('Erro de conexão ao tentar cadastrar manualmente.');
+    });
+}
 </script>
 
-<!-- Botão Tutorial -->
+
 <button onclick="mostrarTutorial();localStorage.removeItem('tutorial_visto');" style="position:fixed;bottom:24px;right:24px;display:flex;align-items:center;gap:6px;background:var(--gold);border:none;border-radius:24px;padding:8px 14px 8px 10px;box-shadow:0 2px 8px rgba(201,148,42,0.4);z-index:998;cursor:pointer;">
   <span style="color:#111;font-size:1rem;font-weight:700;">?</span>
   <span style="color:#111;font-size:0.75rem;font-weight:700;white-space:nowrap;">Tutorial</span>
 </button>
 
-<!-- Botão WhatsApp Suporte -->
+
 <a href="https://wa.me/5587981033286?text=Olá!%20Preciso%20de%20ajuda%20com%20o%20Sorteio%20Beneficente." target="_blank"
    style="position:fixed;bottom:24px;left:24px;display:flex;align-items:center;gap:6px;background:#25D366;border-radius:24px;padding:8px 14px 8px 10px;box-shadow:0 2px 8px rgba(0,0,0,0.3);z-index:999;text-decoration:none;">
   <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M20.52 3.48A11.93 11.93 0 0 0 12 0C5.37 0 0 5.37 0 12c0 2.11.55 4.17 1.6 5.98L0 24l6.18-1.62A11.94 11.94 0 0 0 12 24c6.63 0 12-5.37 12-12 0-3.21-1.25-6.23-3.48-8.52zM12 22c-1.85 0-3.67-.5-5.25-1.44l-.38-.22-3.93 1.03 1.05-3.83-.25-.4A9.96 9.96 0 0 1 2 12C2 6.48 6.48 2 12 2c2.67 0 5.18 1.04 7.07 2.93A9.93 9.93 0 0 1 22 12c0 5.52-4.48 10-10 10zm5.47-7.3c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.09 4.49.71.31 1.27.49 1.7.63.72.23 1.37.2 1.89.12.57-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35z"/></svg>
@@ -1351,5 +923,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <div class="loading-overlay" id="loading"><div class="loading-spinner"></div></div>
 <div class="toast" id="toast"></div>
+</div>
 </body>
 </html>

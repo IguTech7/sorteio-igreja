@@ -22,4 +22,7 @@ urlpatterns = [
     path('api/tentativas/', views.api_tentativas, name='api_tentativas'),
     path('api/excluir-tentativa/', views.api_excluir_tentativa, name='api_excluir_tentativa'),
     path('api/participar-admin/', views.api_participar_admin, name='api_participar_admin'),
+    path('api/criar-pagamento/', views.api_criar_pagamento, name='api_criar_pagamento'),
+    path('api/webhook-mp/', views.api_webhook_mp, name='api_webhook_mp'),
+    path('api/buscar-participante/', views.api_buscar_participante, name='api_buscar_participante'),
 ]
