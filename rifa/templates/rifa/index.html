@@ -823,6 +823,31 @@ function cadastrarManual() {
     alert('Erro de conexão ao tentar cadastrar manualmente.');
   });
 }
+
+// ── ADICIONE ESTA FUNÇÃO DE VOLTA NO SEU SCRIPT ──
+
+async function carregarSorteio() {
+  const d = await api('/api/vendidos/');
+  const grid = document.getElementById('sold-grid');
+  const btn = document.getElementById('btn-sorteio');
+  
+  if (!grid || !btn) return; // Proteção para não quebrar se os elementos não existirem na tela
+
+  if (!d.vendidos || !d.vendidos.length) {
+    grid.innerHTML = '<div class="empty-msg">Nenhum número vendido ainda.</div>';
+    btn.disabled = true;
+    return;
+  }
+  
+  btn.disabled = false;
+  grid.innerHTML = '';
+  d.vendidos.forEach(p => {
+    const chip = document.createElement('div');
+    chip.className = 'sold-chip';
+    chip.innerHTML = `<span class="sold-chip-num">${String(p.numero).padStart(2,'00')}</span><span class="sold-chip-name">${p.nome}</span>`;
+    grid.appendChild(chip);
+  });
+}
 </script>
 
 <button onclick="mostrarTutorial();localStorage.removeItem('tutorial_visto');" style="position:fixed;bottom:24px;right:24px;display:flex;align-items:center;gap:6px;background:var(--gold);border:none;border-radius:24px;padding:8px 14px 8px 10px;box-shadow:0 2px 8px rgba(201,148,42,0.4);z-index:998;cursor:pointer;">
