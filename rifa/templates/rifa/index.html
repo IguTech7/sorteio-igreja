@@ -621,6 +621,73 @@ function fecharModalPix() {
   carregarRifa();
   showPage('home');
 }
+// ── ADICIONE ESSAS DUAS FUNÇÕES DE VOLTA NO SEU SCRIPT ──
+
+function mostrarTutorial() {
+  if (localStorage.getItem('tutorial_visto')) return;
+  
+  // Se já existir um overlay antigo, remove para não duplicar
+  const antigo = document.getElementById('tutorial-overlay');
+  if (antigo) antigo.remove();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'tutorial-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:3000;display:flex;align-items:center;justify-content:center;padding:1rem;';
+  document.body.appendChild(overlay);
+
+  const passos = [
+    { icone: '🎟️', titulo: 'Escolha seu número', desc: 'Navegue pela grade e clique em um número disponível. Você pode escolher mais de um!' },
+    { icone: '✍️', titulo: 'Preencha seus dados', desc: 'Digite seu nome completo e telefone de contato nos campos abaixo.' },
+    { icone: '⚡', titulo: 'Gere o Código Pix', desc: 'Clique em "Confirmar Participação". Um código copia e cola exclusivo e o QR Code aparecerão instantaneamente.' },
+    { icone: '✅', titulo: 'Pague e pronto!', desc: 'Pague pelo aplicativo do seu banco. A validação é imediata pelo Mercado Pago e seus números serão liberados!' },
+  ];
+
+  let passoAtual = 0;
+
+  window.avancarTutorial = function() {
+    if (passoAtual < passos.length - 1) {
+      passoAtual++;
+      renderPasso();
+    } else {
+      fecharTutorial();
+    }
+  };
+
+  window.voltarTutorial = function() {
+    if (passoAtual > 0) {
+      passoAtual--;
+      renderPasso();
+    }
+  };
+
+  function renderPasso() {
+    const p = passos[passoAtual];
+    overlay.innerHTML = `
+      <div style="background:#1A1A1A;border:2px solid rgba(201,148,42,0.4);border-radius:16px;padding:2rem;max-width:360px;width:100%;text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:0.75rem;">${p.icone}</div>
+        <div style="font-family:'Cinzel',serif;font-size:0.68rem;color:var(--gold);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.4rem;">Passo ${passoAtual + 1} de ${passos.length}</div>
+        <div style="font-family:'Cinzel',serif;font-size:1.1rem;color:white;font-weight:600;margin-bottom:0.75rem;">${p.titulo}</div>
+        <div style="font-size:0.9rem;color:rgba(255,255,255,0.7);line-height:1.6;margin-bottom:1.5rem;">${p.desc}</div>
+        <div style="display:flex;gap:0.4rem;justify-content:center;margin-bottom:1.25rem;">
+          ${passos.map((_, i) => `<div style="width:8px;height:8px;border-radius:50%;background:${i === passoAtual ? 'var(--gold)' : 'rgba(255,255,255,0.2)'}"></div>`).join('')}
+        </div>
+        <div style="display:flex;gap:0.6rem;">
+          ${passoAtual > 0 ? `<button onclick="window.voltarTutorial()" style="flex:1;padding:0.8rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.6);font-family:'Cinzel',serif;font-size:0.82rem;font-weight:700;cursor:pointer;text-transform:uppercase;">← Anterior</button>` : ''}
+          <button onclick="window.avancarTutorial()" style="flex:1;padding:0.8rem;background:linear-gradient(135deg,var(--gold),#E8A820);border:none;border-radius:8px;color:#111;font-family:'Cinzel',serif;font-size:0.82rem;font-weight:700;cursor:pointer;text-transform:uppercase;">${passoAtual < passos.length - 1 ? 'Próximo →' : '✦ Começar!'}</button>
+        </div>
+      </div>
+    `;
+  }
+  renderPasso();
+}
+
+function fecharTutorial() {
+  localStorage.setItem('tutorial_visto', 'true');
+  const overlay = document.getElementById('tutorial-overlay');
+  if (overlay) overlay.remove();
+  delete window.avancarTutorial;
+  delete window.voltarTutorial;
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('nome-input').addEventListener('input', updateConfirmBtn);
