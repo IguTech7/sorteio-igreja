@@ -148,23 +148,30 @@ def api_excluir(request):
         return JsonResponse({'ok': False, 'erro': 'Número não encontrado.'}, status=404)
 
 
-@csrf_exempt
-@require_POST
+
 def api_verificar_comprovante(request):
+    numeros_str = request.GET.get('numeros', '')
+    if not numeros_str:
+        return JsonResponse({'pago': False})
+
     try:
-        data = json.loads(request.body)
-        hash_imagem = data.get('hash_imagem', '').strip()
-        assinatura = data.get('assinatura', '').strip()
-    except:
-        return JsonResponse({'ok': False, 'erro': 'Dados inválidos.'}, status=400)
+        # Divide por vírgula, limpa espaços vazios e converte estritamente para int
+        lista_numeros = [int(n.strip()) for n in numeros_str.split(',') if n.strip().isdigit()]
+        
+        if not lista_numeros:
+            return JsonResponse({'pago': False})
 
-    if hash_imagem and RegistroComprovante.objects.filter(hash_imagem=hash_imagem).exists():
-        return JsonResponse({'ok': False, 'erro': 'Comprovante já utilizado.'})
+        # Conta quantos desses números já estão associados a um participante no banco
+        total_pagos = Participante.objects.filter(numero__in=lista_numeros).count()
 
-    if assinatura and RegistroComprovante.objects.filter(assinatura=assinatura).exists():
-        return JsonResponse({'ok': False, 'erro': 'Comprovante já utilizado.'})
+        # Se encontrou todos os números salvos no banco, o pagamento foi aprovado!
+        if total_pagos >= len(lista_numeros):
+            return JsonResponse({'pago': True})
+            
+    except Exception as e:
+        print(f"Erro crítico na verificação do Pix: {str(e)}")
 
-    return JsonResponse({'ok': True})
+    return JsonResponse({'pago': False})
 
 
 @csrf_exempt

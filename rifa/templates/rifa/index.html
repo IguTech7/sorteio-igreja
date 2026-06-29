@@ -634,28 +634,58 @@ function fecharModalPix() {
   showPage('home');
 }
 
-// ATUALIZADO: Executa assim que a página termina de carregar (recarregar)
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('nome-input').addEventListener('input', updateConfirmBtn);
   carregarStatus();
   mostrarTutorial();
 
-  // SE A PÁGINA RECARREGOU: Verifica se havia uma compra pendente do usuário
+  // ── BLINDAGEM CONTRA RESET DE MEMÓRIA DO CELULAR ──
   const pixEmAndamento = localStorage.getItem('pix_em_andamento');
   const nomePendente = localStorage.getItem('pendente_nome');
   const numerosPendentes = JSON.parse(localStorage.getItem('pendente_numeros') || '[]');
 
   if (pixEmAndamento && numerosPendentes.length > 0) {
-    // Faz uma checagem rápida no banco de dados para ver se já foi pago
-    fetch(`/api/verificar-comprovante/?numeros=${numerosPendentes.join(',')}`)
-      .then(r => r.json())
-      .then(statusData => {
+    // 1. Reabre o modal imediatamente em modo de espera para o usuário não ficar perdido
+    abrirModalPixDinamico(nomePendente, numerosPendentes, '', '');
+    
+    const cardModal = document.getElementById('modal-conteudo-pix');
+    if (cardModal) {
+      cardModal.innerHTML = `
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⏳</div>
+        <div style="font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gold);font-weight:700;margin-bottom:1rem;">RECONECTANDO AO SEU PIX...</div>
+        <p style="font-size:0.85rem; color:#555; margin-bottom:12px;">Identificamos que você estava realizando o pagamento dos números: <strong>${numerosPendentes.join(', ')}</strong></p>
+        <div id="status-reconexao" style="font-size:0.8rem; color:#666; font-style:italic; background:rgba(0,0,0,0.03); padding:8px; border-radius:6px; margin-bottom:12px;">
+          Aguardando confirmação de recebimento do banco...
+        </div>
+        <button onclick="fecharModalPix()" style="width:100%;padding:0.6rem;background:transparent;border:1px solid #999;color:#555;font-weight:700;border-radius:6px;cursor:pointer;text-transform:uppercase;font-size:0.75rem;">Voltar para a Grade</button>
+      `;
+    }
+
+    // 2. Cria uma checagem insistente (polling) de 3 em 3 segundos para dar tempo do Webhook processar
+    let tentativasReconexao = 0;
+    const intervalReconexao = setInterval(async () => {
+      tentativasReconexao++;
+      
+      try {
+        const resposta = await fetch(`/api/verificar-comprovante/?numeros=${numerosPendentes.join(',')}`);
+        const statusData = await response.json(); // Se der erro de nome, use statusData aqui
+        
         if (statusData.pago) {
-          // Se foi pago enquanto ele estava no banco, abre o modal direto no Sucesso!
-          abrirModalPixDinamico(nomePendente, numerosPendentes, '', ''); 
+          clearInterval(intervalReconexao);
+          localStorage.removeItem('pix_em_andamento'); // Limpa a pendência
           mostrarMensagemSucessoPix(nomePendente, numerosPendentes);
         }
-      }).catch(err => console.error(err));
+      } catch (err) {
+        console.error("Erro na checagem de reconexão:", err);
+      }
+
+      // Se passar de 1 minuto (20 tentativas) e o banco não confirmar, para de tentar e deixa ele fechar
+      if (tentativasReconexao >= 20) {
+        clearInterval(intervalReconexao);
+        const txtStatus = document.getElementById('status-reconexao');
+        if (txtStatus) txtStatus.innerHTML = "⚠️ Pix não identificado ainda. Se você já pagou, a grade atualizará em instantes.";
+      }
+    }, 3000);
   }
 });
 
