@@ -366,11 +366,11 @@ def api_criar_pagamento(request):
         return JsonResponse({'ok': False, 'erro': 'Nome e números são obrigatórios.'}, status=400)
 
     # 1. Inicializa a SDK com o token de produção oficial
-    sdk = mercadopago.SDK("APP_USR-3909202952372259-062820-2d6dd0ef5c71c67c1f48b3c60bc562c5-3503611913")
+    sdk = mercadopago.SDK("APP_USR-242040633012282-062820-b822253c504552aca25d5a971058180b-2914373519")
 
     # 2. Configura explicitamente as opções de requisição exigidas pela SDK moderna
     request_options = mercadopago.config.RequestOptions()
-    request_options.access_token = "APP_USR-3909202952372259-062820-2d6dd0ef5c71c67c1f48b3c60bc562c5-3503611913"
+    request_options.access_token = "APP_USR-242040633012282-062820-b822253c504552aca25d5a971058180b-2914373519"
 
     # Tratamento simples do nome para exigências do Mercado Pago
     lista_nome = nome.split()
@@ -423,10 +423,10 @@ def api_webhook_mp(request):
                 payment_id = data['data']['id']
                 
                 # Inicializa a SDK e as opções de requisição para a busca subsequente
-                sdk = mercadopago.SDK("APP_USR-3909202952372259-062820-2d6dd0ef5c71c67c1f48b3c60bc562c5-3503611913")
+                sdk = mercadopago.SDK("APP_USR-242040633012282-062820-b822253c504552aca25d5a971058180b-2914373519")
                 
                 request_options = mercadopago.config.RequestOptions()
-                request_options.access_token = "APP_USR-3909202952372259-062820-2d6dd0ef5c71c67c1f48b3c60bc562c5-3503611913"
+                request_options.access_token = "APP_USR-242040633012282-062820-b822253c504552aca25d5a971058180b-2914373519"
                 
                 payment = sdk.payment().get(payment_id, request_options)
                 payment_info = payment['response']
