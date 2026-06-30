@@ -31,38 +31,51 @@ def enviar_telegram(mensagem):
         pass
 
 
-# ── CORRIGIDO: INDEX AGORA VALIDA E ENVIA OS COOKIES DE RECUPERAÇÃO PARA O TEMPLATE ──
 def index(request):
     config = Configuracao.objects.first()
     dados_sucesso = None
+    modo_espera = "false"
 
-    # Verifica se o navegador possui o cookie de que uma compra foi tentada
+    # Recupera os cookies seguros salvos antes da ida ao banco
     telefone_pendente = request.COOKIES.get('tel_pendente')
     nome_pendente = request.COOKIES.get('nome_pendente')
     numeros_pendentes = request.COOKIES.get('nums_pendentes')
 
     if telefone_pendente and numeros_pendentes:
         try:
-            lista_nums = json.loads(numeros_pendentes)
-            # Verifica se esses números foram salvos no Supabase recentemente
-            total_pagos = Participante.objects.filter(numero__in=lista_nums, telefone=telefone_pendente).count()
+            # Converte para lista de inteiros e lista de strings para evitar conflito de tipo no Supabase
+            lista_nums_int = [int(n) for n in numeros_pendentes.split(',') if n.strip().isdigit()]
+            lista_nums_str = [n.strip() for n in numeros_pendentes.split(',') if n.strip()]
             
-            if total_pagos >= len(lista_nums) and len(lista_nums) > 0:
+            # Busca aceitando os dois tipos (texto ou número)
+            total_pagos = Participante.objects.filter(
+                (Q(numero__in=lista_nums_int) | Q(numero__in=lista_nums_str)),
+                telefone=telefone_pendente
+            ).count()
+            
+            if total_pagos >= len(lista_nums_int) and len(lista_nums_int) > 0:
+                # Se já processou no banco, manda os dados para estourar o Sucesso Direto!
                 dados_sucesso = {
                     'nome': nome_pendente,
-                    'numeros': lista_nums
+                    'numeros': lista_nums_int
                 }
+            else:
+                # Se o webhook ainda não bateu, ativa o modo de espera na interface
+                modo_espera = json.dumps({
+                    'nome': nome_pendente,
+                    'numeros': lista_nums_int
+                })
         except Exception as e:
             print(f"Erro ao verificar sucesso no recarregamento: {e}")
 
     context = {
         'config': config,
-        'dados_sucesso': json.dumps(dados_sucesso) if dados_sucesso else 'null'
+        'dados_sucesso': json.dumps(dados_sucesso) if dados_sucesso else 'null',
+        'modo_espera': modo_espera
     }
     
     response = render(request, 'rifa/index.html', context)
     return response
-
 
 @require_GET
 def api_status(request):
